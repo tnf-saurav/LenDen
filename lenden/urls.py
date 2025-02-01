@@ -20,7 +20,12 @@ from authentication.accounts import views as account_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('authentication.accounts.urls')),
     path('', account_views.home, name='home'),
     path('', include('authentication.accounts.urls')),
+    path('accounts/', include('authentication.accounts.urls')),
+    path('vendors/', include('authentication.vendors.urls')),
+    path('customers/', include('authentication.customers.urls')),
+    path('inventory/', include('authentication.inventory.urls')),
+    path('invoice/', include('authentication.invoice.urls')),
+    path('sales/', include('authentication.sales.urls')),
 ]
