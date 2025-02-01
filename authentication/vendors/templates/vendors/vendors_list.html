@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        {% block content %}
+        <h1>Vendors</h1>
+        <form method="get">
+          <input type="text" name="search" placeholder="Search vendors" value="{{ request.GET.search }}">
+          <button type="submit">Search</button>
+        </form>
+      
+        <ul>
+          {% for vendor in vendors %}
+            <li>
+              <a href="{% url 'vendor_detail' vendor.id %}">
+                {{ vendor.vendor_name }} - {{ vendor.address }} 
+                {% if vendor.is_due %}
+                  <span style="color:red;">●</span> Due
+                {% else %}
+                  <span style="color:green;">●</span> Paid
+                {% endif %}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endblock %}
+        
+        <script src="" async defer></script>
+    </body>
+</html>

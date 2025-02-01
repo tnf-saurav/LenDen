@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'authentication.inventory',
     'authentication.invoice',
     'authentication.sales',
+    'authentication.vendors',
 ]
 
 MIDDLEWARE = [
@@ -70,7 +71,10 @@ ROOT_URLCONF = 'lenden.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'authentication/vendors/templates')
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
