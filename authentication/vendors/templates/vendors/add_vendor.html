@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Vendors List</title>
+    <title>Add Vendor</title>
 </head>
 <body>
-    <h2>Vendors List</h2>
-    <form method="get" action="">
-        <input type="text" name="search" placeholder="Search vendors...">
-        <button type="submit">Search</button>
+    <h2>Add Vendor</h2>
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Vendor</button>
     </form>
-    <a href="{% url 'add_vendor' %}">Add Vendor</a>
-    <ul>
-        {% for vendor in vendors %}
-            <li>
-                <a href="{% url 'vendor_detail' vendor.id %}">{{ vendor.vendor_name }}</a>
-                - {{ vendor.address }}
-                - <span style="color: {% if vendor.is_due %}red{% else %}green{% endif %};">Due: {{ vendor.due_amount }}</span>
-            </li>
-        {% endfor %}
-    </ul>
+    <a href="{% url 'vendors_list' %}">Back to Vendors List</a>
 </body>
 </html>

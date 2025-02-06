@@ -2,22 +2,41 @@
 <html>
 <head>
     <title>{{ vendor.vendor_name }} Details</title>
+    <style>
+        .product-division {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <h2>{{ vendor.vendor_name }} Details</h2>
-    <p>Address: {{ vendor.address }}</p>
-    <p>Contact Number: {{ vendor.contact_number }}</p>
-    <p>Due Amount: {{ vendor.due_amount }}</p>
-    <p>Advance Paid: {{ vendor.advance_paid }}</p>
-    <p>Is Due: {{ vendor.is_due }}</p>
+    <p><strong>Address:</strong> {{ vendor.address }}</p>
+    <p><strong>Contact Number:</strong> {{ vendor.contact_number }}</p>
+    <p><strong>Due Amount:</strong> {{ vendor.due_amount }}</p>
+    <p><strong>Advance Paid:</strong> {{ vendor.advance_paid }}</p>
+    <p><strong>Status:</strong> <span style="color: {% if vendor.is_due %}red{% else %}green{% endif %};">{{ vendor.is_due|yesno:"Due,Clear" }}</span></p>
+    
     <h3>Products Purchased</h3>
-    <ul>
-        {% for product in products %}
-            <li>
-                {{ product.product_name }} - {{ product.quantity_supplied }} units - ${{ product.unit_price }} each - Total: ${{ product.total_price }} - Ordered on: {{ product.date_of_order }}
-            </li>
-        {% endfor %}
-    </ul>
+    {% for product in products %}
+    <div class="product-division">
+        <p><strong>Product Name:</strong> {{ product.product_name }}</p>
+        <p><strong>Description:</strong> {{ product.description }}</p>
+        <p><strong>Quantity Supplied:</strong> {{ product.quantity_supplied }}</p>
+        <p><strong>Unit Price:</strong> ${{ product.unit_price }}</p>
+        <p><strong>Total Price:</strong> ${{ product.total_price }}</p>
+        <p><strong>Date of Order:</strong> {{ product.date_of_order }}</p>
+    </div>
+    {% endfor %}
+    
+    <h3>Add Product</h3>
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Product</button>
+    </form>
+    
     <a href="{% url 'vendors_list' %}">Back to Vendors List</a>
 </body>
 </html>
