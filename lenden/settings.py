@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 from . info import *
 import os
+from mongoengine import connect
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -110,6 +111,18 @@ DATABASES = {
         }
     }
 }
+
+# MongoDB connection settings for mongoengine
+connect(
+    db='LenDen',
+    host='mongodb://localhost:27017/',
+    # Uncomment the following lines if authentication is required
+    # username='your_username',
+    # password='your_password',
+    # authentication_source='admin',
+    # authentication_mechanism='SCRAM-SHA-1'
+)
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -158,7 +171,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 
 AUTH_USER_MODEL = 'accounts.UserRegister'

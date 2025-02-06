@@ -1,46 +1,23 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        
-        {% block content %}
-  <h1>{{ vendor.vendor_name }}</h1>
-  <p>Address: {{ vendor.address }}</p>
-  <p>Contact: {{ vendor.contact_number }}</p>
-
-  {% if vendor.is_due %}
-    <p style="color:red;">Due Amount: ${{ vendor.due_amount }}</p>
-  {% else %}
-    <p style="color:green;">Advance Paid: ${{ vendor.advance_paid }}</p>
-  {% endif %}
-
-  <h3>Products Supplied</h3>
-  <ul>
-    {% for product in vendor.products %}
-      <li>
-        <strong>{{ product.product_name }}</strong><br>
-        Description: {{ product.description }}<br>
-        Quantity: {{ product.quantity_supplied }}<br>
-        Unit Price: ${{ product.unit_price }}<br>
-        Total Price: ${{ product.total_price }}<br>
-        Date of Order: {{ product.date_of_order }}
-      </li>
-    {% endfor %}
-  </ul>
-
-  <a href="{% url 'vendors_list' %}">Back to Vendor List</a>
-{% endblock %}
-        <script src="" async defer></script>
-    </body>
+<head>
+    <title>{{ vendor.vendor_name }} Details</title>
+</head>
+<body>
+    <h2>{{ vendor.vendor_name }} Details</h2>
+    <p>Address: {{ vendor.address }}</p>
+    <p>Contact Number: {{ vendor.contact_number }}</p>
+    <p>Due Amount: {{ vendor.due_amount }}</p>
+    <p>Advance Paid: {{ vendor.advance_paid }}</p>
+    <p>Is Due: {{ vendor.is_due }}</p>
+    <h3>Products Purchased</h3>
+    <ul>
+        {% for product in products %}
+            <li>
+                {{ product.product_name }} - {{ product.quantity_supplied }} units - ${{ product.unit_price }} each - Total: ${{ product.total_price }} - Ordered on: {{ product.date_of_order }}
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'vendors_list' %}">Back to Vendors List</a>
+</body>
 </html>

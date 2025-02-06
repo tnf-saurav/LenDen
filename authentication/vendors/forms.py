@@ -14,3 +14,15 @@ class VendorForm(forms.ModelForm):
             'due_amount': 'Due Amount',
             'advance_paid': 'Advance Paid'
         }
+
+    class ProductForm(forms.ModelForm):
+        class Meta:
+            model = Product
+            fields = ['product_name', 'description', 'quantity_supplied', 'unit_price', 'total_price', 'date_of_order']
+            labels = {
+            'product_name': 'Product Name',
+            'quantity_supplied': 'Quantity Supplied',
+            'unit_price': 'Unit Price',
+            'total_price': 'Total Price',
+            'date_of_order': 'Date of Order'
+        }

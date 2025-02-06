@@ -1,6 +1,5 @@
-from django.db import models
-from mongoengine import Document, StringField, BooleanField, DateTimeField, FloatField, ListField, EmbeddedDocument, EmbeddedDocumentField
-
+from mongoengine import Document, EmbeddedDocument, StringField, BooleanField, DateTimeField, FloatField, ListField, EmbeddedDocumentField
+from datetime import datetime
 
 # Define product details for each vendor
 class Product(EmbeddedDocument):
@@ -20,8 +19,8 @@ class Vendor(Document):
     advance_paid = FloatField(default=0.0)
     products = ListField(EmbeddedDocumentField(Product))
     is_due = BooleanField(default=False)  # Red or Green dot based on this status
-    created_at = DateTimeField()
+    created_at = DateTimeField(default=datetime.utcnow)
     
-meta = {
+    meta = {
         'collection': 'vendors'  # Define the collection name
     }
