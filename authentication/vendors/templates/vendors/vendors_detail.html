@@ -1,36 +1,106 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ vendor.vendor_name }} Details</title>
+    <title>Vendor Detail</title>
     <style>
-        .product-division {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
+        .due-amount {
+            color: red;
         }
+        .advance-paid {
+            color: green;
+        }
+        .neutral {
+            color: black;
+        }
+
+        .product-box {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .product-description {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        
     </style>
+    <script>
+        function searchProducts() {
+            var input, filter, productBoxes, i, txtValue;
+            input = document.getElementById('productSearch');
+            filter = input.value.toLowerCase();
+            productBoxes = document.getElementsByClassName('product-box');
+
+            for (i = 0; i < productBoxes.length; i++) {
+                txtValue = productBoxes[i].textContent || productBoxes[i].innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    productBoxes[i].style.display = "";
+                } else {
+                    productBoxes[i].style.display = "none";
+                }
+            }
+        }
+    </script>
 </head>
 <body>
-    <h2>{{ vendor.vendor_name }} Details</h2>
-    <p><strong>Address:</strong> {{ vendor.address }}</p>
-    <p><strong>Contact Number:</strong> {{ vendor.contact_number }}</p>
-    <p><strong>Due Amount:</strong> {{ vendor.due_amount }}</p>
-    <p><strong>Advance Paid:</strong> {{ vendor.advance_paid }}</p>
-    <p><strong>Status:</strong> <span style="color: {% if vendor.is_due %}red{% else %}green{% endif %};">{{ vendor.is_due|yesno:"Due,Clear" }}</span></p>
-    
-    <h3>Products Purchased</h3>
-    {% for product in products %}
-    <div class="product-division">
-        <p><strong>Product Name:</strong> {{ product.product_name }}</p>
-        <p><strong>Description:</strong> {{ product.description }}</p>
-        <p><strong>Quantity Supplied:</strong> {{ product.quantity_supplied }}</p>
-        <p><strong>Unit Price:</strong> ${{ product.unit_price }}</p>
-        <p><strong>Total Price:</strong> ${{ product.total_price }}</p>
-        <p><strong>Date of Order:</strong> {{ product.date_of_order }}</p>
-    </div>
-    {% endfor %}
-    
+    {% load custom_filters %}
+    <h2>Vendor: {{ vendor.vendor_name }}</h2>
+    <p>Address: {{ vendor.address }}</p>
+    <p>Contact Number: {{ vendor.contact_number }}</p>
+    <p>Due Amount: 
+        <span class="
+            {% if vendor.due_amount > 0 %}
+                due-amount
+            {% elif vendor.due_amount < 0 %}
+                advance-paid
+            {% else %}
+                neutral
+            {% endif %}
+        ">
+            {{ vendor.due_amount|abs_value|floatformat:2 }}
+        </span>
+    </p>
     <a href="{% url 'add_product' vendor.id %}">Add Product</a>
-    <a href="{% url 'vendors_list' %}">Back to Vendors List</a>
+
+    <div class="search-container">
+        <input type="text" id="productSearch" onkeyup="searchProducts()" placeholder="Search for products..">
+    </div>
+
+    <h3>Products</h3>
+    <div>
+        {% for product in products %}
+            <div class="product-box">
+                <p><strong>Product Name:</strong> {{ product.product_name }}</p>
+                <p><strong>Description:</strong> <span class="product-description">{{ product.description }}</span></p>
+                <p><strong>Quantity Supplied:</strong> {{ product.quantity_supplied }}</p>
+                <p><strong>Unit Price:</strong> {{ product.unit_price }}</p>
+                <p><strong>Total Price:</strong> {{ product.total_price }}</p>
+                <p><strong>Paid Amount:</strong> {{ product.paid_amount }}</p>
+                <p><strong>Due Amount:</strong> 
+                    <span class="
+                        {% if product.due_amount > 0 %}
+                            due-amount
+                        {% elif product.due_amount < 0 %}
+                            advance-paid
+                        {% else %}
+                            neutral
+                        {% endif %}
+                    ">
+                        {{ product.due_amount|abs_value|floatformat:2 }}
+                    </span>
+                </p>
+                <p><strong>Date of Order:</strong> {{ product.date_of_order }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'vendors_list' %}">Back to Vendor List</a>
 </body>
 </html>

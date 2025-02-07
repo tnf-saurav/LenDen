@@ -17,6 +17,8 @@ def add_vendor(request):
         if form.is_valid():
             form.save()
             return redirect('vendors_list')
+        else:
+            return render(request, 'vendors/add_vendor.html', {'form': form})
     else:
         form = VendorForm()
     return render(request, 'vendors/add_vendor.html', {'form': form})
@@ -24,6 +26,14 @@ def add_vendor(request):
 def vendors_detail(request, vendor_id):
     vendor = get_object_or_404(Vendor, id=vendor_id)
     products = vendor.products
+    # Ensure that each product dictionary contains the 'due_amount' key
+    for product in products:
+        if 'due_amount' not in product:
+            product['due_amount'] =  product['total_price'] - product['paid_amount']
+    # Calculate due amount for the vendor
+    due_amount = sum(product['due_amount'] for product in products)
+    vendor.due_amount = due_amount
+    vendor.save()
     return render(request, 'vendors/vendors_detail.html', {'vendor': vendor, 'products': products})
 
 def add_product(request, vendor_id):
@@ -42,6 +52,8 @@ def add_product(request, vendor_id):
                 'unit_price': product.unit_price,
                 'total_price': product.total_price,
                 'date_of_order': str(product.date_of_order),  # Convert date to string
+                'paid_amount': product.paid_amount,
+                'due_amount':  product.total_price - product.paid_amount
             }
             vendor.products.append(product_dict)
             vendor.save()

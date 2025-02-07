@@ -2,22 +2,69 @@
 <html>
 <head>
     <title>Vendors List</title>
+    <style>
+        .due-amount {
+            color: red;
+        }
+        .advance-paid {
+            color: green;
+        }
+        .neutral {
+            color: black;
+        }
+        .vendor-box {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .search-container {
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        function searchVendors() {
+            var input, filter, vendorBoxes, i, txtValue;
+            input = document.getElementById('vendorSearch');
+            filter = input.value.toLowerCase();
+            vendorBoxes = document.getElementsByClassName('vendor-box');
+
+            for (i = 0; i < vendorBoxes.length; i++) {
+                txtValue = vendorBoxes[i].textContent || vendorBoxes[i].innerText;
+                if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                    vendorBoxes[i].style.display = "";
+                } else {
+                    vendorBoxes[i].style.display = "none";
+                }
+            }
+        }
+    </script>
 </head>
 <body>
-    <h2>Vendors List</h2>
-    <form method="get" action="">
-        <input type="text" name="search" placeholder="Search vendors...">
-        <button type="submit">Search</button>
-    </form>
+    {% load custom_filters %}
+    <h1>Vendors List</h1>
+    <div class="search-container">
+        <input type="text" id="vendorSearch" onkeyup="searchVendors()" placeholder="Search vendors..">
+    </div>
     <a href="{% url 'add_vendor' %}">Add Vendor</a>
-    <ul>
+    <div>
         {% for vendor in vendors %}
-            <li>
-                <a href="{% url 'vendors_detail' vendor.id %}">{{ vendor.vendor_name }}</a>
-                - {{ vendor.address }}
-                - <span style="color: {% if vendor.is_due %}red{% else %}green{% endif %};">Due: {{ vendor.due_amount }}</span>
-            </li>
+            <div class="vendor-box">
+                <p><strong>{{ vendor.vendor_name }}</strong> - {{ vendor.address }} - Due: 
+                    <span class="
+                        {% if vendor.due_amount > 0 %}
+                            due-amount
+                        {% elif vendor.due_amount < 0 %}
+                            advance-paid
+                        {% else %}
+                            neutral
+                        {% endif %}
+                    ">
+                        {{ vendor.due_amount|abs_value|floatformat:2 }}
+                    </span>
+                </p>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 </body>
 </html>
