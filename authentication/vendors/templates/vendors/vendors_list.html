@@ -13,7 +13,7 @@
     <ul>
         {% for vendor in vendors %}
             <li>
-                <a href="{% url 'vendor_detail' vendor.id %}">{{ vendor.vendor_name }}</a>
+                <a href="{% url 'vendors_detail' vendor.id %}">{{ vendor.vendor_name }}</a>
                 - {{ vendor.address }}
                 - <span style="color: {% if vendor.is_due %}red{% else %}green{% endif %};">Due: {{ vendor.due_amount }}</span>
             </li>

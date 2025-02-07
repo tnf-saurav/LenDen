@@ -30,13 +30,7 @@
     </div>
     {% endfor %}
     
-    <h3>Add Product</h3>
-    <form method="post" action="">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add Product</button>
-    </form>
-    
+    <a href="{% url 'add_product' vendor.id %}">Add Product</a>
     <a href="{% url 'vendors_list' %}">Back to Vendors List</a>
 </body>
 </html>

@@ -20,8 +20,9 @@ class ProductForm(forms.Form):
     description = forms.CharField(max_length=255, required=False, label='Description')
     quantity_supplied = forms.FloatField(required=True, label='Quantity Supplied')
     unit_price = forms.FloatField(required=True, label='Unit Price')
-    total_price = forms.FloatField(required=True, label='Total Price')
-    date_of_order = forms.DateTimeField(required=True, label='Date of Order')
+    total_price = forms.FloatField(required=True, label='Total Price', widget=forms.NumberInput(attrs={'readonly': 'readonly'}))
+    date_of_order = forms.DateTimeField(required=True, label='Date of Order', widget=forms.DateInput(attrs={'type': 'date'}))
+
 
     def save(self, commit=True):
         product_data = self.cleaned_data

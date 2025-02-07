@@ -2,6 +2,14 @@
 <html>
 <head>
     <title>Add Product</title>
+    <script type="text/javascript">
+        function calculateTotalPrice() {
+            var quantity = document.getElementById('id_quantity_supplied').value;
+            var unitPrice = document.getElementById('id_unit_price').value;
+            var totalPrice = quantity * unitPrice;
+            document.getElementById('id_total_price').value = totalPrice.toFixed(2);
+        }
+    </script>
 </head>
 <body>
     <h2>Add Product for {{ vendor.vendor_name }}</h2>

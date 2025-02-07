@@ -26,7 +26,7 @@ def add_vendor(request):
         form = VendorForm()
     return render(request, 'vendors/add_vendor.html', {'form': form})
 
-def vendor_detail(request, vendor_id):
+def vendors_detail(request, vendor_id):
     try:
         vendor = Vendor.objects.get(id=vendor_id)
     except Vendor.DoesNotExist:
