@@ -1,26 +1,26 @@
-from mongoengine import Document, EmbeddedDocument, StringField, BooleanField, DateTimeField, FloatField, ListField, EmbeddedDocumentField
+from django.db import models
 from datetime import datetime
 
-# Define product details for each vendor
-class Product(EmbeddedDocument):
-    product_name = StringField(required=True)
-    description = StringField()
-    quantity_supplied = FloatField(required=True)
-    unit_price = FloatField(required=True)
-    total_price = FloatField(required=True)
-    date_of_order = DateTimeField(required=True)
+class Product(models.Model):
+    product_name = models.CharField(max_length=100)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    quantity_supplied = models.FloatField()
+    unit_price = models.FloatField()
+    total_price = models.FloatField()
+    date_of_order = models.DateField()
 
-# Define Vendor document
-class Vendor(Document):
-    vendor_name = StringField(required=True)
-    address = StringField()
-    contact_number = StringField()
-    due_amount = FloatField(default=0.0)
-    advance_paid = FloatField(default=0.0)
-    products = ListField(EmbeddedDocumentField(Product))
-    is_due = BooleanField(default=False)  # Red or Green dot based on this status
-    created_at = DateTimeField(default=datetime.utcnow)
-    
-    meta = {
-        'collection': 'vendors'  # Define the collection name
-    }
+    class Meta:
+        abstract = True
+
+class Vendor(models.Model):
+    vendor_name = models.CharField(max_length=100, unique= True)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    contact_number = models.CharField(max_length=15, blank=True, null=True, unique = True)
+    due_amount = models.FloatField(blank=True, null=True, default=0.0)
+    advance_paid = models.FloatField(blank=True, null=True, default=0.0)
+    products = models.JSONField(default=list, blank=True, null=True)
+    is_due = models.BooleanField(default=False)  # Red or Green dot based on this status
+    created_at = models.DateTimeField(default=datetime.utcnow)
+
+    def __str__(self):
+        return self.vendor_name

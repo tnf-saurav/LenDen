@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Add Product</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="text/javascript">
         function calculateTotalPrice() {
             var quantity = document.getElementById('id_quantity_supplied').value;
@@ -15,7 +16,12 @@
     <h2>Add Product for {{ vendor.vendor_name }}</h2>
     <form method="post" action="">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form.date_of_order.label_tag }} {{ form.date_of_order }}
+        {{ form.product_name.label_tag }} {{ form.product_name }}
+        {{ form.description.label_tag }} {{ form.description }}
+        {{ form.quantity_supplied.label_tag }} {{ form.quantity_supplied }}
+        {{ form.unit_price.label_tag }} {{ form.unit_price }}
+        {{ form.total_price.label_tag }} {{ form.total_price }}
         <button type="submit">Add Product</button>
     </form>
     <a href="{% url 'vendors_detail' vendor.id %}">Back to Vendor Details</a>

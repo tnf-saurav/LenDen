@@ -112,17 +112,6 @@ DATABASES = {
     }
 }
 
-# MongoDB connection settings for mongoengine
-connect(
-    db='LenDen',
-    host='mongodb://localhost:27017/',
-    # Uncomment the following lines if authentication is required
-    # username='your_username',
-    # password='your_password',
-    # authentication_source='admin',
-    # authentication_mechanism='SCRAM-SHA-1'
-)
-
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
