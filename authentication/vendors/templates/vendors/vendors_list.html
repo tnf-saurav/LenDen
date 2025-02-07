@@ -49,7 +49,7 @@
     <a href="{% url 'add_vendor' %}">Add Vendor</a>
     <div>
         {% for vendor in vendors %}
-            <div class="vendor-box">
+            <div class="vendor-box" onclick="location.href='{% url 'vendors_detail' vendor.id %}'">
                 <p><strong>{{ vendor.vendor_name }}</strong> - {{ vendor.address }} - Due: 
                     <span class="
                         {% if vendor.due_amount > 0 %}
