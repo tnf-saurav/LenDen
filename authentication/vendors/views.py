@@ -40,8 +40,7 @@ def vendors_detail(request, vendor_id):
 def add_product(request, vendor_id):
     vendor = get_object_or_404(Vendor, id=vendor_id)
     if vendor.products is None:
-        vendor.products = []  # Initialize as an empty list if None
-    
+        vendor.products = []
     if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
@@ -53,21 +52,20 @@ def add_product(request, vendor_id):
                 'quantity_supplied': product.quantity_supplied,
                 'unit_price': product.unit_price,
                 'total_price': product.total_price,
-                'date_of_order': str(product.date_of_order),  # Convert date to string
+                'date_of_order': str(product.date_of_order),
                 'paid_amount': product.paid_amount,
-                'due_amount':  product.total_price - product.paid_amount
+                'due_amount': product.total_price - product.paid_amount
             }
             vendor.products.append(product_dict)
             vendor.save()
-            
             return redirect('vendors_detail', vendor_id=vendor.id)
     else:
         form = ProductForm()
     return render(request, 'vendors/add_product.html', {'form': form, 'vendor': vendor})
 
 def edit_product(request, product_id):
-    vendor = Vendor.objects.filter(products__id=product_id).first()
-    product = next((p for p in vendor.products if p['id'] == product_id), None)
+    vendor = get_object_or_404(Vendor, products__contains={'id': str(product_id)})  
+    product = next((p for p in vendor.products if p['id'] == str(product_id)), None)  
     if request.method == 'POST':
         form = ProductForm(request.POST, initial=product)
         if form.is_valid():
@@ -89,8 +87,8 @@ def edit_product(request, product_id):
     return render(request, 'vendors/edit_product.html', {'form': form, 'product': product})
 
 def delete_product(request, product_id):
-    vendor = Vendor.objects.filter(products__id=product_id).first()
-    product = next((p for p in vendor.products if p['id'] == product_id), None)
+    vendor = get_object_or_404(Vendor, products__contains={'id': str(product_id)})  
+    product = next((p for p in vendor.products if p['id'] == str(product_id)), None)  
     if request.method == 'POST':
         vendor.products.remove(product)
         vendor.save()
