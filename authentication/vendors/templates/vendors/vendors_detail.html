@@ -60,9 +60,9 @@
             }
         }
 
-        function confirmDelete(productId) {
+        function confirmDelete(productId, vendorId) {
             if (confirm('Are you sure you want to delete this product?')) {
-                window.location.href = '/delete_product/' + productId + '/';
+                window.location.href = `/delete_product/${productId}/?vendor_id=${vendorId}`;
             }
         }
     </script>
@@ -121,8 +121,8 @@
                             {{ product.due_amount|abs_value|floatformat:2 }}
                         </span>
                     </p>
-                    <a href="{% url 'edit_product' product.id %}">Edit</a> 
-                    <a href="javascript:void(0);" onclick="confirmDelete('{{ product.id }}');">Delete</a>  
+                    <a href="{% url 'edit_product' product.id %}?vendor_id={{ vendor.id }}">Edit</a>
+                    <a href="javascript:void(0);" onclick="confirmDelete('{{ product.id }}', '{{ vendor.id }}');">Delete</a>
                 </div>
             </div>
         {% endfor %}

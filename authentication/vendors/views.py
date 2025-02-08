@@ -64,8 +64,8 @@ def add_product(request, vendor_id):
     return render(request, 'vendors/add_product.html', {'form': form, 'vendor': vendor})
 
 def edit_product(request, product_id):
-    vendor = get_object_or_404(Vendor, products__contains={'id': str(product_id)})  
-    product = next((p for p in vendor.products if p['id'] == str(product_id)), None)  
+    vendor = get_object_or_404(Vendor, id=request.GET.get('vendor_id'))  
+    product = next((p for p in vendor.products if p['id'] == str(product_id)), None) 
     if request.method == 'POST':
         form = ProductForm(request.POST, initial=product)
         if form.is_valid():
@@ -87,7 +87,8 @@ def edit_product(request, product_id):
     return render(request, 'vendors/edit_product.html', {'form': form, 'product': product})
 
 def delete_product(request, product_id):
-    vendor = get_object_or_404(Vendor, products__contains={'id': str(product_id)})  
+    vendor_id = request.GET.get('vendor_id')
+    vendor = get_object_or_404(Vendor, id=vendor_id)
     product = next((p for p in vendor.products if p['id'] == str(product_id)), None)  
     if request.method == 'POST':
         vendor.products.remove(product)
