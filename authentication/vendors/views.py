@@ -24,6 +24,24 @@ def add_vendor(request):
         form = VendorForm()
     return render(request, 'vendors/add_vendor.html', {'form': form})
 
+def edit_vendor(request, vendor_id):
+    vendor = get_object_or_404(Vendor, id=vendor_id)
+    if request.method == 'POST':
+        form = VendorForm(request.POST, instance=vendor)
+        if form.is_valid():
+            form.save()
+            return redirect('vendors_list')
+    else:
+        form = VendorForm(instance=vendor)
+    return render(request, 'vendors/edit_vendor.html', {'form': form, 'vendor': vendor})
+
+def delete_vendor(request, vendor_id):
+    if request.method == 'POST' and request.POST.get('_method') == 'DELETE':
+        vendor = get_object_or_404(Vendor, id=vendor_id)
+        vendor.delete()
+        return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
 def vendors_detail(request, vendor_id):
     vendor = get_object_or_404(Vendor, id=vendor_id)
     products = vendor.products
@@ -89,13 +107,20 @@ def edit_product(request, product_id):
 
 def delete_product(request, product_id):
     if request.method == 'DELETE':
-        vendor_id = request.GET.get('vendor_id')  # Get the vendor_id from GET parameters
-        vendor = get_object_or_404(Vendor, id=vendor_id)  # Get the vendor by ID
-        product = next((p for p in vendor.products if p['id'] == str(product_id)), None)  # Find the product in the vendor's products
+        vendor_id = request.GET.get('vendor_id')
+        print(f"Vendor ID: {vendor_id}")
+        print(f"Product ID: {product_id}")
+        vendor = get_object_or_404(Vendor, id=vendor_id)
+        print(f"Vendor: {vendor}")
+        product = next((p for p in vendor.products if p['id'] == str(product_id)), None)
+        print(f"Product: {product}")
         if product:
             vendor.products.remove(product)
             vendor.save()
+            print("Product removed successfully")
             return JsonResponse({'status': 'success'})
         else:
+            print("Product not found")
             return JsonResponse({'status': 'error', 'message': 'Product not found'}, status=404)
+    print("Invalid request method")
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)

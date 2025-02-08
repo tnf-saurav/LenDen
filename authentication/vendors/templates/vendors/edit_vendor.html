@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Vendor</title>
+</head>
+<body>
+    <h2>Edit Vendor</h2>
+    <form method="POST" action="{% url 'edit_vendor' vendor.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>

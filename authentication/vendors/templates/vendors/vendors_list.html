@@ -17,6 +17,16 @@
             padding: 15px;
             margin: 10px 0;
             border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .vendor-details {
+            flex: 1;
+        }
+        .vendor-actions {
+            display: flex;
+            gap: 10px;
         }
         .search-container {
             margin-bottom: 20px;
@@ -42,6 +52,7 @@
 </head>
 <body>
     {% load custom_filters %}
+    <a href="{% url 'home' %}" class="back-link">Back</a>
     <h1>Vendors List</h1>
     <div class="search-container">
         <input type="text" id="vendorSearch" onkeyup="searchVendors()" placeholder="Search vendors..">
@@ -49,20 +60,30 @@
     <a href="{% url 'add_vendor' %}">Add Vendor</a>
     <div>
         {% for vendor in vendors %}
-            <div class="vendor-box" onclick="location.href='{% url 'vendors_detail' vendor.id %}'">
-                <p><strong>{{ vendor.vendor_name }}</strong> - {{ vendor.address }} - Due: 
-                    <span class="
-                        {% if vendor.due_amount > 0 %}
-                            due-amount
-                        {% elif vendor.due_amount < 0 %}
-                            advance-paid
-                        {% else %}
-                            neutral
-                        {% endif %}
-                    ">
-                        {{ vendor.due_amount|abs_value|floatformat:2 }}
-                    </span>
-                </p>
+            <div class="vendor-box">
+                <div class="vendor-details" onclick="location.href='{% url 'vendors_detail' vendor.id %}'">
+                    <p><strong>{{ vendor.vendor_name }}</strong> - {{ vendor.address }} - Due: 
+                        <span class="
+                            {% if vendor.due_amount > 0 %}
+                                due-amount
+                            {% elif vendor.due_amount < 0 %}
+                                advance-paid
+                            {% else %}
+                                neutral
+                            {% endif %}
+                        ">
+                            {{ vendor.due_amount|abs_value|floatformat:2 }}
+                        </span>
+                    </p>
+                </div>
+                <div class="vendor-actions">
+                    <a href="{% url 'edit_vendor' vendor.id %}">Edit</a>
+                    <form method="POST" action="{% url 'delete_vendor' vendor.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
             </div>
         {% endfor %}
     </div>
