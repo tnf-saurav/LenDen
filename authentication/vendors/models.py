@@ -1,5 +1,7 @@
 from django.db import models
 from datetime import datetime
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 class Product(models.Model):
     product_name = models.CharField(max_length=100)
@@ -25,3 +27,17 @@ class Vendor(models.Model):
 
     def __str__(self):
         return self.vendor_name
+
+@receiver(post_save, sender=Product)
+def create_or_update_inventory(sender, instance, created, **kwargs):
+    if created:
+        InventoryItem.objects.create(product=instance, remaining_quantity=instance.supplied_quantity, selling_price=instance.unit_price)
+    else:
+        inventory_item = InventoryItem.objects.get(product=instance)
+        inventory_item.remaining_quantity = instance.supplied_quantity
+        inventory_item.selling_price = instance.unit_price
+        inventory_item.save()
+
+@receiver(post_delete, sender=Product)
+def delete_inventory(sender, instance, **kwargs):
+    InventoryItem.objects.filter(product=instance).delete()
