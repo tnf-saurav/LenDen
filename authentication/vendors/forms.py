@@ -6,6 +6,10 @@ class VendorForm(forms.ModelForm):
         model = Vendor
         fields = ['vendor_name', 'address', 'contact_number', 'due_amount']
 
+    def __init__(self, *args, **kwargs):
+        self.instance = kwargs.get('instance', None)
+        super(VendorForm, self).__init__(*args, **kwargs)
+
     def clean_vendor_name(self):
         vendor_name = self.cleaned_data.get('vendor_name')
         if Vendor.objects.filter(vendor_name=vendor_name).exists():
