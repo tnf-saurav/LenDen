@@ -24,8 +24,8 @@ urlpatterns = [
     path('', include('authentication.accounts.urls')),
     path('accounts/', include('authentication.accounts.urls')),
     path('vendors/', include('authentication.vendors.urls')),
-    # path('customers/', include('authentication.customers.urls')),
     path('inventory/', include('authentication.inventory.urls')),
+    # path('customers/', include('authentication.customers.urls')),
     # path('invoice/', include('authentication.invoice.urls')),
     # path('sales/', include('authentication.sales.urls')),
 ]
