@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Statement</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            word-wrap: break-word;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .date-col {
+            width: 20%;
+        }
+        .credit-col, .debit-col, .due-col {
+            width: 20%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Statement for {{ vendor.vendor_name }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th class="date-col">Date</th>
+                <th class="credit-col">Credit</th>
+                <th class="debit-col">Debit</th>
+                <th class="due-col">Due</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for statement in statements %}
+            <tr>
+                <td>{{ statement.date }}</td>
+                <td>{{ statement.credit }}</td>
+                <td>{{ statement.debit }}</td>
+                <td>{{ statement.due }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="4">Total Due</th>
+                <th>{{ total_due }}</th>
+            </tr>
+        </tfoot>
+    </table>
+</body>
+</html>

@@ -1,7 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Vendor, Product
+from .models import Vendor, Product, Statement
 from .forms import VendorForm, ProductForm
 import uuid
+from django.http import JsonResponse, HttpResponse
+from django.template.loader import render_to_string
+import pdfkit
+from datetime import datetime
+from xhtml2pdf import pisa
 
 def vendors_list(request):
     query = request.GET.get('search', '')
@@ -126,3 +131,42 @@ def delete_product(request, product_id):
             return JsonResponse({'status': 'error', 'message': 'Product not found'}, status=404)
     print("Invalid request method")
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+
+def pay_vendor(request, vendor_id):
+    vendor = get_object_or_404(Vendor, id=vendor_id)
+    if request.method == 'POST':
+        amount = float(request.POST.get('amount', 0))
+        if amount > 0:
+            vendor.due_amount -= amount
+            vendor.save()
+            Statement.objects.create(vendor=vendor, date=datetime.now().date(), credit=amount, total=vendor.due_amount)
+    return redirect('vendors_detail', vendor_id=vendor.id)
+
+def download_statement(request, vendor_id):
+    vendor = get_object_or_404(Vendor, id=vendor_id)
+    statements = Statement.objects.filter(vendor=vendor)
+    products = vendor.products
+    # Create statement entries for each product
+    product_statements = [
+        {
+            'date': product['date_of_order'],
+            'credit': product['total_price'],
+            'debit': product['paid_amount'],
+            'due': product['due_amount']
+        } for product in products
+    ]
+    all_statements = list(statements) + product_statements
+
+    # Calculate total due
+    total_due = sum(item['due'] for item in product_statements)
+
+    html_string = render_to_string('vendors/statement.html', {'vendor': vendor, 'statements': all_statements, 'total_due': total_due})
+
+    # Create a PDF from the HTML string
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{vendor.vendor_name}_{datetime.now().date()}.pdf"'
+    pisa_status = pisa.CreatePDF(html_string, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('We had some errors with code %s' % pisa_status.err, status=500)
+    return response

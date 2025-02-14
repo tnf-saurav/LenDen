@@ -28,6 +28,8 @@ EMAIL_PORT = EMAIL_PORT
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
+WKHTMLTOPDF_PATH = os.path.join('C:', 'Program Files', 'wkhtmltopdf', 'bin', 'wkhtmltopdf.exe')
+
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-i3sxu(3m%ezl&1-n+hwipv53fl(h*%ti23h_gv^sn8=4v)91!j'
 

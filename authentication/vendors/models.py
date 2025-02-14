@@ -48,3 +48,13 @@ def create_or_update_inventory(sender, instance, created, **kwargs):
 def delete_inventory(sender, instance, **kwargs):
     from inventory.models import InventoryItem
     InventoryItem.objects.filter(product=instance).delete()
+
+class Statement(models.Model):
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    date = models.DateField()
+    credit = models.FloatField(default=0.0)
+    debit = models.FloatField(default=0.0)
+    total = models.FloatField()
+
+    def __str__(self):
+        return f"Statement for {self.vendor.vendor_name} on {self.date}"
