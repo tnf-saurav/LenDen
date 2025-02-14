@@ -21,6 +21,7 @@ class Product(models.Model):
     description = models.CharField(max_length=255, blank=True, null=True)
     quantity_supplied = models.FloatField()
     unit_price = models.FloatField()
+    selling_price = models.FloatField()
     total_price = models.FloatField()
     date_of_order = models.DateField()
     paid_amount = models.FloatField(default='')
@@ -40,7 +41,7 @@ def create_or_update_inventory(sender, instance, created, **kwargs):
     else:
         inventory_item = InventoryItem.objects.get(product=instance)
         inventory_item.remaining_quantity = instance.quantity_supplied
-        inventory_item.selling_price = instance.unit_price
+        inventory_item.selling_price = instance.selling_price
         inventory_item.save()
 
 @receiver(post_delete, sender=Product)
