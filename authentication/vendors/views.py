@@ -57,8 +57,8 @@ def vendors_detail(request, vendor_id):
     # Calculate due amount for the vendor
     due_amount = sum(product['due_amount'] for product in products)
     vendor.due_amount = due_amount
-    vendor.save()
-    return render(request, 'vendors/vendors_detail.html', {'vendor': vendor, 'products': products})
+    statements = Statement.objects.filter(vendor=vendor)
+    return render(request, 'vendors/vendors_detail.html', {'vendor': vendor, 'products': products, 'statements': statements})
 
 def add_product(request, vendor_id):
     vendor = get_object_or_404(Vendor, id=vendor_id)
@@ -158,7 +158,7 @@ def download_statement(request, vendor_id):
     all_statements = list(statements) + product_statements
 
     # Calculate total due
-    total_due = sum(item['due'] for item in product_statements)
+    total_due = vendor.due_amount
 
     html_string = render_to_string('vendors/statement.html', {'vendor': vendor, 'statements': all_statements, 'total_due': total_due})
 
