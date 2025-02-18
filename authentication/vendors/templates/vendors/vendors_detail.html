@@ -148,19 +148,37 @@
                             {{ product.due_amount|abs_value|floatformat:2 }}
                         </span>
                     </p>
-                    <a href="{% url 'edit_product' product.id %}?vendor_id={{ vendor.id }}">Edit</a>
-                    <button onclick="deleteProduct('{{ product.id }}', '{{ vendor.id }}')">Delete</button>
+                    {% comment %} <a href="{% url 'edit_product' product.id %}?vendor_id={{ vendor.id }}">Edit</a>
+                    <button onclick="deleteProduct('{{ product.id }}', '{{ vendor.id }}')">Delete</button> {% endcomment %}
+                    <div class="product-actions">
+                        <a href="{% url 'edit_product' product.id %}?vendor_id={{ vendor.id }}">Edit</a>
+                        <form method="POST" action="{% url 'delete_product' product.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="_method" value="DELETE">
+                            <input type="hidden" name="vendor_id" value="{{ vendor.id }}">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         {% endfor %}
     </div>
 
-    <form action="{% url 'pay_vendor' vendor.id %}" method="post">
+    {% comment %} <form action="{% url 'pay_vendor' vendor.id %}" method="post">
         {% csrf_token %}
         <label for="amount">Amount to Pay:</label>
         <input type="number" name="amount" step="0.01" required>
         <button type="submit">Pay</button>
-    </form>
+    </form> {% endcomment %}
+    <h2>Pay Vendor</h2>
+    <div class="pay-vendor">
+        <form method="POST" action="{% url 'pay_vendor' vendor.id %}">
+            {% csrf_token %}
+            <label for="amount">Amount to Pay:</label>
+            <input type="number" step="0.01" name="amount" id="amount" required>
+            <button type="submit">Pay</button>
+        </form>
+    </div>
 
     <form action="{% url 'download_statement' vendor.id %}" method="get">
         <button type="submit">Download Statement</button>

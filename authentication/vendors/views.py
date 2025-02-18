@@ -8,12 +8,27 @@ import pdfkit
 from datetime import datetime
 from xhtml2pdf import pisa
 
+# def vendors_list(request):
+#     query = request.GET.get('search', '')
+#     if query:
+#         vendors = Vendor.objects.filter(vendor_name__icontains(query))
+#     else:
+#         vendors = Vendor.objects.all()
+    
+#     return render(request, 'vendors/vendors_list.html', {'vendors': vendors})
 def vendors_list(request):
     query = request.GET.get('search', '')
     if query:
         vendors = Vendor.objects.filter(vendor_name__icontains(query))
     else:
         vendors = Vendor.objects.all()
+    
+    # Update `due_amount` for each vendor before rendering the list
+    for vendor in vendors:
+        products = vendor.products
+        due_amount = sum(product['due_amount'] for product in products if 'due_amount' in product)
+        vendor.due_amount = due_amount
+        vendor.save()
     
     return render(request, 'vendors/vendors_list.html', {'vendors': vendors})
 
@@ -57,6 +72,7 @@ def vendors_detail(request, vendor_id):
     # Calculate due amount for the vendor
     due_amount = sum(product['due_amount'] for product in products)
     vendor.due_amount = due_amount
+    vendor.save()
     statements = Statement.objects.filter(vendor=vendor)
     return render(request, 'vendors/vendors_detail.html', {'vendor': vendor, 'products': products, 'statements': statements})
 
