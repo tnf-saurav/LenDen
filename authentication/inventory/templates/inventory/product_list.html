@@ -29,6 +29,8 @@
             <div class="product-price">Selling Price: {{ product.selling_price }}</div>
             <div class="product-quantity">Remaining Quantity: {{ product.remaining_quantity }}</div>
         </div>
+        {% empty %}
+        <p>No products available.</p>
         {% endfor %}
     </div>
 </body>

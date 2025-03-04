@@ -8,3 +8,10 @@ class InventoryItem(models.Model):
 
     def __str__(self):
         return self.product.product_name
+
+from authentication.inventory.models import InventoryItem
+
+# Check inventory items
+inventory_items = InventoryItem.objects.all()
+for item in inventory_items:
+    print(item.product.product_name, item.remaining_quantity)

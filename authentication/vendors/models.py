@@ -26,8 +26,6 @@ class Product(models.Model):
     date_of_order = models.DateField()
     paid_amount = models.FloatField(default='')
     due_amount = models.FloatField(default='')
-
-
     
     def __str__(self):
         return self.product_name
