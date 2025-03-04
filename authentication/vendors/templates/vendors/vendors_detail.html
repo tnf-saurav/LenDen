@@ -118,7 +118,7 @@
     <div class="search-container">
         <input type="text" id="productSearch" onkeyup="searchProducts()" placeholder="Search for products..">
     </div>
-
+ 
     <h3>Products</h3>
     <div>
         {% for product in products %}
@@ -147,6 +147,8 @@
                         ">
                             {{ product.due_amount|abs_value|floatformat:2 }}
                         </span>
+
+        
                     </p>
                     {% comment %} <a href="{% url 'edit_product' product.id %}?vendor_id={{ vendor.id }}">Edit</a>
                     <button onclick="deleteProduct('{{ product.id }}', '{{ vendor.id }}')">Delete</button> {% endcomment %}

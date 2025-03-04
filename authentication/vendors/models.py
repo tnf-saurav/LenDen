@@ -17,7 +17,7 @@ class Vendor(models.Model):
 
 class Product(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
-    product_name = models.CharField(max_length=100)
+    product_name = models.CharField(max_length=100) 
     description = models.CharField(max_length=255, blank=True, null=True)
     quantity_supplied = models.FloatField()
     unit_price = models.FloatField()
@@ -27,8 +27,8 @@ class Product(models.Model):
     paid_amount = models.FloatField(default='')
     due_amount = models.FloatField(default='')
 
-    # class Meta:
-    #     abstract = True
+
+    
     def __str__(self):
         return self.product_name
 
