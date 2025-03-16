@@ -3,8 +3,11 @@ from datetime import datetime
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 import uuid
+from lenden.settings import AUTH_USER_MODEL
+
 
 class Vendor(models.Model):
+    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
     vendor_name = models.CharField(max_length=100, unique= True)
     address = models.CharField(max_length=255, blank=True, null=True)
     contact_number = models.CharField(max_length=15, blank=True, null=True, unique = True)
@@ -51,6 +54,7 @@ def create_or_update_inventory(sender, instance, created, **kwargs):
         inventory_item.save()
         print(f"Updated InventoryItem: {inventory_item.product.product_name}, Qty: {inventory_item.remaining_quantity}, Price: {inventory_item.selling_price}")
         inventory_item.save()
+
 
 @receiver(post_delete, sender=Product)
 def delete_inventory(sender, instance, **kwargs):

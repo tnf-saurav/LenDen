@@ -7,13 +7,17 @@ from django.template.loader import render_to_string
 import pdfkit
 from datetime import datetime
 from xhtml2pdf import pisa
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def vendors_list(request):
     query = request.GET.get('search', '')
     if query:
-        vendors = Vendor.objects.filter(vendor_name__icontains(query))
+        # vendors = Vendor.objects.filter(vendor_name__icontains(query))
+        vendors = Vendor.objects.filter(user=request.user, vendor_name__icontains=query)
     else:
-        vendors = Vendor.objects.all()
+        #vendors = Vendor.objects.all()
+        vendors = Vendor.objects.filter(user=request.user)
     
     # # Update `due_amount` for each vendor before rendering the list
     # for vendor in vendors:
@@ -24,11 +28,16 @@ def vendors_list(request):
     
     return render(request, 'vendors/vendors_list.html', {'vendors': vendors})
 
+@login_required
 def add_vendor(request):
     if request.method == 'POST':
         form = VendorForm(request.POST)
         if form.is_valid():
-            form.save()
+            # form.save()
+            # return redirect('vendors_list')
+            vendor = form.save(commit=False)
+            vendor.user = request.user  # Assign current user
+            vendor.save()
             return redirect('vendors_list')
         else:
             return render(request, 'vendors/add_vendor.html', {'form': form})
@@ -36,8 +45,9 @@ def add_vendor(request):
         form = VendorForm()
     return render(request, 'vendors/add_vendor.html', {'form': form})
 
-def edit_vendor(request, vendor_id):
-    vendor = get_object_or_404(Vendor, id=vendor_id)
+@login_required
+def edit_vendor(request, vendor_id ):
+    vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
     if request.method == 'POST':
         form = VendorForm(request.POST, instance=vendor)
         if form.is_valid():
@@ -47,9 +57,10 @@ def edit_vendor(request, vendor_id):
         form = VendorForm(instance=vendor)
     return render(request, 'vendors/edit_vendor.html', {'form': form, 'vendor': vendor})
 
+@login_required
 def delete_vendor(request, vendor_id):
     if request.method == 'POST' and request.POST.get('_method') == 'DELETE':
-        vendor = get_object_or_404(Vendor, id=vendor_id)
+        vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
         vendor.delete()
         # return JsonResponse({'status': 'success'})
         return redirect('vendors_list')
@@ -71,8 +82,18 @@ def delete_vendor(request, vendor_id):
 #     statements = Statement.objects.filter(vendor=vendor)
 #     return render(request, 'vendors/vendors_detail.html', {'vendor': vendor, 'products': products, 'statements': statements})
 
+
+# def vendors_detail(request, vendor_id):
+#     vendor = get_object_or_404(Vendor, id=vendor_id)
+#     products = Product.objects.filter(vendor=vendor)
+#     vendor.due_amount = sum(product.due_amount for product in products)
+#     vendor.is_due = vendor.due_amount > 0
+#     vendor.save()
+#     statements = Statement.objects.filter(vendor=vendor)
+#     return render(request, 'vendors/vendors_detail.html', {'vendor': vendor, 'products': products, 'statements': statements})
+@login_required
 def vendors_detail(request, vendor_id):
-    vendor = get_object_or_404(Vendor, id=vendor_id)
+    vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
     products = Product.objects.filter(vendor=vendor)
     vendor.due_amount = sum(product.due_amount for product in products)
     vendor.is_due = vendor.due_amount > 0
@@ -121,9 +142,9 @@ def vendors_detail(request, vendor_id):
 #     else:
 #         form = ProductForm()
 #     return render(request, 'vendors/add_product.html', {'form': form, 'vendor': vendor})
-
+@login_required
 def add_product(request, vendor_id):
-    vendor = get_object_or_404(Vendor, id=vendor_id)
+    vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
     if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
@@ -162,8 +183,9 @@ def add_product(request, vendor_id):
 #     else:
 #         form = ProductForm(initial=product)
 #     return render(request, 'vendors/edit_product.html', {'form': form, 'product': product})
+@login_required
 def edit_product(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+    product = get_object_or_404(Product, id=product_id, user=request.user)
     vendor = product.vendor
     if request.method == 'POST':
         form = ProductForm(request.POST, instance=product)
