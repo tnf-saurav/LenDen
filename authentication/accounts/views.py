@@ -12,7 +12,7 @@ from django.db import transaction
 
 # Create your views here.
 def home(request):
-    return render(request, "index.html")
+    return render(request, 'index.html')
 
 def signup(request):
     if request.method == 'POST':
@@ -75,11 +75,12 @@ def signin(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            print("User authenticated successfully")
+            
             login(request, user)
-            businessname = user.businessname
-            messages.success(request, f"Hello {businessname}, you're successfully logged in.")
-            return render(request, "index.html", {'businessname': businessname})
+            # businessname = user.businessname
+            # messages.success(request, f"Hello {businessname}, you're successfully logged in.")
+            # return render(request, "index.html", {'businessname': businessname})
+            return redirect('dashboard')
         else:
             print("Authentication failed")
             messages.error(request, "Invalid credentials, please try again.")
@@ -87,6 +88,10 @@ def signin(request):
     return render(request, "accounts/signin.html")
 
 def signout(request):
-    logout(request)
-    messages.success(request, "Logged out successfully.")
-    return redirect('home')
+    if request.method == "POST":
+        logout(request)
+        messages.success(request, "You have been logged out.")
+        return redirect('dashboard')  # Redirect to the homepage (/)
+    return redirect('signin')
+
+    

@@ -4,150 +4,58 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Sign Up</title>
-    <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=2.2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-    
+    <div class="signup-wrapper">
+        <div class="signup-container">
+            <!-- Right Section: Form -->
+            <div class="signup-form">
+                <h3 class="signup-title">Signup</h3>
 
-    {% comment %} <div id="error-popup" class="error-popup">
-        <span class="close">&times;</span>
-        <ul id="error-list">
-          <!-- Error messages will dynamically appear here -->
-        </ul>
-    </div>
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    <strong>Message:</strong> {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                {% endfor %}
 
-    <div class="signup-container">
-        <div class="logo">LOGO</div>
-    <div class="signup-form">
-        <h2>Sign Up</h2>
-        {% if messages %}
-            <div id="error-popup" class="error-popup">
-                <span class="close" onclick="document.getElementById('error-popup').style.display='none';">&times;</span>
-                <ul id="error-list">
-                    {% for message in messages %}
-                        <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
+                <form action="{% url 'signup' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" name="business_name" id="business_name" placeholder="Business Name" required>
+                    </div>
+                    <div class="form-group dual-input">
+                        <input type="text" name="username" id="username" placeholder="Username" required>
+                        <input type="tel" name="phone" id="phone" placeholder="Phone" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" name="email" id="email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group password-container">
+                        <input type="password" name="pass1" id="pass1" placeholder="Password" required>
+                        <i class="fas fa-eye toggle-password"></i>
+                    </div>
+                    <button type="submit">Signup</button>
+                    <div class="form-links">
+                        <p class="login-link">Already have account? <a href="{% url 'signin' %}">log in</a></p>
+                    </div>
+                </form> 
+                
             </div>
-        {% endif %}
-
-        
-
-          
-        <form method="post" action="{% url 'signup' %}" id="signup-form">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="id_businessname">Business Name:</label>
-                <input type="text" name="businessname" id="businessname" value="{{ form.businessname.value|default_if_none:'' }}" required>
-            </div>
-            <div class="form-group">
-                <label for="id_username">Username:</label>
-                <input type="text" name="username" id="username" value="{{ form.username.value|default_if_none:'' }}" required>
-            </div>
-            <div class="form-group">
-                <label for="id_email">Email:</label>
-                <input type="email" name="email" id="email" value="{{ form.email.value|default_if_none:'' }}"required>
-            </div>
-            <div class="form-group">
-                <label for="id_phone">Phone:</label>
-                <input type="text" name="phone" id="phone" value="{{ form.phone.value|default_if_none:'' }}"required>
-            </div>
-            <div class="form-group">
-                <label for="id_password1">Password:</label>
-                <div class="password-container">
-                    <input type="password" name="password1" id="password1" required>
-                    <i class="far fa-eye" id="toggle-password1" style="cursor: pointer;"></i>
+            <!-- Right Section: Logo -->
+            <div class="signup-logo">
+                <div class="logo-circle">
+                    <img src="{% static 'images/logo.png' %}" alt="Lenden Logo" class="logo-image">
                 </div>
             </div>
-            <div class="form-group">
-                <label for="id_password2">Password confirmation:</label>
-                <div class="password-container">
-                    <input type="password" name="password2" id="password2" required>
-                    <i class="far fa-eye" id="toggle-password2" style="cursor: pointer;"></i>
-                </div>
-            </div>
-            <button type="submit" class="signup-button">Sign Up</button>
-            <div class="login-link">
-                Already have an account? <a href="{% url 'signin' %}">Log in</a>
-            </div>
-        </form>
-    </div>
-</div>
-<script src="{% static 'js/scripts.js' %}"></script> {% endcomment %}
-
-
-
-
-<div id="error-popup" class="error-popup">
-    <span class="close">&times;</span>
-    <ul id="error-list">
-      <!-- Error messages will dynamically appear here -->
-    </ul>
-</div>
-
-<div class="signup-container">
-    <div class="logo">LOGO</div>
-    <div class="signup-form">
-        <h2>Sign Up</h2>
-        {% if messages %}
-            <script>
-                // JavaScript variable to indicate if there are messages
-                var showErrorPopup = true;
-            </script>
-        {% endif %}
-        
-        <form method="post" action="{% url 'signup' %}" id="signup-form">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="id_businessname">Business Name:</label>
-                <input type="text" name="businessname" id="businessname" value="{{ form.businessname.value|default_if_none:'' }}" required>
-            </div>
-            <div class="form-group">
-                <label for="id_username">Username:</label>
-                <input type="text" name="username" id="username" value="{{ form.username.value|default_if_none:'' }}" required>
-            </div>
-            <div class="form-group">
-                <label for="id_email">Email:</label>
-                <input type="email" name="email" id="email" value="{{ form.email.value|default_if_none:'' }}"required>
-            </div>
-            <div class="form-group">
-                <label for="id_phone">Phone:</label>
-                <input type="text" name="phone" id="phone" value="{{ form.phone.value|default_if_none:'' }}"required>
-            </div>
-            <div class="form-group">
-                <label for="id_password1">Password:</label>
-                <div class="password-container">
-                    <input type="password" name="password1" id="password1" required>
-                    <i class="far fa-eye" id="toggle-password1" style="cursor: pointer;"></i>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="id_password2">Password confirmation:</label>
-                <div class="password-container">
-                    <input type="password" name="password2" id="password2" required>
-                    <i class="far fa-eye" id="toggle-password2" style="cursor: pointer;"></i>
-                </div>
-            </div>
-            <button type="submit" class="signup-button">Sign Up</button>
-            <div class="login-link">
-                Already have an account? <a href="{% url 'signin' %}">Log in</a>
-            </div>
-            {% for message in messages%}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        <strong> Message:</strong> {{ message }} 
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-        </button>
         </div>
-        {% endfor %}
-        </form>
     </div>
-</div>
-
-{% comment %} <script src="{% static 'js/scripts.js' %}"></script> {% endcomment %}
+    <script src="{% static 'js/accounts.js' %}"></script>
 </body>
 </html>

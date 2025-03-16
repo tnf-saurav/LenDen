@@ -1,12 +1,11 @@
-{% load static custom_filters %}
- <!DOCTYPE html>
- <html>
- <head>
-     <title>Vendors List</title>
-     <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
- </head>
- <body>
-     <a href="{% url 'home' %}" class="back-link">Back</a>
+ {% extends 'base.html' %}
+ {% load static %}
+ {% load static custom_filters %}
+ 
+ {% block title %}LenDen - Vendors List{% endblock %}
+ 
+ {% block content %}
+     <a href="{% url 'dashboard' %}" class="back-link">Back</a>
      <h1>Vendors List</h1>
      <div class="search-container">
          <input type="text" id="vendorSearch" onkeyup="searchVendors()" placeholder="Search vendors..">
@@ -33,8 +32,13 @@
              </div>
          {% endfor %}
      </div>
+ {% endblock %}
+ 
+ {% block extra_scripts %}
      <script src="{% static 'js/vendors.js' %}"></script>
-     <!-- Cloudflare script unchanged -->
-     <script>(function(){...})();</script>
- </body>
- </html>
+     <script>(function(){...})();</script> <!-- Replace ... with your Cloudflare script -->
+ {% endblock %}
+ 
+ {% block extra_styles %}
+     <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
+ {% endblock %}

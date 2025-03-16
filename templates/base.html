@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}LenDen - Home{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="{% static 'images/logo.png' %}" alt="Lenden Logo" class="logo-image">
+        </div>
+        <div class="greeting">
+            <h3 id="greeting-text">Hello</h3>
+            <h4>{{ user.username }}</h4>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                <li><a href="{% url 'vendors_list' %}">Vendors</a></li>
+                <li><a href="{% url 'product_list' %}">Products</a></li>
+                {% comment %} <li><a href="{% url 'sales_list' %}">Sales</a></li>
+                <li><a href="{% url 'customer_list' %}">Customer</a></li> {% endcomment %}
+            </ul>
+        </nav>
+        <div class="logout">
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'signout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'signin' %}" class="logout-btn">Login</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Include global.js for dynamic greeting and redirect -->
+    <div id="dashboard-url" data-url="{% url 'dashboard' %}" style="display: none;"></div>
+    <script src="{% static 'js/global.js' %}" async defer></script>
+</body>
+</html>

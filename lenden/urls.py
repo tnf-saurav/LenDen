@@ -20,7 +20,7 @@ from authentication.accounts import views as account_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', account_views.home, name='home'),
+    path('', account_views.home, name='dashboard'),
     path('', include('authentication.accounts.urls')),
     path('accounts/', include('authentication.accounts.urls')),
     path('vendors/', include('authentication.vendors.urls')),

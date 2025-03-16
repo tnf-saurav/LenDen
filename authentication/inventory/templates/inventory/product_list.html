@@ -1,13 +1,10 @@
-<!-- authentication/inventory/templates/inventory/product_list.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Inventory List</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/inventory.css' %}">
-</head>
-<body>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}LenDen - Inventory List{% endblock %}
+
+{% block content %}
+    <a href="{% url 'dashboard' %}" class="back-link">Back</a>
     <h1>Inventory List</h1>
     {% if products %}
         {% for product in products %}
@@ -20,5 +17,8 @@
     {% else %}
         <p>No products in inventory yet.</p>
     {% endif %}
-</body>
-</html>
+{% endblock %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/inventory.css' %}">
+{% endblock %}
