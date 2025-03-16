@@ -1,7 +1,9 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Add Vendor</title>
+    <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
 </head>
 <body>
     <h2>Add Vendor</h2>
@@ -10,7 +12,7 @@
         {{ form.as_p }}
         {% for field in form %}
             {% for error in field.errors %}
-                <div style="color: red;">
+                <div class="error-message">
                     {{ error }}
                 </div>
             {% endfor %}
@@ -18,5 +20,8 @@
         <button type="submit">Add Vendor</button>
     </form>
     <a href="{% url 'vendors_list' %}">Back to Vendor List</a>
+    <script src="{% static 'js/vendors.js' %}"></script>
+    <!-- Cloudflare script unchanged -->
+    <script>(function(){...})();</script>
 </body>
 </html>

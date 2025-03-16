@@ -1,25 +1,10 @@
-<!DOCTYPE html>
+{% load static %}
+{% comment %} <!DOCTYPE html>
 <html>
 <head>
     <title>Add Product</title>
+    <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script type="text/javascript">
-        function calculateTotalPriceAndDue() {
-            var quantity = parseFloat(document.getElementById('id_quantity_supplied').value) || 0;
-            var unitPrice = parseFloat(document.getElementById('id_unit_price').value) || 0;
-            var paidAmount = parseFloat(document.getElementById('id_paid_amount').value) || 0;
-            var totalPrice = quantity * unitPrice;
-            var dueAmount = totalPrice - paidAmount;
-            document.getElementById('id_total_price').value = totalPrice.toFixed(2);
-            document.getElementById('id_due_amount').value = Math.abs(dueAmount).toFixed(2);
-        }
-
-        $(document).ready(function() {
-            $('#id_quantity_supplied, #id_unit_price, #id_paid_amount').on('input', function() {
-                calculateTotalPriceAndDue();
-            });
-        });
-    </script>
 </head>
 <body>
     <h2>Add Product for {{ vendor.vendor_name }}</h2>
@@ -36,7 +21,7 @@
         {{ form.due_amount.label_tag }} {{ form.due_amount }}
         {% for field in form %}
             {% for error in field.errors %}
-                <div style="color: red;">
+                <div class="error-message">
                     {{ error }}
                 </div>
             {% endfor %}
@@ -44,5 +29,29 @@
         <button type="submit">Add Product</button>
     </form>
     <a href="{% url 'vendors_detail' vendor.id %}">Back to Vendor Details</a>
+    <script src="{% static 'js/vendors.js' %}"></script>
+    <!-- Cloudflare script unchanged -->
+    <script>(function(){...})();</script>
+</body>
+</html> {% endcomment %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Product</title>
+    <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h2>Add Product for {{ vendor.vendor_name }}</h2>
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Product</button>
+    </form>
+    <a href="{% url 'vendors_detail' vendor.id %}">Back to Vendor Details</a>
+    <script src="{% static 'js/vendors.js' %}"></script>
+    <!-- Cloudflare script unchanged -->
+    <script>(function(){...})();</script>
 </body>
 </html>

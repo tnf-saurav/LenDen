@@ -1,5 +1,4 @@
 from django.urls import path
-#from .views import vendors_list, add_vendor, vendors_detail, add_product
 from . import views
 
 # urlpatterns = [

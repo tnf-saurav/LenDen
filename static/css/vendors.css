@@ -1,0 +1,105 @@
+/* static/css/vendors.css */
+
+/* Shared styles */
+.due-amount {
+    color: red;
+}
+.advance-paid {
+    color: green;
+}
+.neutral {
+    color: black;
+}
+
+/* add_vendor.html, edit_vendor.html, add_product.html, edit_product.html, delete_product.html */
+.error-message {
+    color: red;
+}
+
+/* vendors_list.html */
+.vendors-list .vendor-box {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+.vendors-list .vendor-details {
+    flex: 1;
+}
+.vendors-list .vendor-actions {
+    display: flex;
+    gap: 10px;
+}
+.vendors-list .search-container {
+    margin-bottom: 20px;
+}
+
+/* vendors_detail.html */
+.vendors-detail .product-box {
+    border: 2px solid #ccc;  /* Thicker border for clearer outline */
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    display: block;
+    background-color: #f9f9f9;  /* Optional: light background for contrast */
+}
+.vendors-detail .product-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.vendors-detail .product-details-left {
+    flex: 1;  /* Takes up available space */
+    white-space: nowrap;  /* Prevents text wrapping */
+    overflow: hidden;  /* Hides overflow */
+    text-overflow: ellipsis;  /* Adds "..." for long text */
+}
+.vendors-detail .product-details-right {
+    display: flex;
+    gap: 10px;  /* Space between Edit and Delete */
+    flex-shrink: 0;  /* Prevents buttons from shrinking */
+}
+.vendors-detail .product-description {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.vendors-detail .back-link {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+.vendors-detail .search-container {
+    margin-bottom: 20px;
+}
+.vendors-detail .product-row:first-child {
+    border-bottom: 1px solid #eee;
+}
+
+/* statement.html */
+.statement-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+.statement-table th, .statement-table td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: left;
+    word-wrap: break-word;
+}
+.statement-table th {
+    background-color: #f2f2f2;
+}
+.statement-table .date-col {
+    width: 20%;
+}
+.statement-table .credit-col, .statement-table .debit-col, .statement-table .due-col {
+    width: 20%;
+}

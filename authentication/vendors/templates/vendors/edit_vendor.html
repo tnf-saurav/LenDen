@@ -1,7 +1,9 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Edit Vendor</title>
+    <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
 </head>
 <body>
     <h2>Edit Vendor</h2>
@@ -11,5 +13,8 @@
         <button type="submit">Save</button>
     </form>
     <a href="{% url 'vendors_list' %}">Back to Vendor List</a>
+    <script src="{% static 'js/vendors.js' %}"></script>
+    <!-- Cloudflare script unchanged -->
+    <script>(function(){...})();</script>
 </body>
 </html>

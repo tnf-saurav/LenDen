@@ -2,13 +2,14 @@ from django.db import models
 from datetime import datetime
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+import uuid
 
 class Vendor(models.Model):
     vendor_name = models.CharField(max_length=100, unique= True)
     address = models.CharField(max_length=255, blank=True, null=True)
     contact_number = models.CharField(max_length=15, blank=True, null=True, unique = True)
     due_amount = models.FloatField(blank=True, null=True, default=0.0)
-    products = models.JSONField(default=list, blank=True, null=True)
+    # products = models.JSONField(default=list, blank=True, null=True)
     is_due = models.BooleanField(default=False)  # Red or Green dot based on this status
     created_at = models.DateTimeField(default=datetime.utcnow)
 
@@ -16,7 +17,8 @@ class Vendor(models.Model):
         return self.vendor_name
 
 class Product(models.Model):
-    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    vendor = models.ForeignKey(Vendor, on_delete=models.SET_NULL, null=True)
     product_name = models.CharField(max_length=100) 
     description = models.CharField(max_length=255, blank=True, null=True)
     quantity_supplied = models.FloatField()
@@ -24,8 +26,8 @@ class Product(models.Model):
     selling_price = models.FloatField()
     total_price = models.FloatField()
     date_of_order = models.DateField()
-    paid_amount = models.FloatField(default='')
-    due_amount = models.FloatField(default='')
+    paid_amount = models.FloatField(default=0.0)
+    due_amount = models.FloatField(default=0.0)
     
     def __str__(self):
         return self.product_name
@@ -33,18 +35,27 @@ class Product(models.Model):
 
 @receiver(post_save, sender=Product)
 def create_or_update_inventory(sender, instance, created, **kwargs):
-    from inventory.models import InventoryItem
+    from authentication.inventory.models import InventoryItem
+    print(f"Signal fired for Product: {instance.product_name}, Created: {created}")
     if created:
-        InventoryItem.objects.create(product=instance, remaining_quantity=instance.quantity_supplied, selling_price=instance.unit_price)
+        inventory_item = InventoryItem.objects.create(
+            product=instance,
+            remaining_quantity=instance.quantity_supplied,
+            selling_price=instance.selling_price 
+        )
+        print(f"Created InventoryItem: {inventory_item.product.product_name}, Qty: {inventory_item.remaining_quantity}, Price: {inventory_item.selling_price}")
     else:
         inventory_item = InventoryItem.objects.get(product=instance)
         inventory_item.remaining_quantity = instance.quantity_supplied
         inventory_item.selling_price = instance.selling_price
         inventory_item.save()
+        print(f"Updated InventoryItem: {inventory_item.product.product_name}, Qty: {inventory_item.remaining_quantity}, Price: {inventory_item.selling_price}")
+        inventory_item.save()
 
 @receiver(post_delete, sender=Product)
 def delete_inventory(sender, instance, **kwargs):
-    from inventory.models import InventoryItem
+    from authentication.inventory.models import InventoryItem
+    print(f"Deleting InventoryItem for Product: {instance.product_name}")
     InventoryItem.objects.filter(product=instance).delete()
 
 class Statement(models.Model):

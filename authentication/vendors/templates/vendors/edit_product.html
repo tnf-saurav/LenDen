@@ -1,7 +1,9 @@
-<!DOCTYPE html>
+{% load static %}
+{% comment %} <!DOCTYPE html>
 <html>
 <head>
     <title>Edit Product</title>
+    <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
 </head>
 <body>
     <h2>Edit Product</h2>
@@ -10,5 +12,28 @@
         {{ form.as_p }}
         <button type="submit">Save Changes</button>
     </form>
+    <script src="{% static 'js/vendors.js' %}"></script>
+    <!-- Cloudflare script unchanged -->
+    <script>(function(){...})();</script>
+</body>
+</html> {% endcomment %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
+</head>
+<body>
+    <h2>Edit Product</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Changes</button>
+    </form>
+    <a href="{% url 'vendors_detail' product.vendor.id %}">Back to Vendor Details</a>
+    <script src="{% static 'js/vendors.js' %}"></script>
+    <!-- Cloudflare script unchanged -->
+    <script>(function(){...})();</script>
 </body>
 </html>

@@ -1,37 +1,24 @@
+<!-- authentication/inventory/templates/inventory/product_list.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Product List</title>
-    <style>
-        .product {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin: 10px;
-        }
-        .product-name {
-            font-weight: bold;
-        }
-        .product-description {
-            margin-top: 5px;
-        }
-        .product-price, .product-quantity {
-            margin-top: 5px;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <title>Inventory List</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/inventory.css' %}">
 </head>
 <body>
-    <h1>Product List</h1>
-    <div id="products">
+    <h1>Inventory List</h1>
+    {% if products %}
         {% for product in products %}
-        <div class="product">
-            <div class="product-name">{{ product.product.product_name }}</div>
-            <div class="product-description">{{ product.product.description }}</div>
-            <div class="product-price">Selling Price: {{ product.selling_price }}</div>
-            <div class="product-quantity">Remaining Quantity: {{ product.remaining_quantity }}</div>
-        </div>
-        {% empty %}
-        <p>No products available.</p>
+            <div class="inventory-item">
+                <h3>{{ product.product.product_name }}</h3>
+                <p><strong>Remaining Quantity:</strong> {{ product.remaining_quantity }}</p>
+                <p><strong>Selling Price:</strong> ${{ product.selling_price }}</p>
+            </div>
         {% endfor %}
-    </div>
+    {% else %}
+        <p>No products in inventory yet.</p>
+    {% endif %}
 </body>
 </html>
