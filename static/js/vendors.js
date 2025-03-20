@@ -11,21 +11,6 @@ function calculateTotalPriceAndDue() {
     document.getElementById('id_due_amount').value = Math.abs(dueAmount).toFixed(2);
 }
 
-// vendors_list.html: Search vendors
-function searchVendors() {
-    var input = document.getElementById('vendorSearch');
-    var filter = input.value.toLowerCase();
-    var vendorBoxes = document.getElementsByClassName('vendor-box');
-    for (var i = 0; i < vendorBoxes.length; i++) {
-        var txtValue = vendorBoxes[i].textContent || vendorBoxes[i].innerText;
-        if (txtValue.toLowerCase().indexOf(filter) > -1) {
-            vendorBoxes[i].style.display = "";
-        } else {
-            vendorBoxes[i].style.display = "none";
-        }
-    }
-}
-
 // vendors_detail.html: Search products
 function searchProducts() {
     var input = document.getElementById('productSearch');
@@ -81,3 +66,25 @@ $(document).ready(function() {
         calculateTotalPriceAndDue();
     });
 });
+
+// static/js/vendors.js
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('vendorSearch');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', searchVendors);
+    }
+});
+
+function searchVendors() {
+    const input = document.getElementById('vendorSearch').value.toLowerCase();
+    const rows = document.querySelectorAll('.table-row');
+    rows.forEach(row => {
+        const vendorName = row.querySelector('.table-col:nth-child(2)').textContent.toLowerCase();
+        const address = row.querySelector('.table-col:nth-child(3)').textContent.toLowerCase();
+        if (vendorName.includes(input) || address.includes(input)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}

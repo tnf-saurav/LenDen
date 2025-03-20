@@ -15,20 +15,8 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding-top: 25px;
-}
-
-.logo {
-    padding: 25px;
-    text-align: center;
-    background-color: white; 
-    border-radius: 50%; 
-    width: 120px; 
-    height: 120px;
-    margin: 0 auto; 
-    display: flex;
     align-items: center;
-    justify-content: center;
+    padding-top: 25px;
 }
 
 .logo h2 {
@@ -36,14 +24,13 @@ body {
     font-size: 24px;
 }
 
-
-.logo-image {
-    width: 300px; 
-    height: 300px; 
-    border-radius: 50%; 
-    object-fit: cover; 
-    display: block;
-    margin: 0 auto; 
+.logo_image img{
+    background-color: #fff;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: center;
+    object-position: center;
 }
 
 .sidebar-nav ul {
@@ -72,20 +59,15 @@ body {
 }
 
 .logout {
-    padding: 20px ;
-    text-align: center;
+    margin-bottom: 3rem;
 }
 
 .logout-btn {
-    display: block;
-    padding: 10px;
+    padding: 10px 30px;
     background-color: white;
     color: #003087;
-    text-decoration: none;
     border-radius: 5px;
     font-weight: bold;
-    width: 100%; 
-    box-sizing: border-box; 
     font-size: 16px;
 }
 
@@ -152,7 +134,7 @@ button:hover {
 .greeting {
     text-align: center;
     color: white;
-    margin-top: -180px;
+    margin-top: 10px;
 }
 
 .greeting h3 {
@@ -165,3 +147,79 @@ button:hover {
     font-size: 22px;
     font-weight: normal;
 }
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+    }
+    .sidebar .logo-image {
+        width: 40px;
+    }
+    .greeting {
+        display: none; /* Hide greeting to prevent overlap */
+    }
+    .sidebar-nav a {
+        text-align: center;
+        padding: 15px 0;
+        font-size: 0; /* Hide text */
+    }
+    .sidebar-nav a::before {
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        font-size: 18px;
+        display: block;
+    }
+    .sidebar-nav li:nth-child(1) a::before { content: "\f015"; } /* Dashboard */
+    .sidebar-nav li:nth-child(2) a::before { content: "\f0d1"; } /* Vendors */
+    .sidebar-nav li:nth-child(3) a::before { content: "\f46c"; } /* Products */
+    .main-content {
+        margin-left: 60px;
+        width: calc(100% - 60px);
+    }
+    .logout-btn {
+        padding: 15px 0;
+        font-size: 0;
+    }
+    .logout-btn::before {
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        font-size: 18px;
+        content: "\f2f5"; /* Logout icon */
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: fixed;
+        bottom: 0;
+        top: auto;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        padding: 10px;
+    }
+    .sidebar .logo, .greeting {
+        display: none; /* Hide logo and greeting on mobile */
+    }
+    .sidebar-nav ul {
+        display: flex;
+        width: 100%;
+    }
+    .sidebar-nav li {
+        flex: 1;
+    }
+    .sidebar-nav a {
+        padding: 10px;
+    }
+    .logout {
+        flex: 1;
+    }
+    .main-content {
+        margin-left: 0;
+        margin-bottom: 60px; /* Space for bottom bar */
+        width: 100%;
+    }
+}
+

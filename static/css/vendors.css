@@ -17,7 +17,7 @@
 }
 
 /* vendors_list.html */
-.vendors-list .vendor-box {
+/* .vendors-list .vendor-box {
     border: 1px solid #ccc;
     padding: 15px;
     margin: 10px 0;
@@ -36,8 +36,225 @@
 }
 .vendors-list .search-container {
     margin-bottom: 20px;
+} */
+
+/* vendors_list.html */
+/* Change: Redesign styles to match the new UI */
+/* vendors_list.html */
+.vendors-table {
+    background: #fff;
+    padding: 40px 25px; /* Increase padding for better spacing */
+    width: 100%; /* Full width of the screen */
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    border-radius: 0.5rem;
 }
 
+.vendors-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 10px; /* Add gap for better spacing on smaller screens */
+}
+
+.add-vendor-btn {
+    /* Fix: Increase button size */
+    background-color: #0047ab;
+    color: white;
+    padding: 12px 24px; /* Larger padding for bigger button */
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px; /* Larger font size */
+    font-weight: 500;
+    display: inline-block;
+    line-height: 1;
+    border: none;
+}
+
+.add-vendor-btn:hover {
+    background-color: #003366;
+}
+
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.search-container input {
+    /* Fix: Make search bar responsive */
+    padding: 10px 14px; /* Slightly larger padding */
+    width: 100%;
+    max-width: 250px; /* Increase max-width for larger screens */
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    font-size: 16px; /* Larger font size */
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>') no-repeat 95% center;
+    background-size: 16px;
+}
+
+.table-header, .table-row {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px; /* Increase padding for better spacing */
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.table-header {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+    font-size: 18px; /* Fix: Increase font size for header */
+    text-transform: uppercase;
+}
+
+.table-row {
+    transition: background-color 0.2s;
+}
+
+.table-row:hover {
+    background-color: #f9f9f9;
+}
+
+.table-col {
+    /* Fix: Adjust spacing and font size */
+    flex: 1;
+    padding: 10px 20px; /* Increase padding for better spacing */
+    font-size: 18px; /* Fix: Increase font size for vendor name and address */
+    color: #555;
+    display: flex;
+    align-items: center;
+}
+
+.select-col {
+    flex: 0 0 40px;
+    display: flex;
+    align-items: center;
+}
+
+.radio-indicator {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.actions-col {
+    flex: 0 0 200px; /* Fix: Increase width for larger buttons */
+    display: flex;
+    justify-content: flex-end;
+}
+
+.vendor-actions {
+    display: flex;
+    gap: 10px; /* Increase gap for larger buttons */
+    align-items: center;
+}
+
+.due-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.due-dot.due {
+    background-color: #dc3545;
+}
+
+.due-dot.no-due {
+    background-color: #28a745;
+}
+
+.edit-btn {
+    /* Fix: Increase button size */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px; /* Larger padding for bigger button */
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px; /* Larger font size */
+}
+
+.edit-btn:hover {
+    background-color: #0056b3;
+}
+
+.delete-btn {
+    /* Fix: Increase button size */
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px; /* Larger padding for bigger button */
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px; /* Larger font size */
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* Fix: Add responsive styles */
+@media (max-width: 768px) {
+    .vendors-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .search-container {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .search-container input {
+        max-width: 100%; /* Full width on smaller screens */
+    }
+
+    .table-header, .table-row {
+        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        padding: 10px 15px;
+    }
+
+    .table-col {
+        flex: 1 1 100%; /* Stack columns on smaller screens */
+        padding: 5px 10px;
+        font-size: 14px; /* Slightly smaller font on mobile */
+    }
+
+    .select-col {
+        flex: 0 0 30px;
+    }
+
+    .actions-col {
+        flex: 1 1 100%; /* Full width for actions on smaller screens */
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+
+    .edit-btn, .delete-btn {
+        padding: 6px 12px; /* Slightly smaller buttons on mobile */
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .add-vendor-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .search-container input {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    .table-header {
+        font-size: 16px;
+    }
+}
 /* vendors_detail.html */
 .vendors-detail .product-box {
     border: 2px solid #ccc;  /* Thicker border for clearer outline */

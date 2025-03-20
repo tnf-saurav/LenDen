@@ -8,16 +8,20 @@
     <title>{% block title %}LenDen - Home{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
+    {% comment %} <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}"> {% endcomment %}
 </head>
 <body>
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="logo">
-            <img src="{% static 'images/logo.png' %}" alt="Lenden Logo" class="logo-image">
-        </div>
-        <div class="greeting">
-            <h3 id="greeting-text">Hello</h3>
-            <h4>{{ user.username }}</h4>
+            <div class="logo_image">
+                <img src="{% static 'images/ggg.png' %}" alt="Lenden Logo" class="logo-image">
+            </div>
+            <div class="greeting">
+                <h3 id="greeting-text">Hello</h3>
+                <h4>{{ user.username }}</h4>
+            </div>
         </div>
         <nav class="sidebar-nav">
             <ul>
@@ -47,6 +51,7 @@
 
     <!-- Include global.js for dynamic greeting and redirect -->
     <div id="dashboard-url" data-url="{% url 'dashboard' %}" style="display: none;"></div>
-    <script src="{% static 'js/global.js' %}" async defer></script>
+    <script src="{% static 'js/global.js' %}"></script>
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>
