@@ -11,6 +11,90 @@ function calculateTotalPriceAndDue() {
     document.getElementById('id_due_amount').value = Math.abs(dueAmount).toFixed(2);
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('vendorSearch');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', searchVendors);
+    }
+});
+
+// function searchVendors() {
+//     const input = document.getElementById('vendorSearch').value.toLowerCase();
+//     const rows = document.querySelectorAll('.table-row');
+//     rows.forEach(row => {
+//         const vendorName = row.querySelector('.table-col:nth-child(2)').textContent.trim().toLowerCase();
+//         const address = row.querySelector('.table-col:nth-child(3)').textContent.trim().toLowerCase();
+//         if (vendorName.includes(input) || address.includes(input)) {
+//             row.style.display = '';
+//         } else {
+//             row.style.display = 'none';
+//         }
+//     });
+// }
+
+function searchVendors() {
+    const input = document.getElementById('vendorSearch').value.trim().toLowerCase();
+    const rows = document.querySelectorAll('.table-row');
+    rows.forEach(row => {
+        const vendorNameElement = row.querySelector('.vendor-details .table-col:nth-child(1)');
+        const addressElement = row.querySelector('.vendor-details .table-col:nth-child(2)');
+
+        const vendorName = vendorNameElement ? vendorNameElement.textContent.trim().toLowerCase() : '';
+        const address = addressElement ? addressElement.textContent.trim().toLowerCase() : '';
+
+        if (vendorName.includes(input) || address.includes(input)) {   
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+// Toggle the Add Vendor form visibility
+function toggleAddVendorForm() {
+    const form = document.getElementById('addVendorForm');
+    if (form) {
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+// Toggle the Edit Vendor form visibility
+function toggleEditVendorForm() {
+    const form = document.getElementById('editVendorForm');
+    if (form) {
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+
+// Show and populate the Edit Vendor form
+function showEditVendorForm(vendorId, vendorName, address, contactNumber, dueAmount) {
+    const form = document.getElementById('editVendorForm');
+    const formAction = document.getElementById('editVendorFormAction');
+    const vendorIdInput = document.getElementById('edit_vendor_id');
+    const vendorNameInput = document.getElementById('edit_vendor_name');
+    const addressInput = document.getElementById('edit_address');
+    const contactNumberInput = document.getElementById('edit_contact_number');
+    const dueAmountInput = document.getElementById('edit_due_amount');
+
+    if (form && formAction && vendorIdInput && vendorNameInput && addressInput && contactNumberInput && dueAmountInput) {
+        // Set the form action dynamically
+        formAction.action = `/vendors/edit_vendor/${vendorId}/`;
+
+        // Populate the form fields
+        vendorIdInput.value = vendorId;
+        vendorNameInput.value = vendorName;
+        addressInput.value = address;
+        contactNumberInput.value = contactNumber;
+        dueAmountInput.value = dueAmount;
+
+        // Show the form
+        form.style.display = 'block';
+    }
+}
+
+
+
 // vendors_detail.html: Search products
 function searchProducts() {
     var input = document.getElementById('productSearch');
@@ -67,24 +151,6 @@ $(document).ready(function() {
     });
 });
 
-// static/js/vendors.js
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('vendorSearch');
-    if (searchInput) {
-        searchInput.addEventListener('keyup', searchVendors);
-    }
-});
-
-function searchVendors() {
-    const input = document.getElementById('vendorSearch').value.toLowerCase();
-    const rows = document.querySelectorAll('.table-row');
-    rows.forEach(row => {
-        const vendorName = row.querySelector('.table-col:nth-child(2)').textContent.toLowerCase();
-        const address = row.querySelector('.table-col:nth-child(3)').textContent.toLowerCase();
-        if (vendorName.includes(input) || address.includes(input)) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
+function confirmDelete() {
+    return confirm("Are you sure you want to delete this vendor?");
 }
