@@ -1,85 +1,120 @@
+{% extends 'base.html' %}
 {% load static custom_filters %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Vendor Detail</title>
-    <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
-</head>
-<body>
-    <a href="{% url 'vendors_list' %}" class="back-link">Back to Vendor List</a>
-    <h2>Vendor: {{ vendor.vendor_name }}</h2>
-    <p>Address: {{ vendor.address }}</p>
-    <p>Contact Number: {{ vendor.contact_number }}</p>
-    <p>Due Amount: 
-        <span class="{% if vendor.due_amount > 0 %}due-amount{% elif vendor.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
-            {{ vendor.due_amount|abs_value|floatformat:2 }}
-        </span>
-    </p>
-    <a href="{% url 'add_product' vendor.id %}">Add Product</a>
+{% block title %}LenDen - Vendor Detail{% endblock %}
 
-    <div class="search-container">
-        <input type="text" id="productSearch" onkeyup="searchProducts()" placeholder="Search for products">
-    </div>
- 
-    <h3>Products</h3>
-    <div>
-        {% for product in products %}
-            <div id="product-{{ product.id }}" class="product-box">
-                <div class="product-row">
-                    <div class="product-details-left">
-                        <span><strong>Date:</strong> {{ product.date_of_order }}</span> | 
-                        <span><strong>Product:</strong> {{ product.product_name }}</span> | 
-                        <span><strong>Qty:</strong> {{ product.quantity_supplied }}</span> | 
-                        <span><strong>Unit Price:</strong> {{ product.unit_price }}</span>
-                    </div>
-                    
+{% block content %}
+
+    <!-- Display messages -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+                    {{ message }}
+                    <button class="close" onclick="this.parentElement.style.display='none';">×</button>
                 </div>
-                <div class="product-row">
-                    <div class="product-details-left">
-                        <span><strong>Desc:</strong> {{ product.description }}</span> | 
-                        <span><strong>Total:</strong> {{ product.total_price }}</span> | 
-                        <span><strong>Paid:</strong> {{ product.paid_amount }}</span> | 
-                        <span><strong>Due:</strong>  
-                            <span class="{% if product.due_amount > 0 %}due-amount{% elif product.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
-                                {{ product.due_amount|abs_value|floatformat:2 }}
-                            </span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Vendor Details Section (Styled like a table) -->
+    <div class="vendor-details">
+        <div class="vendor-info">
+            <p>{{ vendor.vendor_name }}</p>
+            <p>{{ vendor.address }}</p>
+            <p>{{ vendor.contact_number }}</p>
+            <p><strong>Due</strong> 
+                <span class="{% if vendor.due_amount > 0 %}due-amount{% elif vendor.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
+                    Rs. {{ vendor.due_amount|abs_value|floatformat:2 }}
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Header Section with Add Product, Search, and Download Statement -->
+    <div class="vendors-header">
+        <div class="header-left">
+            <button class="add-vendor-btn" onclick="loadAddProductModal('{{ vendor.id }}')">Add Product</button>
+            <form action="{% url 'download_statement' vendor.id %}" method="get" style="display: inline;">
+                <button type="submit" class="download-statement-btn">Download Statement</button>
+            </form>
+        </div>
+        <div class="search-container">
+            <input type="text" id="productSearch" onkeyup="searchProducts()" placeholder="Search for products..">
+        </div>
+    </div> 
+
+    
+
+    <!-- Products Section (Styled as a table) -->
+    <h3>Products</h3>
+    <div class="products-table">
+        <div class="table-header">
+            <div class="table-col">Date</div>
+            <div class="table-col">Product</div>
+            <div class="table-col">Qty</div>
+            <div class="table-col">Unit Price</div>
+            <div class="table-col">Description</div>
+            <div class="table-col">Total</div>
+            <div class="table-col">Paid</div>
+            <div class="table-col">Due</div>
+            <div class="table-col actions-col">Actions</div>
+        </div>
+        <div class="table-body">
+            {% for product in products %}
+                <div id="product-{{ product.id }}" class="table-row">
+                    <div class="table-col">{{ product.date_of_order }}</div>
+                    <div class="table-col">{{ product.product_name }}</div>
+                    <div class="table-col">{{ product.quantity_supplied }}</div>
+                    <div class="table-col">{{ product.unit_price }}</div>
+                    <div class="table-col">{{ product.description }}</div>
+                    <div class="table-col">{{ product.total_price }}</div>
+                    <div class="table-col">{{ product.paid_amount }}</div>
+                    <div class="table-col">
+                        <span class="{% if product.due_amount > 0 %}due-amount{% elif product.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
+                            {{ product.due_amount|abs_value|floatformat:2 }}
                         </span>
                     </div>
-                    <div class="product-details-right">
-                        {% comment %} <a href="{% url 'edit_product' product.id %}?vendor_id={{ vendor.id }}">Edit</a> {% endcomment %}
-                        <a href="{% url 'edit_product' product.id %}">Edit</a>
-                        
-                        {% comment %} <form method="POST" action="{% url 'delete_product' product.id %}" style="display:inline;">
-                            {% csrf_token %}
-                            
-                            <input type="hidden" name="vendor_id" value="{{ vendor.id }}">
-                            <button type="submit">Delete</button>
-                        </form> {% endcomment %}
+                    <div class="table-col actions-col">
+                        <div class="vendor-actions">
+                            <button onclick="showEditProductForm(
+                                '{{ product.id }}', 
+                                '{{ product.product_name|escapejs }}', 
+                                '{{ product.description|default_if_none:''|escapejs }}', 
+                                '{{ product.quantity_supplied }}', 
+                                '{{ product.unit_price }}', 
+                                '{{ product.selling_price }}', 
+                                '{{ product.total_price }}', 
+                                '{{ product.date_of_order }}', 
+                                '{{ product.paid_amount|default_if_none:'0.00' }}', 
+                                '{{ product.due_amount }}',
+                                '{{ vendor.id }}'
+                            )" class="edit-btn">Edit</button>
+                           
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %} 
-        
-        
+            {% endfor %}
+        </div>
     </div>
 
-    <h2>Pay Vendor</h2>
+    <!-- Pay Vendor Section (Smaller and more compact) -->
+    <h3>Pay Vendor</h3>
     <div class="pay-vendor">
         <form method="POST" action="{% url 'pay_vendor' vendor.id %}">
             {% csrf_token %}
-            
-            <input type="number" step="0.01" name="amount" id="amount" required>
-            <button type="submit">Pay</button>
+            <div class="form-group compact">
+                <label for="amount">Amount:</label>
+                <input type="number" step="0.01" name="amount" id="amount" required>
+            </div>
+            <button type="submit" class="submit-btn compact">Pay</button>
         </form>
     </div>
+{% endblock %}
 
-    <form action="{% url 'download_statement' vendor.id %}" method="get">
-        <button type="submit">Download Statement</button>
-    </form> 
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
+{% endblock %}
 
-    
+{% block extra_scripts %}
     <script src="{% static 'js/vendors.js' %}"></script>
-    <!-- Cloudflare script unchanged -->
-    <script>(function(){...})();</script>
-</body>
-</html>
+{% endblock %}

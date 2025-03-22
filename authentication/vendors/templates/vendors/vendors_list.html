@@ -5,6 +5,19 @@
 {% block title %}LenDen - Vendors List{% endblock %}
 
 {% block content %}
+
+    <!-- Display messages -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+                    {{ message }}
+                    <button class="close" onclick="this.parentElement.style.display='none';">×</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <div class="vendors-table">
         <div class="vendors-header">
             <a href="#" class="add-vendor-btn" onclick="toggleAddVendorForm()">Add Vendor</a>

@@ -403,49 +403,415 @@
     }
 }
 
-/* vendors_detail.html */
-.vendors-detail .product-box {
-    border: 2px solid #ccc;  /* Thicker border for clearer outline */
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 5px;
-    display: block;
-    background-color: #f9f9f9;  /* Optional: light background for contrast */
+/* Vendor Details */
+.vendor-details {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    padding: 20px;
 }
-.vendors-detail .product-row {
+
+.vendor-details h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.vendor-info p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #555;
+}
+
+.vendor-info p strong {
+    color: #333;
+}
+
+/* Vendors Header */
+.vendors-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
+    gap: 10px;
 }
-.vendors-detail .product-details-left {
-    flex: 1;  /* Takes up available space */
-    white-space: nowrap;  /* Prevents text wrapping */
-    overflow: hidden;  /* Hides overflow */
-    text-overflow: ellipsis;  /* Adds "..." for long text */
-}
-.vendors-detail .product-details-right {
+
+
+.header-left {
     display: flex;
-    gap: 10px;  /* Space between Edit and Delete */
-    flex-shrink: 0;  /* Prevents buttons from shrinking */
+    gap: 10px;
 }
-.vendors-detail .product-description {
-    max-width: 300px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+
+.add-vendor-btn {
+    background-color: #0047ab;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    display: inline-block;
+    line-height: 1;
+    border: none;
 }
-.vendors-detail .back-link {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+
+.add-vendor-btn:hover {
+    background-color: #003366;
 }
-.vendors-detail .search-container {
+
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
 }
-.vendors-detail .product-row:first-child {
-    border-bottom: 1px solid #eee;
+
+.form-header h2 {
+    margin: 0;
+    font-size: 1.5em;
 }
+
+.close-btn {
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #333;
+}
+
+.close-btn:hover {
+    color: #ff0000;
+}
+
+.add-vendor-form .form-group {
+    margin-bottom: 15px;
+}
+
+.add-vendor-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.add-vendor-form input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.add-vendor-form .submit-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.add-vendor-form .submit-btn:hover {
+    background-color: #45a049;
+}
+
+/* Products Table (Styled like vendors_list.html) */
+.products-table {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+/* Pay Vendor Form */
+.pay-vendor {
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group.compact {
+    margin-bottom: 10px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.form-group.compact input {
+    width: 200px;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* Style for form rows with multiple items */
+.form-group-row {
+    display: flex;
+    gap: 20px; /* Space between items in the row */
+}
+
+/* Style for individual items within a form row */
+.form-group-item {
+    flex: 1; /* Each item takes equal space */
+    min-width: 0; /* Prevent overflow */
+}
+
+/* Ensure inputs and labels within form-group-item take full width */
+.form-group-item label,
+.form-group-item input {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.submit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.submit-btn.compact {
+    padding: 8px 16px;
+    font-size: 14px;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+    transform: translateY(-1px);
+}
+
+/* Download Statement Button */
+.download-statement-btn {
+    background-color: #28a745;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    display: inline-block;
+    line-height: 1;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.download-statement-btn:hover {
+    background-color: #218838;
+    box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
+    transform: translateY(-1px);
+}
+
+/* Edit and Delete Buttons */
+.edit-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+    background-color: #0056b3;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* Table Styles (Reused from vendors_list.html) */
+.table-header, .table-row {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    flex-wrap: nowrap;
+}
+
+.table-header {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.table-row {
+    transition: background-color 0.2s;
+}
+
+.table-row:hover {
+    background-color: #f9f9f9;
+}
+
+.table-col {
+    flex: 1;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #555;
+    display: flex;
+    align-items: center;
+}
+
+.table-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.actions-col {
+    flex: 0 0 200px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.vendor-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .vendor-details {
+        padding: 15px;
+    }
+
+    .vendor-info p {
+        font-size: 14px;
+    }
+    
+
+    
+    .products-table .table-col {
+        flex: 1 1 100%;
+        padding: 5px 10px;
+        font-size: 14px;
+    }
+
+    .products-table .actions-col {
+        flex: 1 1 100%;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+
+    .vendors-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header-left {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .search-container {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .search-container input {
+        max-width: 100%;
+    }
+
+    .edit-btn, .delete-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .form-group.compact input {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .add-vendor-btn, .download-statement-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .search-container input {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    .table-header {
+        font-size: 16px;
+    }
+}
+
 
 /* statement.html */
 .statement-table {
@@ -453,18 +819,36 @@
     border-collapse: collapse;
     table-layout: fixed;
 }
+
 .statement-table th, .statement-table td {
     border: 1px solid black;
     padding: 8px;
     text-align: left;
     word-wrap: break-word;
 }
+
 .statement-table th {
     background-color: #f2f2f2;
 }
+
 .statement-table .date-col {
     width: 20%;
 }
+
 .statement-table .credit-col, .statement-table .debit-col, .statement-table .due-col {
     width: 20%;
+}
+
+/* Style for calculated values in the Add Product modal */
+
+.calculated-value {
+    display: inline-block;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-size: 1em;
+    color: #333;
+    width: 100%;
+    box-sizing: border-box;
 }

@@ -45,10 +45,10 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ['product_name', 'description', 'quantity_supplied', 'unit_price','selling_price', 'total_price', 'date_of_order', 'paid_amount', 'due_amount']
+        fields = ['product_name', 'description', 'quantity_supplied', 'unit_price','selling_price',  'date_of_order', 'paid_amount']
         widgets = {
-            'total_price': forms.NumberInput(attrs={'readonly': 'readonly'}),
-            'due_amount': forms.NumberInput(attrs={'readonly': 'readonly'}),
+            # 'total_price': forms.NumberInput(attrs={'readonly': 'readonly'}),
+            # 'due_amount': forms.NumberInput(attrs={'readonly': 'readonly'}),
         }
 
     def save(self, commit=True):
@@ -57,5 +57,5 @@ class ProductForm(forms.ModelForm):
         product.total_price = product.quantity_supplied * product.unit_price
         product.due_amount =  product.total_price - product.paid_amount
         if commit:
-            return product
+            product.save()
         return product

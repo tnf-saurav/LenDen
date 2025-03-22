@@ -1,40 +1,4 @@
-{% load static %}
-{% comment %} <!DOCTYPE html>
-<html>
-<head>
-    <title>Add Product</title>
-    <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-</head>
-<body>
-    <h2>Add Product for {{ vendor.vendor_name }}</h2>
-    <form method="post" action="">
-        {% csrf_token %}
-        {{ form.date_of_order.label_tag }} {{ form.date_of_order }}
-        {{ form.product_name.label_tag }} {{ form.product_name }}
-        {{ form.description.label_tag }} {{ form.description }}
-        {{ form.quantity_supplied.label_tag }} {{ form.quantity_supplied }}
-        {{ form.unit_price.label_tag }} {{ form.unit_price }}
-        {{ form.selling_price.label_tag }} {{ form.selling_price }}
-        {{ form.paid_amount.label_tag }} {{ form.paid_amount }}
-        {{ form.total_price.label_tag }} {{ form.total_price }}
-        {{ form.due_amount.label_tag }} {{ form.due_amount }}
-        {% for field in form %}
-            {% for error in field.errors %}
-                <div class="error-message">
-                    {{ error }}
-                </div>
-            {% endfor %}
-        {% endfor %}
-        <button type="submit">Add Product</button>
-    </form>
-    <a href="{% url 'vendors_detail' vendor.id %}">Back to Vendor Details</a>
-    <script src="{% static 'js/vendors.js' %}"></script>
-    <!-- Cloudflare script unchanged -->
-    <script>(function(){...})();</script>
-</body>
-</html> {% endcomment %}
-
+{% comment %} {% load static %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -46,13 +10,67 @@
     <h2>Add Product for {{ vendor.vendor_name }}</h2>
     <form method="post" action="">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Add Product</button>
-    </form>
-    <a href="{% url 'vendors_detail' vendor.id %}">Back to Vendor Details</a>
+        
     <script src="{% static 'js/vendors.js' %}"></script>
     <!-- Cloudflare script unchanged -->
     <!-- Cloudflare script unchanged -->
     <script>(function(){...})();</script>
 </body>
-</html>
+</html> {% endcomment %}
+
+<div id="addProductModal" class="modal">
+    <div class="modal-content add-vendor-form">
+        <div class="form-header">
+            <h2>Add Product</h2>
+            <span class="close-btn" onclick="document.getElementById('addProductModal').style.display='none'">×</span>
+        </div>
+        <form method="POST" action="{% url 'add_product' vendor_id %}">
+            {% csrf_token %}
+            <div class="form-group form-group-row">
+                <div class="form-group-item">
+                    <label for="id_product_name">Product Name:</label>
+                    <input type="text" name="product_name" id="id_product_name" required>
+                </div>
+                <div class="form-group-item">
+                    <label for="id_date_of_order">Date of Order:</label>
+                    <input type="date" name="date_of_order" id="id_date_of_order" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_description">Description:</label>
+                <input type="text" name="description" id="id_description">
+            </div>
+            <div class="form-group form-group-row">
+                <div class="form-group-item">
+                    <label for="id_quantity_supplied">Quantity Supplied:</label>
+                    <input type="number" min="0" name="quantity_supplied" id="id_quantity_supplied" value="0" required onkeypress="return (event.charCode != 8 && event.charCode >= 48 && event.charCode <= 57)">
+                </div>
+                <div class="form-group-item">
+                    <label for="id_unit_price">Unit Price:</label>
+                    <input type="number" step="0.01" min="0" name="unit_price" id="id_unit_price" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_total_price">Total Price:</label>
+                <input type="number" step="0.01" name="total_price" id="id_total_price" style="display: none;">
+                <span id="total_price_display" class="calculated-value">0.00</span>
+            </div>
+            <div class="form-group form-group-row">
+                <div class="form-group-item">
+                    <label for="id_selling_price">Selling Price:</label>
+                    <input type="number" step="0.01" min="0" name="selling_price" id="id_selling_price" required>
+                </div>
+                <div class="form-group-item">
+                    <label for="id_paid_amount">Paid Amount:</label>
+                    <input type="number" step="0.01" min="0" name="paid_amount" id="id_paid_amount">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="id_due_amount">Due Amount:</label>
+                <input type="number" step="0.01" name="due_amount" id="id_due_amount" style="display: none;">
+                <span id="due_amount_display" class="calculated-value">0.00</span>
+            </div>
+            <button type="submit" class="submit-btn">Add Product</button>
+        </form>
+    </div>
+</div>
