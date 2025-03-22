@@ -10,17 +10,7 @@ class VendorForm(forms.ModelForm):
         self.instance = kwargs.get('instance', None)
         super(VendorForm, self).__init__(*args, **kwargs)
 
-    # def clean_vendor_name(self):
-    #     vendor_name = self.cleaned_data.get('vendor_name')
-    #     if Vendor.objects.filter(vendor_name=vendor_name).exists():
-    #         raise forms.ValidationError("Vendor name already exists.")
-    #     return vendor_name
 
-    # def clean_contact_number(self):
-    #     contact_number = self.cleaned_data.get('contact_number')
-    #     if contact_number and Vendor.objects.filter(contact_number=contact_number).exists():
-    #         raise forms.ValidationError("Contact number already exists.")
-    #     return contact_number
 
     def clean_vendor_name(self):
         vendor_name = self.cleaned_data.get('vendor_name')

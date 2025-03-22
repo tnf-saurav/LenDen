@@ -1,15 +1,3 @@
-// document.addEventListener('DOMContentLoaded', function () {
-//     const togglePassword = document.querySelector('.toggle-password');
-//     const passwordInput = document.querySelector('#pass1');
-
-//     togglePassword.addEventListener('click', function () {
-//         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-//         passwordInput.setAttribute('type', type);
-//         this.classList.toggle('fa-eye');
-//         this.classList.toggle('fa-eye-slash');
-//     });
-// });
-
 document.addEventListener('DOMContentLoaded', function () {
     // Password toggle functionality
     const toggleIcons = document.querySelectorAll('.toggle-password');

@@ -71,6 +71,29 @@ def vendors_detail(request, vendor_id):
     statements = Statement.objects.filter(vendor=vendor)
     return render(request, 'vendors/vendors_detail.html', {'vendor': vendor, 'products': products, 'statements': statements})
 
+# @login_required
+# def add_product(request, vendor_id):
+#     vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
+#     if request.method == 'POST':
+#         form = ProductForm(request.POST)
+#         if form.is_valid():
+#             product = form.save(commit=False)
+#             product.vendor = vendor
+#             product.save()
+#             vendor.due_amount = sum(p.due_amount for p in Product.objects.filter(vendor=vendor))
+#             vendor.is_due = vendor.due_amount > 0
+#             vendor.save()
+#             messages.success(request, 'Product added successfully!')
+#             return redirect('vendors_detail', vendor_id=vendor.id)
+#         else:
+#             messages.error(request, 'Failed to add the product. Please check the form for errors.')
+#             for field, errors in form.errors.items():
+#                 for error in errors:
+#                     messages.error(request, f"{field}: {error}")
+#             return render(request, 'vendors/add_product.html', {'vendor_id': vendor_id})
+#     # If GET request, redirect to vendor detail page (form is now in the modal)
+#     return render(request, 'vendors/add_product.html', {'vendor_id': vendor_id})
+
 @login_required
 def add_product(request, vendor_id):
     vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
@@ -93,6 +116,23 @@ def add_product(request, vendor_id):
         return HttpResponseRedirect(reverse('vendors_detail', args=[vendor_id]))
     return render(request, 'vendors/add_product.html', {'vendor_id': vendor_id})
 
+
+# @login_required
+# def edit_product(request, product_id):
+#     product = get_object_or_404(Product, id=product_id)
+#     vendor = product.vendor
+#     if request.method == 'POST':
+#         form = ProductForm(request.POST, instance=product)
+#         if form.is_valid():
+#             form.save()
+#             vendor.due_amount = sum(p.due_amount for p in Product.objects.filter(vendor=vendor))
+#             vendor.is_due = vendor.due_amount > 0
+#             vendor.save()
+#             return redirect('vendors_detail', vendor_id=vendor.id)
+#     else:
+#         form = ProductForm(instance=product)
+#     return render(request, 'vendors/edit_product.html', {'form': form, 'product': product})
+
 @login_required
 def edit_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -100,8 +140,11 @@ def edit_product(request, product_id):
 
     if request.method == 'POST':
         form = ProductForm(request.POST, instance=product)
+        print(f"Form data: {form.data}")  # Debug: Print the submitted form data
+        print(f"Product before save: {product.__dict__}")  # Debug: Print the product state before saving
         if form.is_valid():
             updated_product = form.save()
+            print(f"Product after save: {updated_product.__dict__}")  # Debug: Print the product state after saving
             vendor.due_amount = sum(p.due_amount for p in Product.objects.filter(vendor=vendor))
             vendor.is_due = vendor.due_amount > 0
             vendor.save()
