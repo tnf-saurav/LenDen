@@ -11,47 +11,106 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
 
+# @login_required
+# def vendors_list(request):
+#     query = request.GET.get('search', '')
+#     if query:
+        
+#         vendors = Vendor.objects.filter(user=request.user, vendor_name__icontains=query)
+#     else:
+        
+#         vendors = Vendor.objects.filter(user=request.user)
+    
+#     return render(request, 'vendors/vendors_list.html', {'vendors': vendors})
 @login_required
 def vendors_list(request):
-    query = request.GET.get('search', '')
-    if query:
-        
-        vendors = Vendor.objects.filter(user=request.user, vendor_name__icontains=query)
-    else:
-        
-        vendors = Vendor.objects.filter(user=request.user)
-    
-    return render(request, 'vendors/vendors_list.html', {'vendors': vendors})
+    vendors = Vendor.objects.filter(user=request.user)
+    add_vendor_form = VendorForm()  # Create an empty form for the Add Vendor modal
+    return render(request, 'vendors/vendors_list.html', {
+        'vendors': vendors,
+        'add_vendor_form': add_vendor_form,
+    })
 
+
+# @login_required
+# def add_vendor(request):
+#     if request.method == 'POST':
+#         form = VendorForm(request.POST)
+#         if form.is_valid():
+#             vendor = form.save(commit=False)
+#             vendor.user = request.user  # Assign current user
+#             vendor.save()
+#             return redirect('vendors_list')
+#         else:
+#             # return render(request, 'vendors/add_vendor.html', {'form': form})
+#             return redirect('vendors_list')
+#     else:
+#         form = VendorForm()
+#     # return render(request, 'vendors/add_vendor.html', {'form': form})
+#     return redirect('vendors_list')
 @login_required
 def add_vendor(request):
     if request.method == 'POST':
         form = VendorForm(request.POST)
         if form.is_valid():
             vendor = form.save(commit=False)
-            vendor.user = request.user  # Assign current user
+            vendor.user = request.user
+            vendor.due_amount = 0.0  # Explicitly set due_amount for new vendors
             vendor.save()
+            messages.success(request, 'Vendor added successfully!')
             return redirect('vendors_list')
         else:
-            # return render(request, 'vendors/add_vendor.html', {'form': form})
-            return redirect('vendors_list')
-    else:
-        form = VendorForm()
-    # return render(request, 'vendors/add_vendor.html', {'form': form})
+            messages.error(request, 'Failed to add the vendor. Please check the form for errors.')
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+            # Re-render the vendors_list page with the form errors
+            vendors = Vendor.objects.filter(user=request.user)
+            return render(request, 'vendors/vendors_list.html', {
+                'vendors': vendors,
+                'add_vendor_form': form,
+            })
+    # For GET requests, redirect to vendors_list (modal is pre-rendered there)
     return redirect('vendors_list')
 
+# @login_required
+# def edit_vendor(request, vendor_id ):
+#     vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
+#     if request.method == 'POST':
+#         form = VendorForm(request.POST, instance=vendor)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('vendors_list')
+#     else:
+#         form = VendorForm(instance=vendor)
+#     # return render(request, 'vendors/edit_vendor.html', {'form': form, 'vendor': vendor})
+#     return redirect('vendors_list')
 @login_required
-def edit_vendor(request, vendor_id ):
+def edit_vendor(request, vendor_id):
     vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
     if request.method == 'POST':
         form = VendorForm(request.POST, instance=vendor)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Vendor updated successfully!')
             return redirect('vendors_list')
-    else:
-        form = VendorForm(instance=vendor)
-    # return render(request, 'vendors/edit_vendor.html', {'form': form, 'vendor': vendor})
+        else:
+            messages.error(request, 'Failed to update the vendor')
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+            # Re-render the vendors_list page with the form errors
+            vendors = Vendor.objects.filter(user=request.user)
+            add_vendor_form = VendorForm()  # For the Add Vendor modal
+            return render(request, 'vendors/vendors_list.html', {
+                'vendors': vendors,
+                'add_vendor_form': add_vendor_form,
+                'edit_vendor_form': form,  # Pass the form with errors for the Edit Vendor modal
+                'edit_vendor_id': vendor_id,  # To re-open the modal with JavaScript
+            })
+    # For GET requests, redirect to vendors_list (modal is pre-rendered there)
     return redirect('vendors_list')
+
 
 @login_required
 def delete_vendor(request, vendor_id):
@@ -69,69 +128,44 @@ def vendors_detail(request, vendor_id):
     vendor.is_due = vendor.due_amount > 0
     vendor.save()
     statements = Statement.objects.filter(vendor=vendor)
-    return render(request, 'vendors/vendors_detail.html', {'vendor': vendor, 'products': products, 'statements': statements})
-
-# @login_required
-# def add_product(request, vendor_id):
-#     vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
-#     if request.method == 'POST':
-#         form = ProductForm(request.POST)
-#         if form.is_valid():
-#             product = form.save(commit=False)
-#             product.vendor = vendor
-#             product.save()
-#             vendor.due_amount = sum(p.due_amount for p in Product.objects.filter(vendor=vendor))
-#             vendor.is_due = vendor.due_amount > 0
-#             vendor.save()
-#             messages.success(request, 'Product added successfully!')
-#             return redirect('vendors_detail', vendor_id=vendor.id)
-#         else:
-#             messages.error(request, 'Failed to add the product. Please check the form for errors.')
-#             for field, errors in form.errors.items():
-#                 for error in errors:
-#                     messages.error(request, f"{field}: {error}")
-#             return render(request, 'vendors/add_product.html', {'vendor_id': vendor_id})
-#     # If GET request, redirect to vendor detail page (form is now in the modal)
-#     return render(request, 'vendors/add_product.html', {'vendor_id': vendor_id})
+    add_product_form = ProductForm()  # Create an empty form for the Add Product modal
+    return render(request, 'vendors/vendors_detail.html', {
+        'vendor': vendor,
+        'products': products,
+        'statements': statements,
+        'add_product_form': add_product_form,
+    })
 
 @login_required
 def add_product(request, vendor_id):
     vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
     if request.method == 'POST':
-        product = Product(
-            vendor=vendor,
-            product_name=request.POST.get('product_name'),
-            description=request.POST.get('description', ''),
-            quantity_supplied=int(request.POST.get('quantity_supplied', 0)),
-            unit_price=float(request.POST.get('unit_price', 0.00)),
-            selling_price=float(request.POST.get('selling_price', 0.00)),
-            total_price=float(request.POST.get('total_price', 0.00)),
-            date_of_order=request.POST.get('date_of_order'),
-            paid_amount=float(request.POST.get('paid_amount', 0.00)),
-            due_amount=float(request.POST.get('due_amount', 0.00))
-        )
-        product.save()
-        vendor.due_amount = sum(product.due_amount for product in vendor.product_set.all())
-        vendor.save()
-        return HttpResponseRedirect(reverse('vendors_detail', args=[vendor_id]))
-    return render(request, 'vendors/add_product.html', {'vendor_id': vendor_id})
-
-
-# @login_required
-# def edit_product(request, product_id):
-#     product = get_object_or_404(Product, id=product_id)
-#     vendor = product.vendor
-#     if request.method == 'POST':
-#         form = ProductForm(request.POST, instance=product)
-#         if form.is_valid():
-#             form.save()
-#             vendor.due_amount = sum(p.due_amount for p in Product.objects.filter(vendor=vendor))
-#             vendor.is_due = vendor.due_amount > 0
-#             vendor.save()
-#             return redirect('vendors_detail', vendor_id=vendor.id)
-#     else:
-#         form = ProductForm(instance=product)
-#     return render(request, 'vendors/edit_product.html', {'form': form, 'product': product})
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.vendor = vendor
+            product.save()
+            vendor.due_amount = sum(p.due_amount for p in Product.objects.filter(vendor=vendor))
+            vendor.is_due = vendor.due_amount > 0
+            vendor.save()
+            messages.success(request, 'Product added successfully!')
+            return redirect('vendors_detail', vendor_id=vendor.id)
+        else:
+            messages.error(request, 'Failed to add the product. Please check the form for errors.')
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+            # Re-render the vendors_detail page with the form errors
+            products = Product.objects.filter(vendor=vendor)
+            statements = Statement.objects.filter(vendor=vendor)
+            return render(request, 'vendors/vendors_detail.html', {
+                'vendor': vendor,
+                'products': products,
+                'statements': statements,
+                'add_product_form': form,
+            })
+    # For GET requests, redirect to vendors_detail (modal is pre-rendered there)
+    return redirect('vendors_detail', vendor_id=vendor.id)
 
 @login_required
 def edit_product(request, product_id):
@@ -156,14 +190,20 @@ def edit_product(request, product_id):
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field}: {error}")
-    else:
-        form = ProductForm(instance=product)
-
-    return render(request, 'vendors/edit_product.html', {
-        'form': form,
-        'product': product,
-        'vendor': vendor,
-    })
+            # Re-render the vendors_detail page with the form errors
+            products = Product.objects.filter(vendor=vendor)
+            statements = Statement.objects.filter(vendor=vendor)
+            add_product_form = ProductForm()  # For the Add Product modal
+            return render(request, 'vendors/vendors_detail.html', {
+                'vendor': vendor,
+                'products': products,
+                'statements': statements,
+                'add_product_form': add_product_form,
+                'edit_product_form': form,  # Pass the form with errors for the Edit Product modal
+                'edit_product_id': product_id,  # To re-open the modal with JavaScript
+            })
+    # For GET requests, redirect to vendors_detail (modal is pre-rendered there)
+    return redirect('vendors_detail', vendor_id=vendor.id)
 
 def delete_product(request, product_id):
     if request.method == 'DELETE':

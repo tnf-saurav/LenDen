@@ -1,149 +1,3 @@
-// Load the Add Product modal dynamically
-function loadAddProductModal(vendorId) {
-    console.log('loadAddProductModal called with vendorId:', vendorId);
-    fetch(`/vendors/add_product/${vendorId}/`)
-        .then(response => {
-            console.log('Fetch response status:', response.status);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.text();
-        })
-        .then(html => {
-            console.log('Fetched HTML:', html);
-            // Inject the modal HTML into the DOM
-            const modalContainer = document.createElement('div');
-            modalContainer.innerHTML = html;
-            document.body.appendChild(modalContainer);
-
-            // Show the modal
-            const modal = document.getElementById('addProductModal');
-            if (modal) {
-                console.log('Add Product modal found, displaying...');
-                modal.style.display = 'block';
-
-                // Set default value for quantity_supplied
-                const quantityInput = document.getElementById('id_quantity_supplied');
-                if (quantityInput) {
-                    quantityInput.value = quantityInput.value || 0;
-                }
-
-                // Trigger initial calculation
-                calculateTotalPriceAndDue();
-
-                // Attach event listeners for live updates
-                const modalForm = modal.querySelector('form');
-                if (modalForm) {
-                    modalForm.addEventListener('input', handleInput);
-                }
-
-                // Add click listener to close modal when clicking outside
-                modal.addEventListener('click', function(event) {
-                    if (event.target === modal) {
-                        modal.style.display = 'none';
-                        modal.remove(); // Clean up the DOM
-                    }
-                });
-
-                // Ensure the close button works
-                const closeBtn = modal.querySelector('.close-btn');
-                if (closeBtn) {
-                    closeBtn.addEventListener('click', function() {
-                        modal.style.display = 'none';
-                        modal.remove(); // Clean up the DOM
-                    });
-                }
-            } else {
-                console.error('Add Product modal not found in the loaded HTML');
-            }
-        })
-        .catch(error => console.error('Error loading Add Product modal:', error));
-}
-
-// Load the Edit Product modal dynamically
-function loadEditProductModal(productId, vendorId, productName, description, quantitySupplied, unitPrice, sellingPrice, totalPrice, dateOfOrder, paidAmount, dueAmount) {
-    fetch(`/vendors/edit_product/${productId}/?vendor_id=${vendorId}`)
-        .then(response => response.text())
-        .then(html => {
-            // Inject the modal HTML into the DOM
-            const modalContainer = document.createElement('div');
-            modalContainer.innerHTML = html;
-            document.body.appendChild(modalContainer);
-
-            // Populate the form fields
-            const modal = document.getElementById('editProductModal');
-            const form = document.getElementById('editProductForm');
-            const productIdInput = document.getElementById('edit_product_id');
-            const productNameInput = document.getElementById('edit_product_name');
-            const descriptionInput = document.getElementById('edit_description');
-            const quantitySuppliedInput = document.getElementById('edit_quantity_supplied');
-            const unitPriceInput = document.getElementById('edit_unit_price');
-            const sellingPriceInput = document.getElementById('edit_selling_price');
-            const totalPriceInput = document.getElementById('edit_total_price');
-            const totalPriceDisplay = document.getElementById('edit_total_price_display');
-            const dateOfOrderInput = document.getElementById('edit_date_of_order');
-            const paidAmountInput = document.getElementById('edit_paid_amount');
-            const dueAmountInput = document.getElementById('edit_due_amount');
-            const dueAmountDisplay = document.getElementById('edit_due_amount_display');
-
-            if (modal && form && productIdInput && productNameInput && descriptionInput && quantitySuppliedInput && unitPriceInput && sellingPriceInput && totalPriceInput && totalPriceDisplay && dateOfOrderInput && paidAmountInput && dueAmountInput && dueAmountDisplay) {
-                // Set the form action dynamically
-                form.action = `/vendors/edit_product/${productId}/?vendor_id=${vendorId}`;
-
-                // Populate the form fields
-                productIdInput.value = productId;
-                productNameInput.value = productName;
-                descriptionInput.value = description;
-                quantitySuppliedInput.value = quantitySupplied;
-                unitPriceInput.value = unitPrice;
-                sellingPriceInput.value = sellingPrice;
-                totalPriceInput.value = totalPrice;
-                totalPriceDisplay.textContent = parseFloat(totalPrice).toFixed(2);
-                dateOfOrderInput.value = dateOfOrder;
-                paidAmountInput.value = paidAmount;
-                dueAmountInput.value = dueAmount;
-                dueAmountDisplay.textContent = parseFloat(dueAmount).toFixed(2);
-
-                // Show the modal
-                modal.style.display = 'block';
-
-                // Trigger initial calculation
-                calculateEditTotalPriceAndDue();
-
-                // Attach event listeners for live updates
-                const modalForm = modal.querySelector('form');
-                if (modalForm) {
-                    modalForm.addEventListener('input', handleInput);
-                }
-
-                // Add click listener to close modal when clicking outside
-                modal.addEventListener('click', function(event) {
-                    if (event.target === modal) {
-                        modal.style.display = 'none';
-                        modal.remove(); // Clean up the DOM
-                    }
-                });
-
-                // Ensure the close button works
-                const closeBtn = modal.querySelector('.close-btn');
-                if (closeBtn) {
-                    closeBtn.addEventListener('click', function() {
-                        modal.style.display = 'none';
-                        modal.remove(); // Clean up the DOM
-                    });
-                }
-            } else {
-                console.error('Edit Product modal or required elements not found in the loaded HTML');
-            }
-        })
-        .catch(error => console.error('Error loading Edit Product modal:', error));
-}
-
-// Update the showEditProductForm function to use loadEditProductModal
-function showEditProductForm(productId, productName, description, quantitySupplied, unitPrice, sellingPrice, totalPrice, dateOfOrder, paidAmount, dueAmount, vendorId) {
-    loadEditProductModal(productId, vendorId, productName, description, quantitySupplied, unitPrice, sellingPrice, totalPrice, dateOfOrder, paidAmount, dueAmount);
-}
-
 // Add Product: Price calculation
 function calculateTotalPriceAndDue() {
     var quantityInput = document.getElementById('id_quantity_supplied');
@@ -152,7 +6,7 @@ function calculateTotalPriceAndDue() {
     var paidAmountInput = document.getElementById('id_paid_amount');
 
     // Debug: Log the inputs to ensure they're found
-    console.log('Calculating totals...');
+    console.log('Calculating add totals...');
     console.log('Quantity:', quantityInput ? quantityInput.value : 'Not found');
     console.log('Unit Price:', unitPriceInput ? unitPriceInput.value : 'Not found');
     console.log('Paid Amount:', paidAmountInput ? paidAmountInput.value : 'Not found');
@@ -208,7 +62,7 @@ function calculateTotalPriceAndDue() {
         totalPriceDisplay.textContent = totalPrice.toFixed(2);
         dueAmountDisplay.textContent = dueAmount.toFixed(2);
     } else {
-        console.error('Display elements not found:', {
+        console.error('Add Product display elements not found:', {
             totalPriceDisplay: !!totalPriceDisplay,
             dueAmountDisplay: !!dueAmountDisplay
         });
@@ -279,14 +133,182 @@ function calculateEditTotalPriceAndDue() {
         totalPriceDisplay.textContent = totalPrice.toFixed(2);
         dueAmountDisplay.textContent = dueAmount.toFixed(2);
     } else {
-        console.error('Edit display elements not found:', {
+        console.error('Edit Product display elements not found:', {
             totalPriceDisplay: !!totalPriceDisplay,
             dueAmountDisplay: !!dueAmountDisplay
         });
     }
 }
 
-// Handle input events for both Add and Edit modals
+// Show the Add Product modal
+function showAddProductModal() {
+    console.log('showAddProductModal called');
+    const modal = document.getElementById('addProductModal');
+    if (modal) {
+        console.log('Add Product modal found');
+        // Reset the form
+        const form = modal.querySelector('form');
+        if (form) {
+            console.log('Add Product form found');
+            form.reset();
+            // Reset calculated values
+            const totalPriceDisplay = document.getElementById('total_price_display');
+            const dueAmountDisplay = document.getElementById('due_amount_display');
+            if (totalPriceDisplay && dueAmountDisplay) {
+                totalPriceDisplay.textContent = '0.00';
+                dueAmountDisplay.textContent = '0.00';
+            }
+            // Set default value for quantity_supplied
+            const quantityInput = document.getElementById('id_quantity_supplied');
+            if (quantityInput) {
+                quantityInput.value = 0;
+            }
+            // Clear any existing form errors
+            const errorElements = modal.querySelectorAll('.form-error');
+            errorElements.forEach(element => {
+                element.innerHTML = '';
+            });
+        } else {
+            console.error('Add Product form not found');
+        }
+        modal.style.display = 'block';
+        calculateTotalPriceAndDue();
+    } else {
+        console.error('Add Product modal not found');
+    }
+}
+
+// Show and populate the Edit Product form
+function showEditProductForm(productId, productName, description, quantitySupplied, unitPrice, sellingPrice, totalPrice, dateOfOrder, paidAmount, dueAmount, vendorId) {
+    console.log('showEditProductForm called with:', { productId, productName, description, quantitySupplied, unitPrice, sellingPrice, totalPrice, dateOfOrder, paidAmount, dueAmount, vendorId });
+    const modal = document.getElementById('editProductModal');
+    const form = document.getElementById('editProductForm');
+    const productIdInput = document.getElementById('edit_product_id');
+    const productNameInput = document.getElementById('edit_product_name');
+    const descriptionInput = document.getElementById('edit_description');
+    const quantitySuppliedInput = document.getElementById('edit_quantity_supplied');
+    const unitPriceInput = document.getElementById('edit_unit_price');
+    const sellingPriceInput = document.getElementById('edit_selling_price');
+    const totalPriceInput = document.getElementById('edit_total_price');
+    const totalPriceDisplay = document.getElementById('edit_total_price_display');
+    const dateOfOrderInput = document.getElementById('edit_date_of_order');
+    const paidAmountInput = document.getElementById('edit_paid_amount');
+    const dueAmountInput = document.getElementById('edit_due_amount');
+    const dueAmountDisplay = document.getElementById('edit_due_amount_display');
+
+    if (modal && form && productIdInput && productNameInput && descriptionInput && quantitySuppliedInput && unitPriceInput && sellingPriceInput && totalPriceInput && totalPriceDisplay && dateOfOrderInput && paidAmountInput && dueAmountInput && dueAmountDisplay) {
+        console.log('All Edit Product elements found');
+        // Set the form action dynamically
+        form.action = `/vendors/edit_product/${productId}/?vendor_id=${vendorId}`;
+
+        // Populate the form fields
+        productIdInput.value = productId;
+        productNameInput.value = productName;
+        descriptionInput.value = description;
+        quantitySuppliedInput.value = quantitySupplied;
+        unitPriceInput.value = unitPrice;
+        sellingPriceInput.value = sellingPrice;
+        totalPriceInput.value = totalPrice;
+        totalPriceDisplay.textContent = parseFloat(totalPrice).toFixed(2);
+        dateOfOrderInput.value = dateOfOrder;
+        paidAmountInput.value = paidAmount;
+        dueAmountInput.value = dueAmount;
+        dueAmountDisplay.textContent = parseFloat(dueAmount).toFixed(2);
+
+        // Show the modal
+        modal.style.display = 'block';
+
+        // Trigger initial calculation
+        calculateEditTotalPriceAndDue();
+    } else {
+        console.error('Edit Product modal or required elements not found', {
+            modal: !!modal,
+            form: !!form,
+            productIdInput: !!productIdInput,
+            productNameInput: !!productNameInput,
+            descriptionInput: !!descriptionInput,
+            quantitySuppliedInput: !!quantitySuppliedInput,
+            unitPriceInput: !!unitPriceInput,
+            sellingPriceInput: !!sellingPriceInput,
+            totalPriceInput: !!totalPriceInput,
+            totalPriceDisplay: !!totalPriceDisplay,
+            dateOfOrderInput: !!dateOfOrderInput,
+            paidAmountInput: !!paidAmountInput,
+            dueAmountInput: !!dueAmountInput,
+            dueAmountDisplay: !!dueAmountDisplay
+        });
+    }
+}
+
+// Show the Add Vendor modal
+function showAddVendorModal() {
+    console.log('showAddVendorModal called');
+    const modal = document.getElementById('addVendorModal');
+    if (modal) {
+        console.log('Add Vendor modal found');
+        // Reset the form
+        const form = modal.querySelector('form');
+        if (form) {
+            console.log('Add Vendor form found');
+            form.reset();
+            // Set default value for due_amount
+            const dueAmountInput = document.getElementById('id_due_amount');
+            if (dueAmountInput) {
+                dueAmountInput.value = '0.00';
+            }
+            // Clear any existing form errors
+            const errorElements = modal.querySelectorAll('.form-error');
+            errorElements.forEach(element => {
+                element.innerHTML = '';
+            });
+        } else {
+            console.error('Add Vendor form not found');
+        }
+        modal.style.display = 'block';
+    } else {
+        console.error('Add Vendor modal not found');
+    }
+}
+
+// Show and populate the Edit Vendor form
+function showEditVendorForm(vendorId, vendorName, address, contactNumber, dueAmount) {
+    console.log('showEditVendorForm called with:', { vendorId, vendorName, address, contactNumber, dueAmount });
+    const modal = document.getElementById('editVendorModal');
+    const form = document.getElementById('editVendorForm');
+    const vendorIdInput = document.getElementById('edit_vendor_id');
+    const vendorNameInput = document.getElementById('edit_vendor_name');
+    const addressInput = document.getElementById('edit_address');
+    const contactNumberInput = document.getElementById('edit_contact_number');
+    const dueAmountInput = document.getElementById('edit_due_amount');
+
+    if (modal && form && vendorIdInput && vendorNameInput && addressInput && contactNumberInput && dueAmountInput) {
+        console.log('All Edit Vendor elements found');
+        // Set the form action dynamically
+        form.action = `/vendors/edit_vendor/${vendorId}/`;
+
+        // Populate the form fields
+        vendorIdInput.value = vendorId;
+        vendorNameInput.value = vendorName;
+        addressInput.value = address;
+        contactNumberInput.value = contactNumber;
+        dueAmountInput.value = dueAmount;
+
+        // Show the modal
+        modal.style.display = 'block';
+    } else {
+        console.error('Edit Vendor modal or required elements not found', {
+            modal: !!modal,
+            form: !!form,
+            vendorIdInput: !!vendorIdInput,
+            vendorNameInput: !!vendorNameInput,
+            addressInput: !!addressInput,
+            contactNumberInput: !!contactNumberInput,
+            dueAmountInput: !!dueAmountInput
+        });
+    }
+}
+
+// Handle input events for both Add and Edit Product modals
 function handleInput(event) {
     const target = event.target;
     if (target.matches('#id_quantity_supplied, #id_unit_price, #id_selling_price, #id_paid_amount')) {
@@ -333,31 +355,7 @@ function deleteProduct(productId, vendorId) {
     }
 }
 
-// Utility function to get CSRF token
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-// Event listener for search functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('productSearch');
-    if (searchInput) {
-        searchInput.addEventListener('keyup', searchProducts);
-    }
-});
-
-// Other functions (for vendors_list.html, if needed)
+// vendors_list.html: Search vendors
 function searchVendors() {
     const input = document.getElementById('vendorSearch').value.trim().toLowerCase();
     const rows = document.querySelectorAll('.table-row');
@@ -376,45 +374,77 @@ function searchVendors() {
     });
 }
 
-function toggleAddVendorForm() {
-    const form = document.getElementById('addVendorForm');
-    if (form) {
-        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+// Utility function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
     }
+    return cookieValue;
 }
 
-function toggleEditVendorForm() {
-    const form = document.getElementById('editVendorForm');
-    if (form) {
-        form.style.display = form.style.display === 'none' ? 'block' : 'none';
+// Event listener for search functionality and modal interactions
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality for products (vendors_detail.html)
+    const searchInput = document.getElementById('productSearch');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', searchProducts);
     }
-}
 
-function showEditVendorForm(vendorId, vendorName, address, contactNumber, dueAmount) {
-    const form = document.getElementById('editVendorForm');
-    const formAction = document.getElementById('editVendorFormAction');
-    const vendorIdInput = document.getElementById('edit_vendor_id');
-    const vendorNameInput = document.getElementById('edit_vendor_name');
-    const addressInput = document.getElementById('edit_address');
-    const contactNumberInput = document.getElementById('edit_contact_number');
-    const dueAmountInput = document.getElementById('edit_due_amount');
-
-    if (form && formAction && vendorIdInput && vendorNameInput && addressInput && contactNumberInput && dueAmountInput) {
-        // Set the form action dynamically
-        formAction.action = `/vendors/edit_vendor/${vendorId}/`;
-
-        // Populate the form fields
-        vendorIdInput.value = vendorId;
-        vendorNameInput.value = vendorName;
-        addressInput.value = address;
-        contactNumberInput.value = contactNumber;
-        dueAmountInput.value = dueAmount;
-
-        // Show the form
-        form.style.display = 'block';
+    // Search functionality for vendors (vendors_list.html)
+    const vendorSearchInput = document.getElementById('vendorSearch');
+    if (vendorSearchInput) {
+        vendorSearchInput.addEventListener('keyup', searchVendors);
     }
-}
 
+    // Attach input event listeners to Add Product modal
+    const addProductForm = document.querySelector('#addProductModal form');
+    if (addProductForm) {
+        console.log('Add Product form found on page load');
+        addProductForm.addEventListener('input', handleInput);
+    } else {
+        console.error('Add Product form not found on page load');
+    }
+
+    // Attach input event listeners to Edit Product modal
+    const editProductForm = document.querySelector('#editProductModal form');
+    if (editProductForm) {
+        console.log('Edit Product form found on page load');
+        editProductForm.addEventListener('input', handleInput);
+    } else {
+        console.error('Edit Product form not found on page load');
+    }
+
+    // Add click listener to close modals when clicking outside
+    const modals = document.querySelectorAll('.modal');
+    modals.forEach(modal => {
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+
+    // Add click listener to close modals when clicking the close button
+    const closeButtons = document.querySelectorAll('.close-btn');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modal = button.closest('.modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+});
+
+// vendors_list.html: Confirm delete
 function confirmDelete() {
     return confirm("Are you sure you want to delete this vendor?");
 }

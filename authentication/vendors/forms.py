@@ -37,8 +37,10 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ['product_name', 'description', 'quantity_supplied', 'unit_price','selling_price',  'date_of_order', 'paid_amount']
         widgets = {
-            # 'total_price': forms.NumberInput(attrs={'readonly': 'readonly'}),
-            # 'due_amount': forms.NumberInput(attrs={'readonly': 'readonly'}),
+            'quantity_supplied': forms.NumberInput(attrs={'min': '0', 'id': 'id_quantity_supplied', 'onkeypress': "return (event.charCode != 8 && event.charCode >= 48 && event.charCode <= 57)"}),
+            'unit_price': forms.NumberInput(attrs={'step': '0.01', 'min': '0', 'id': 'id_unit_price'}),
+            'selling_price': forms.NumberInput(attrs={'step': '0.01', 'min': '0', 'id': 'id_selling_price'}),
+            'paid_amount': forms.NumberInput(attrs={'step': '0.01', 'min': '0', 'id': 'id_paid_amount'}),
         }
 
     def save(self, commit=True):

@@ -4,7 +4,8 @@
  
 {% block title %}LenDen - Vendors List{% endblock %}
 
-{% block content %}
+{% block content %} 
+{% comment %} 
 
     <!-- Display messages -->
     {% if messages %}
@@ -22,7 +23,7 @@
         <div class="vendors-header">
             <a href="#" class="add-vendor-btn" onclick="toggleAddVendorForm()">Add Vendor</a>
             <div class="search-container">
-                <input type="text" id="vendorSearch" placeholder="Search vendors..">
+                <input type="text" id="vendorSearch" onkeyup="searchVendor()" placeholder="Search">
             </div>
         </div>
 
@@ -122,7 +123,7 @@
                     </div>
                     <div class="table-col actions-col">
                         <div class="vendor-actions">
-                            {% comment %} <button class="edit-btn" onclick="window.location.href='{% url 'edit_vendor' vendor.id %}'">Edit</button> {% endcomment %}
+                            
                             <button class="edit-btn" onclick="showEditVendorForm('{{ vendor.id }}', '{{ vendor.vendor_name }}', '{{ vendor.address }}', '{{ vendor.contact_number }}', '{{ vendor.due_amount|floatformat:2 }}'); return false;">Edit</button>
                             <form method="POST" action="{% url 'delete_vendor' vendor.id %}" style="display:inline;" onsubmit="return confirmDelete()">
                                 {% csrf_token %}
@@ -145,4 +146,176 @@
  
  {% block extra_styles %}
      <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
- {% endblock %}
+ {% endblock %} {% endcomment %}
+
+
+
+    <!-- Display messages -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+                    {{ message }}
+                    <button class="close" onclick="this.parentElement.style.display='none';">×</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="vendors-table">
+        <div class="vendors-header">
+            <button class="add-vendor-btn" onclick="showAddVendorModal()">Add Vendor</button>
+            <div class="search-container">
+                <input type="text" id="vendorSearch" onkeyup="searchVendors()" placeholder="Search">
+            </div>
+        </div>
+
+        <!-- Add Vendor Modal -->
+        <div id="addVendorModal" class="modal">
+            <div class="modal-content add-vendor-form">
+                <div class="form-header">
+                    <h2>Add Vendor</h2>
+                    <span class="close-btn">×</span>
+                </div>
+                <form method="POST" action="{% url 'add_vendor' %}">
+                    {% csrf_token %}
+                    <!-- Vendor Name -->
+                    <div class="form-group">
+                        {{ add_vendor_form.vendor_name.label_tag }}
+                        <input type="text" name="vendor_name" id="id_vendor_name" value="{{ add_vendor_form.vendor_name.value|default_if_none:'' }}" required>
+                        {% if add_vendor_form.vendor_name.errors %}
+                            <div class="form-error">{{ add_vendor_form.vendor_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <!-- Address -->
+                    <div class="form-group">
+                        {{ add_vendor_form.address.label_tag }}
+                        <input type="text" name="address" id="id_address" value="{{ add_vendor_form.address.value|default_if_none:'' }}" required>
+                        {% if add_vendor_form.address.errors %}
+                            <div class="form-error">{{ add_vendor_form.address.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <!-- Contact Number -->
+                    <div class="form-group">
+                        {{ add_vendor_form.contact_number.label_tag }}
+                        <input type="text" name="contact_number" id="id_contact_number" value="{{ add_vendor_form.contact_number.value|default_if_none:'' }}" required>
+                        {% if add_vendor_form.contact_number.errors %}
+                            <div class="form-error">{{ add_vendor_form.contact_number.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <!-- Due Amount (Readonly) -->
+                    <div class="form-group">
+                        {{ add_vendor_form.due_amount.label_tag }}
+                        <input type="number" name="due_amount" id="id_due_amount" value="{{ add_vendor_form.due_amount.value|default:'0.00' }}" step="0.01" readonly>
+                        {% if add_vendor_form.due_amount.errors %}
+                            <div class="form-error">{{ add_vendor_form.due_amount.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="submit-btn">Add Vendor</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Vendor Modal -->
+        <div id="editVendorModal" class="modal">
+            <div class="modal-content add-vendor-form">
+                <div class="form-header">
+                    <h2>Edit Vendor</h2>
+                    <span class="close-btn">×</span>
+                </div>
+                <form id="editVendorForm" method="POST" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="vendor_id" id="edit_vendor_id">
+                    <!-- Vendor Name -->
+                    <div class="form-group">
+                        <label for="edit_vendor_name">Vendor Name:</label>
+                        <input type="text" name="vendor_name" id="edit_vendor_name" required>
+                        {% if edit_vendor_form.vendor_name.errors %}
+                            <div class="form-error">{{ edit_vendor_form.vendor_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <!-- Address -->
+                    <div class="form-group">
+                        <label for="edit_address">Address:</label>
+                        <input type="text" name="address" id="edit_address" required>
+                        {% if edit_vendor_form.address.errors %}
+                            <div class="form-error">{{ edit_vendor_form.address.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <!-- Contact Number -->
+                    <div class="form-group">
+                        <label for="edit_contact_number">Contact Number:</label>
+                        <input type="text" name="contact_number" id="edit_contact_number" required>
+                        {% if edit_vendor_form.contact_number.errors %}
+                            <div class="form-error">{{ edit_vendor_form.contact_number.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <!-- Due Amount (Readonly) -->
+                    <div class="form-group">
+                        <label for="edit_due_amount">Due Amount:</label>
+                        <input type="number" name="due_amount" id="edit_due_amount" step="0.01" readonly>
+                        {% if edit_vendor_form.due_amount.errors %}
+                            <div class="form-error">{{ edit_vendor_form.due_amount.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="submit-btn">Update Vendor</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- JavaScript to re-open the Edit Vendor modal if there are form errors -->
+        {% if edit_vendor_form and edit_vendor_id %}
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showEditVendorForm(
+                        '{{ edit_vendor_id }}',
+                        '{{ edit_vendor_form.vendor_name.value|default_if_none:''|escapejs }}',
+                        '{{ edit_vendor_form.address.value|default_if_none:''|escapejs }}',
+                        '{{ edit_vendor_form.contact_number.value|default_if_none:''|escapejs }}',
+                        '{{ edit_vendor_form.due_amount.value|default:'0.00' }}'
+                    );
+                });
+            </script>
+        {% endif %}
+
+        <div class="table-header">
+            <div class="table-col">Vendor Name</div>
+            <div class="table-col">Address</div>
+            <div class="table-col">Due</div>
+            <div class="table-col actions-col"></div>
+        </div>
+        <div class="table-body">
+            {% for vendor in vendors %}
+                <div class="table-row">
+                    <div class="vendor-details" onclick="location.href='{% url 'vendors_detail' vendor.id %}'">
+                        <div class="table-col">{{ vendor.vendor_name }}</div>
+                        <div class="table-col">{{ vendor.address }}</div>
+                        <div class="table-col">
+                            <span class="{% if vendor.due_amount > 0 %}due-amount{% elif vendor.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
+                                {{ vendor.due_amount|abs_value|floatformat:2 }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="table-col actions-col">
+                        <div class="vendor-actions">
+                            <button class="edit-btn" onclick="showEditVendorForm('{{ vendor.id }}', '{{ vendor.vendor_name|escapejs }}', '{{ vendor.address|escapejs }}', '{{ vendor.contact_number|escapejs }}', '{{ vendor.due_amount|floatformat:2 }}'); return false;">Edit</button>
+                            <form method="POST" action="{% url 'delete_vendor' vendor.id %}" style="display:inline;" onsubmit="return confirmDelete()">
+                                {% csrf_token %}
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="delete-btn">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'js/vendors.js' %}"></script>
+{% endblock %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
+{% endblock %}
