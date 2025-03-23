@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vendor Statement - {{ vendor.vendor_name }} - LenDen</title>
+    {% load static custom_filters %}
+    <style>
+        /* Base styles adapted from vendors.css */
+        body {
+            font-family: 'Arial', sans-serif;
+            font-size: 12pt;
+            margin: 20px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 18pt;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        h3 {
+            font-size: 14pt;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        /* Vendor Info styles adapted from vendors.css */
+        .vendor-info {
+            margin-bottom: 20px;
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .vendor-info p {
+            margin: 5px 0;
+            font-size: 12pt;
+            color: #555;
+        }
+
+        /* Due amount styles (reused from vendors.css) */
+        .due-amount {
+            color: #dc3545;
+        }
+        .advance-paid {
+            color: #28a745;
+        }
+        .neutral {
+            color: #6c757d;
+        }
+
+        /* Table styles adapted for PDF */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: left;
+            font-size: 10pt;
+            color: #555;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        /* Summary styles adapted from vendors.css */
+        .summary {
+            margin-top: 20px;
+            padding: 10px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .summary p {
+            margin: 5px 0;
+            font-size: 10pt;
+            color: #555;
+        }
+
+        .summary p strong {
+            display: inline-block;
+            width: 150px;
+            color: #333;
+        }
+
+        /* Ensure table columns have consistent widths */
+        th:nth-child(1), td:nth-child(1) { width: 15%; } /* Date */
+        th:nth-child(2), td:nth-child(2) { width: 25%; } /* Description */
+        th:nth-child(3), td:nth-child(3) { width: 15%; } /* Withdrawal (Paid) */
+        th:nth-child(4), td:nth-child(4) { width: 15%; } /* Deposit (Incoming) */
+        th:nth-child(5), td:nth-child(5) { width: 15%; } /* Debit */
+        th:nth-child(6), td:nth-child(6) { width: 15%; } /* Credit */
+
+        /* Handle long descriptions */
+        td:nth-child(2) {
+            word-wrap: break-word;
+            white-space: normal;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Vendor Details -->
+    <div class="vendor-info">
+        <p><strong>Name:</strong> {{ vendor.vendor_name }}</p>
+        <p><strong>Address:</strong> {{ vendor.address }}</p>
+        <p><strong>Contact:</strong> {{ vendor.contact_number }}</p>
+        <p><strong>Due:</strong> 
+            <span class="{% if vendor.due_amount > 0 %}due-amount{% elif vendor.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
+                {{ vendor.due_amount|abs_value|floatformat:2 }}
+            </span>
+        </p>
+    </div>
+
+    <!-- Statement Table -->
+    <h3>Statement</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Withdrawal (Paid)</th>
+                <th>Deposit (Incoming)</th>
+                <th>Debit</th>
+                <th>Credit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in statement.transactions %}
+                <tr>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.description }}</td>
+                    <td>{{ transaction.paid|floatformat:2 }}</td>
+                    <td>{{ transaction.incoming|floatformat:2 }}</td>
+                    <td>{{ transaction.debit|floatformat:2 }}</td>
+                    <td>{{ transaction.credit|floatformat:2 }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center;">No transactions found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Summary Section -->
+    <div class="summary">
+        <p><strong>Total Incoming:</strong> {{ statement.total_incoming|floatformat:2 }}</p>
+        <p><strong>Total Paid:</strong> {{ statement.total_paid|floatformat:2 }}</p>
+        <p><strong>Final Debit:</strong> {{ statement.final_debit|floatformat:2 }}</p>
+        <p><strong>Final Credit:</strong> {{ statement.final_credit|floatformat:2 }}</p>
+    </div>
+</body>
+</html>

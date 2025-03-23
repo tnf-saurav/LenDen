@@ -18,5 +18,7 @@ urlpatterns = [
     path('edit_product/<uuid:product_id>/', views.edit_product, name='edit_product'), 
     path('delete_product/<uuid:product_id>/', views.delete_product, name='delete_product'),
     path('pay/<int:vendor_id>/', views.pay_vendor, name='pay_vendor'),
-    path('download_statement/<int:vendor_id>/', views.download_statement, name='download_statement'),
+    path('vendor/<int:vendor_id>/statement/', views.vendor_statement_view, name='vendor_statement'),
+    path('vendor/<int:vendor_id>/statement/pdf/', views.vendor_statement_pdf, name='vendor_statement_pdf'),
 ]
+    

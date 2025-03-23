@@ -51,3 +51,16 @@ class ProductForm(forms.ModelForm):
         if commit:
             product.save()
         return product
+
+class PaymentForm(forms.Form):
+    amount = forms.FloatField(
+        min_value=0.01,  # Ensures the amount is positive and not zero
+        label="Amount",
+        widget=forms.NumberInput(attrs={'step': '0.01', 'id': 'amount', 'required': True})
+    )
+
+    def clean_amount(self):
+        amount = self.cleaned_data.get('amount')
+        if amount <= 0:
+            raise forms.ValidationError("Payment amount must be greater than zero.")
+        return amount

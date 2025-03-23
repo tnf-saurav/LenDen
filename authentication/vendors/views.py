@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Vendor, Product, Statement
-from .forms import VendorForm, ProductForm
+from .forms import VendorForm, ProductForm, PaymentForm
 import uuid
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
@@ -10,18 +10,10 @@ from xhtml2pdf import pisa
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
+import pandas as pd
+import re
 
-# @login_required
-# def vendors_list(request):
-#     query = request.GET.get('search', '')
-#     if query:
-        
-#         vendors = Vendor.objects.filter(user=request.user, vendor_name__icontains=query)
-#     else:
-        
-#         vendors = Vendor.objects.filter(user=request.user)
-    
-#     return render(request, 'vendors/vendors_list.html', {'vendors': vendors})
+
 @login_required
 def vendors_list(request):
     vendors = Vendor.objects.filter(user=request.user)
@@ -32,23 +24,6 @@ def vendors_list(request):
     })
 
 
-# @login_required
-# def add_vendor(request):
-#     if request.method == 'POST':
-#         form = VendorForm(request.POST)
-#         if form.is_valid():
-#             vendor = form.save(commit=False)
-#             vendor.user = request.user  # Assign current user
-#             vendor.save()
-#             return redirect('vendors_list')
-#         else:
-#             # return render(request, 'vendors/add_vendor.html', {'form': form})
-#             return redirect('vendors_list')
-#     else:
-#         form = VendorForm()
-#     # return render(request, 'vendors/add_vendor.html', {'form': form})
-#     return redirect('vendors_list')
-@login_required
 def add_vendor(request):
     if request.method == 'POST':
         form = VendorForm(request.POST)
@@ -73,18 +48,6 @@ def add_vendor(request):
     # For GET requests, redirect to vendors_list (modal is pre-rendered there)
     return redirect('vendors_list')
 
-# @login_required
-# def edit_vendor(request, vendor_id ):
-#     vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
-#     if request.method == 'POST':
-#         form = VendorForm(request.POST, instance=vendor)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('vendors_list')
-#     else:
-#         form = VendorForm(instance=vendor)
-#     # return render(request, 'vendors/edit_vendor.html', {'form': form, 'vendor': vendor})
-#     return redirect('vendors_list')
 @login_required
 def edit_vendor(request, vendor_id):
     vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
@@ -124,16 +87,18 @@ def delete_vendor(request, vendor_id):
 def vendors_detail(request, vendor_id):
     vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
     products = Product.objects.filter(vendor=vendor)
-    vendor.due_amount = sum(product.due_amount for product in products)
-    vendor.is_due = vendor.due_amount > 0
-    vendor.save()
+    # vendor.due_amount = sum(product.due_amount for product in products)
+    # vendor.is_due = vendor.due_amount > 0
+    # vendor.save()
     statements = Statement.objects.filter(vendor=vendor)
     add_product_form = ProductForm()  # Create an empty form for the Add Product modal
+    payment_form = PaymentForm()
     return render(request, 'vendors/vendors_detail.html', {
         'vendor': vendor,
         'products': products,
         'statements': statements,
         'add_product_form': add_product_form,
+        'payment_form': payment_form,
     })
 
 @login_required
@@ -226,69 +191,147 @@ def delete_product(request, product_id):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
 
 
+@login_required
 def pay_vendor(request, vendor_id):
-    vendor = get_object_or_404(Vendor, id=vendor_id)
+    vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
     if request.method == 'POST':
-        amount = float(request.POST.get('amount', 0))
-        if amount > 0:
-            products = Product.objects.filter(vendor=vendor)
-            total_due = sum(product.due_amount for product in products)
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data['amount']
             
-            if total_due > 0:
-                remaining_payment = amount
-                for product in products:
-                    if remaining_payment <= 0:
-                        break
-                    if product.due_amount > 0:
-                        payment_for_product = min(remaining_payment, product.due_amount)
-                        product.paid_amount += payment_for_product
-                        product.due_amount -= payment_for_product
-                        remaining_payment -= payment_for_product
-                        product.save()
-                        # Update corresponding entry in vendor.products
-                        for p_dict in vendor.products:
-                            if p_dict['product_name'] == product.product_name and p_dict['total_price'] == product.total_price:
-                                p_dict['paid_amount'] = product.paid_amount
-                                p_dict['due_amount'] = product.due_amount
-                                break
-            
-            vendor.due_amount = sum(product.due_amount for product in Product.objects.filter(vendor=vendor))
+            # Directly subtract the payment from the vendor's due_amount
+            # If due_amount > 0 (amount owed), this reduces the debt
+            # If due_amount < 0 (advance), this increases the advance (makes it more negative)
+            # If due_amount = 0, this results in an advance (negative due_amount)
+            vendor.due_amount -= amount
             vendor.is_due = vendor.due_amount > 0
             vendor.save()
-            
+
+            # Create a statement entry for the payment
             Statement.objects.create(
                 vendor=vendor,
                 date=datetime.now().date(),
-                credit=amount,
-                total=vendor.due_amount
+                debit=amount,  # Use debit to indicate money paid out
+                total=vendor.due_amount  # Record the new balance
             )
+
+            messages.success(request, f"Payment of Rs. {amount:.2f} recorded successfully!")
+            return redirect('vendors_detail', vendor_id=vendor.id)
+        else:
+            messages.error(request, 'Failed to process the payment. Please check the form for errors.')
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+            # Re-render the vendors_detail page with the form errors
+            products = Product.objects.filter(vendor=vendor)
+            statements = Statement.objects.filter(vendor=vendor)
+            add_product_form = ProductForm()
+            return render(request, 'vendors/vendors_detail.html', {
+                'vendor': vendor,
+                'products': products,
+                'statements': statements,
+                'add_product_form': add_product_form,
+                'payment_form': form,
+            })
+    # For GET requests, redirect to vendors_detail
     return redirect('vendors_detail', vendor_id=vendor.id)
 
-def download_statement(request, vendor_id):
-    vendor = get_object_or_404(Vendor, id=vendor_id)
-    statements = Statement.objects.filter(vendor=vendor)
-    products = vendor.products
-    # Create statement entries for each product
-    product_statements = [
-        {
-            'date': product['date_of_order'],
-            'credit': product['total_price'],
-            'debit': product['paid_amount'],
-            'due': product['due_amount']
-        } for product in products
-    ]
-    all_statements = list(statements) + product_statements
+def generate_statement_data(vendor):
+    # Step 1: Get product transactions (incoming: total worth of products)
+    products = Product.objects.filter(vendor=vendor).order_by('date_of_order')
+    product_transactions = []
+    for product in products:
+        product_transactions.append({
+            'date': product.date_of_order,
+            'description': product.product_name,
+            'incoming': product.total_price,
+            'paid': product.paid_amount,
+        })
 
-    # Calculate total due
-    total_due = vendor.due_amount
+    # Step 2: Get payment transactions (outgoing: payments made to vendor via pay_vendor)
+    statements = Statement.objects.filter(vendor=vendor).order_by('date')
+    payment_transactions = []
+    for statement in statements:
+        if statement.debit > 0:
+            payment_transactions.append({
+                'date': statement.date,
+                'description': "Payment to Vendor",
+                'incoming': 0.0,
+                'paid': statement.debit,
+            })
 
-    html_string = render_to_string('vendors/statement.html', {'vendor': vendor, 'statements': all_statements, 'total_due': total_due})
+    # Step 3: Combine all transactions into a single list
+    all_transactions = product_transactions + payment_transactions
 
-    # Create a PDF from the HTML string
+    # Step 4: Sort transactions by date
+    all_transactions.sort(key=lambda x: x['date'])
+
+    # Step 5: Create a Pandas DataFrame
+    ledger_df = pd.DataFrame(all_transactions)
+
+    # Step 6: Calculate the running balance and split into Debit and Credit
+    if not ledger_df.empty:
+        ledger_df['balance'] = ledger_df['incoming'].cumsum() - ledger_df['paid'].cumsum()
+        ledger_df['debit'] = ledger_df['balance'].apply(lambda x: x if x > 0 else 0.0)
+        ledger_df['credit'] = ledger_df['balance'].apply(lambda x: abs(x) if x < 0 else 0.0)
+    else:
+        ledger_df['balance'] = 0.0
+        ledger_df['debit'] = 0.0
+        ledger_df['credit'] = 0.0
+
+    # Step 7: Prepare the statement for the template
+    statement = {
+        'transactions': ledger_df.to_dict(orient='records'),
+        'total_incoming': ledger_df['incoming'].sum() if not ledger_df.empty else 0.0,
+        'total_paid': ledger_df['paid'].sum() if not ledger_df.empty else 0.0,
+        'final_debit': ledger_df['debit'].iloc[-1] if not ledger_df.empty else 0.0,
+        'final_credit': ledger_df['credit'].iloc[-1] if not ledger_df.empty else 0.0,
+    }
+    return statement
+
+@login_required
+def vendor_statement_view(request, vendor_id):
+    vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
+    statement = generate_statement_data(vendor)
+    return render(request, 'vendors/vendor_statement.html', {
+        'vendor': vendor,
+        'statement': statement,
+    })
+
+@login_required
+def vendor_statement_pdf(request, vendor_id):
+    vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
+    statement = generate_statement_data(vendor)
+
+    # Render the PDF template
+    template_path = 'vendors/statement_pdf.html'
+    context = {
+        'vendor': vendor,
+        'statement': statement,
+    }
+    html = render_to_string(template_path, context)
+
+    # Create a PDF response
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{vendor.vendor_name}_{datetime.now().date()}.pdf"'
-    pisa_status = pisa.CreatePDF(html_string, dest=response)
+
+    # Generate the filename: vendor_name_date_time.pdf
+    # Sanitize the vendor name (replace spaces and special characters with underscores)
+    vendor_name = re.sub(r'[^a-zA-Z0-9]', '_', vendor.vendor_name.strip())
+    # Get the current date and time
+    current_time = datetime.now()
+    date_str = current_time.strftime('%Y-%m-%d')
+    time_str = current_time.strftime('%H%M%S')
+    # Construct the filename
+    filename = f"{vendor_name}_{date_str}_{time_str}.pdf"
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    # Generate PDF using xhtml2pdf
+    pisa_status = pisa.CreatePDF(
+        html.encode('utf-8'),
+        dest=response,
+        encoding='utf-8'
+    )
 
     if pisa_status.err:
-        return HttpResponse('We had some errors with code %s' % pisa_status.err, status=500)
+        return HttpResponse('We had some errors with PDF generation <pre>' + html + '</pre>')
     return response

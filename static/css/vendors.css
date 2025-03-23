@@ -854,3 +854,77 @@ ic/css/vendors.css */
     width: 100%;
     box-sizing: border-box;
 }
+
+/* Statement Table (Reused from products-table) */
+.statement-table {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+/* Statement Summary */
+.statement-summary {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.statement-summary p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #555;
+}
+
+.statement-summary p strong {
+    color: #333;
+}
+
+/* View Statement Button */
+.view-statement-btn {
+    background-color: #17a2b8;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    display: inline-block;
+    line-height: 1;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.view-statement-btn:hover {
+    background-color: #138496;
+    box-shadow: 0 4px 10px rgba(23, 162, 184, 0.4);
+    transform: translateY(-1px);
+}
+
+/* Responsive styles for statement table */
+@media (max-width: 768px) {
+    .statement-table .table-col {
+        flex: 1 1 100%;
+        padding: 5px 10px;
+        font-size: 14px;
+    }
+
+    .statement-summary p {
+        font-size: 14px;
+    }
+
+    .view-statement-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .view-statement-btn {
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+}
