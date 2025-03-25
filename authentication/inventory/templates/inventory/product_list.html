@@ -1,24 +1,43 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}LenDen - Inventory List{% endblock %}
+{% block title %}LenDen - Product List{% endblock %}
 
 {% block content %}
-    <a href="{% url 'dashboard' %}" class="back-link">Back</a>
-    <h1>Inventory List</h1>
-    {% if products %}
-        {% for product in products %}
-            <div class="inventory-item">
-                <h3>{{ product.product.product_name }}</h3>
-                <p><strong>Remaining Quantity:</strong> {{ product.remaining_quantity }}</p>
-                <p><strong>Selling Price:</strong> ${{ product.selling_price }}</p>
-            </div>
-        {% endfor %}
-    {% else %}
-        <p>No products in inventory yet.</p>
-    {% endif %}
+    <div class="inventory-header">
+        <div class="search-container">
+            <input type="text" id="inventorySearch" onkeyup="searchProducts()" placeholder="Search">
+        </div>
+    </div>
+
+    <div class="inventory-table">
+        <div class="table-header">
+            <div class="table-col">Product Name</div>
+            <div class="table-col">Quantity</div>
+            <div class="table-col">Price</div>
+        </div>
+        <div class="table-body">
+            {% for product in products %}
+                <div class="table-row">
+                    <div class="product-details" onclick="location.href='{% url 'vendors_detail' product.product.vendor.id %}?product_id={{ product.product.id }}'">
+                        <div class="table-col">{{ product.product.product_name }}</div>
+                        <div class="table-col">{{ product.remaining_quantity }}</div>
+                        <div class="table-col">{{ product.product.selling_price|floatformat:2 }}</div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="table-row">
+                    <div class="table-col" style="flex: 1 1 100%; text-align: center;">No products found.</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block extra_styles %}
     <link rel="stylesheet" href="{% static 'css/inventory.css' %}">
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'js/inventory.js' %}"></script>
 {% endblock %}

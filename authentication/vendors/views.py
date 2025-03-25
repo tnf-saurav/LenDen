@@ -83,16 +83,43 @@ def delete_vendor(request, vendor_id):
         return redirect('vendors_list')
     return redirect('vendors_list')
 
+# @login_required
+# def vendors_detail(request, vendor_id):
+#     vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
+#     products = Product.objects.filter(vendor=vendor)
+#     # vendor.due_amount = sum(product.due_amount for product in products)
+#     # vendor.is_due = vendor.due_amount > 0
+#     # vendor.save()
+#     statements = Statement.objects.filter(vendor=vendor)
+#     add_product_form = ProductForm()  # Create an empty form for the Add Product modal
+#     payment_form = PaymentForm()
+#     return render(request, 'vendors/vendors_detail.html', {
+#         'vendor': vendor,
+#         'products': products,
+#         'statements': statements,
+#         'add_product_form': add_product_form,
+#         'payment_form': payment_form,
+#     })
 @login_required
 def vendors_detail(request, vendor_id):
     vendor = get_object_or_404(Vendor, id=vendor_id, user=request.user)
-    products = Product.objects.filter(vendor=vendor)
+    
+    # Get the product_id from the query parameter (if present)
+    product_id = request.GET.get('product_id')
+    
+    # Filter products based on vendor and optionally product_id
+    if product_id:
+        products = Product.objects.filter(vendor=vendor, id=product_id)
+    else:
+        products = Product.objects.filter(vendor=vendor)
+    
     # vendor.due_amount = sum(product.due_amount for product in products)
     # vendor.is_due = vendor.due_amount > 0
     # vendor.save()
     statements = Statement.objects.filter(vendor=vendor)
     add_product_form = ProductForm()  # Create an empty form for the Add Product modal
     payment_form = PaymentForm()
+    
     return render(request, 'vendors/vendors_detail.html', {
         'vendor': vendor,
         'products': products,

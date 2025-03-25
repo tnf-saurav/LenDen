@@ -1,9 +1,79 @@
-static/css/styles.css
+/* General Styles */
+.inventory-header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px;
+}
 
-.inventory-item {
-    border: 1px solid #ccc;
+.search-container {
+    flex: 1;
+    max-width: 300px;
+}
+
+#inventorySearch {
+    width: 100%;
     padding: 10px;
-    margin: 10px;
-    width: 300px;
-    display: block;  /* Stacks vertically */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Table Styles */
+.inventory-table {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.table-header {
+    display: flex;
+    background-color: #f8f9fa;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    flex-wrap: nowrap; /* Ensure header columns don't wrap */
+    align-items: center; /* Vertically center the header text */
+}
+
+.table-row {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.2s;
+    flex-wrap: nowrap; /* Ensure columns don't wrap */
+    align-items: center; /* Vertically center the content */
+}
+
+
+.table-row:hover {
+    background-color: #f9f9f9;
+}
+
+.table-col {
+    flex: 1;
+    padding: 10px 20px; /* Match vendor list padding */
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 18px; /* Match vendor list font size */
+    color: #555; /* Match vendor list text color */
+    display: flex; /* Ensure consistent alignment */
+    align-items: center; /* Vertically center the content */
+}
+
+.table-body {
+    max-height: 400px;
+    overflow-y: auto;
+    
+}
+
+.table-row:last-child {
+    border-bottom: none;
+}
+
+/* Style for clickable product details */
+.product-details {
+    display: flex;
+    
 }
