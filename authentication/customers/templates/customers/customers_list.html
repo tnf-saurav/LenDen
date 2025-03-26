@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}LenDen - Customers List{% endblock %}
+
+{% block content %}
+    <!-- Display messages -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+                    {{ message }}
+                    <button class="close" onclick="this.parentElement.style.display='none';">×</button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="customers-table">
+        <div class="customers-header">
+            <button class="add-customer-btn" onclick="showAddCustomerModal()">Add Customer</button>
+            <div class="search-container">
+                <input type="text" id="customerSearch" onkeyup="searchCustomers()" placeholder="Search">
+            </div>
+        </div>
+
+        <!-- Add Customer Modal -->
+        <div id="addCustomerModal" class="modal">
+            <div class="modal-content add-customer-form">
+                <div class="form-header">
+                    <h2>Add Customer</h2>
+                    <span class="close-btn">×</span>
+                </div>
+                <form method="POST" action="{% url 'add_customer' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="add_customer" value="1">
+                    <!-- Customer Name -->
+                    <div class="form-group">
+                        {{ add_customer_form.customer_name.label_tag }}
+                        <input type="text" name="customer_name" id="id_customer_name" value="{{ add_customer_form.customer_name.value|default_if_none:'' }}" required>
+                        {% if add_customer_form.customer_name.errors %}
+                            <div class="form-error">{{ add_customer_form.customer_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <!-- Address -->
+                    <div class="form-group">
+                        {{ add_customer_form.address.label_tag }}
+                        <input type="text" name="address" id="id_address" value="{{ add_customer_form.address.value|default_if_none:'' }}" required>
+                        {% if add_customer_form.address.errors %}
+                            <div class="form-error">{{ add_customer_form.address.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <!-- Contact Number -->
+                    <div class="form-group">
+                        {{ add_customer_form.contact_number.label_tag }}
+                        <input type="text" name="contact_number" id="id_contact_number" value="{{ add_customer_form.contact_number.value|default_if_none:'' }}" required>
+                        {% if add_customer_form.contact_number.errors %}
+                            <div class="form-error">{{ add_customer_form.contact_number.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <!-- Due Amount (Readonly) -->
+                    <div class="form-group">
+                        {{ add_customer_form.due_amount.label_tag }}
+                        <input type="number" name="due_amount" id="id_due_amount" value="{{ add_customer_form.due_amount.value|default:'0.00' }}" step="0.01" readonly
+                               class="{% if add_customer_form.due_amount.value|default:'0.00' > 0 %}due-amount{% elif add_customer_form.due_amount.value|default:'0.00' < 0 %}advance-paid{% else %}neutral{% endif %}">
+                        {% if add_customer_form.due_amount.errors %}
+                            <div class="form-error">{{ add_customer_form.due_amount.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="submit-btn">Add Customer</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Edit Customer Modal -->
+        <div id="editCustomerModal" class="modal">
+            <div class="modal-content add-customer-form">
+                <div class="form-header">
+                    <h2>Edit Customer</h2>
+                    <span class="close-btn">×</span>
+                </div>
+                <form id="editCustomerForm" method="POST" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="edit_customer" value="1">
+                    <input type="hidden" name="customer_id" id="edit_customer_id">
+                    <!-- Customer Name -->
+                    <div class="form-group">
+                        <label for="edit_customer_name">Customer Name:</label>
+                        <input type="text" name="customer_name" id="edit_customer_name" required>
+                        {% if edit_customer_form.customer_name.errors %}
+                            <div class="form-error">{{ edit_customer_form.customer_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <!-- Address -->
+                    <div class="form-group">
+                        <label for="edit_address">Address:</label>
+                        <input type="text" name="address" id="edit_address" required>
+                        {% if edit_customer_form.address.errors %}
+                            <div class="form-error">{{ edit_customer_form.address.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <!-- Contact Number -->
+                    <div class="form-group">
+                        <label for="edit_contact_number">Contact Number:</label>
+                        <input type="text" name="contact_number" id="edit_contact_number" required>
+                        {% if edit_customer_form.contact_number.errors %}
+                            <div class="form-error">{{ edit_customer_form.contact_number.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <!-- Due Amount (Readonly) -->
+                    <div class="form-group">
+                        <label for="edit_due_amount">Due Amount:</label>
+                        <input type="number" name="due_amount" id="edit_due_amount" step="0.01" readonly>
+                        {% if edit_customer_form.due_amount.errors %}
+                            <div class="form-error">{{ edit_customer_form.due_amount.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="submit-btn">Update Customer</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- JavaScript to re-open the Edit Customer modal if there are form errors -->
+        {% if edit_customer_form and edit_customer_id %}
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showEditCustomerForm(
+                        '{{ edit_customer_id }}',
+                        '{{ edit_customer_form.customer_name.value|default_if_none:''|escapejs }}',
+                        '{{ edit_customer_form.address.value|default_if_none:''|escapejs }}',
+                        '{{ edit_customer_form.contact_number.value|default_if_none:''|escapejs }}',
+                        '{{ edit_customer_form.due_amount.value|default:'0.00' }}'
+                    );
+                });
+            </script>
+        {% endif %}
+
+        <div class="table-header">
+            <div class="table-col">Customer Name</div>
+            <div class="table-col">Address</div>
+            <div class="table-col">Due</div>
+            <div class="table-col actions-col"></div>
+        </div>
+        <div class="table-body">
+            {% for customer in customers %}
+                <div class="table-row">
+                    <div class="customer-details" onclick="location.href='{% url 'customers_detail' customer.id %}'">
+                        <div class="table-col">{{ customer.customer_name }}</div>
+                        <div class="table-col">{{ customer.address }}</div>
+                        <div class="table-col">
+                            <span class="{% if customer.due_amount > 0 %}due-amount{% elif customer.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
+                                {{ customer.due_amount|floatformat:2 }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="table-col actions-col">
+                        <div class="customer-actions">
+                            <button class="edit-btn" onclick="showEditCustomerForm('{{ customer.id }}', '{{ customer.customer_name|escapejs }}', '{{ customer.address|escapejs }}', '{{ customer.contact_number|escapejs }}', '{{ customer.due_amount|floatformat:2 }}'); return false;">Edit</button>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="table-row">
+                    <div class="table-col" style="flex: 1 1 100%; text-align: center;">No customers found.</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'js/customers.js' %}"></script>
+{% endblock %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/customers.css' %}">
+{% endblock %}

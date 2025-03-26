@@ -1,0 +1,332 @@
+/* Customer Table Styles */
+.customers-table {
+    background: #fff;
+    padding: 40px 25px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.customers-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 10px;
+}
+
+.add-customer-btn {
+    background-color: #0047ab;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    display: inline-block;
+    line-height: 1;
+    border: none;
+}
+
+.add-customer-btn:hover {
+    background-color: #003366;
+}
+
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.search-container input {
+    padding: 10px 14px;
+    width: 100%;
+    max-width: 250px;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    font-size: 16px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>') no-repeat 95% center;
+    background-size: 16px;
+}
+
+.table-header, .table-row {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    flex-wrap: nowrap;
+}
+
+.table-header {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.table-row {
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 10px 0;
+    border-bottom: none;
+    transition: background-color 0.2s;
+}
+
+.table-row:hover {
+    background-color: #f9f9f9;
+}
+
+.table-col {
+    flex: 1;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #555;
+    display: flex;
+    align-items: center;
+}
+
+.customer-details {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    cursor: pointer;
+}
+
+.actions-col {
+    flex: 0 0 200px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.customer-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.due-amount {
+    color: #dc3545;
+}
+
+.advance-paid {
+    color: #28a745;
+}
+
+.neutral {
+    color: #555;
+}
+
+.edit-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.edit-btn:hover {
+    background-color: #0056b3;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* Add Customer Form Styles (also used for Edit Customer) */
+.add-customer-form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.form-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.close-btn {
+    font-size: 24px;
+    color: #555;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #dc3545;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.form-group input[readonly] {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+.submit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+    transform: translateY(-1px);
+}
+
+/* Fade-in animation for the form */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Customer Detail Page Styles */
+.customer-details {
+    margin-bottom: 20px;
+}
+
+.products-table, .statements-table {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .customers-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .search-container {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .search-container input {
+        max-width: 100%;
+    }
+
+    .table-header, .table-row {
+        flex-wrap: wrap;
+        padding: 10px 15px;
+    }
+
+    .table-col {
+        flex: 1 1 100%;
+        padding: 5px 10px;
+        font-size: 14px;
+    }
+
+    .actions-col {
+        flex: 1 1 100%;
+        justify-content: flex-start;
+        margin-top: 10px;
+    }
+
+    .edit-btn, .delete-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+    }
+
+    .add-customer-form {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .add-customer-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .search-container input {
+        font-size: 14px;
+        padding: 8px 12px;
+    }
+
+    .table-header {
+        font-size: 14px;
+    }
+}
