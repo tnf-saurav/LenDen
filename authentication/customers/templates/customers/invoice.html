@@ -1,0 +1,339 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}LenDen - Invoice for {{ customer.customer_name }}{% endblock %}
+
+{% comment %} {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}LenDen - Invoice for {{ customer.customer_name }}{% endblock %}
+
+{% block content %}
+    <div class="invoice-container">
+        <!-- Header -->
+        <div class="invoice-header">
+            <div class="shop-info">
+                <h1>LenDen Shop</h1>
+                <p>123 Business St., Any City, ST 12345</p>
+                <p>Email: support@lenden.com</p>
+            </div>
+            <div class="invoice-info">
+                <h2>INVOICE #{{ invoice_id|default:"INV-"|add:customer.id|add:"-"|add:"now"|date:"Ymd" }}</h2>
+                <p><strong>Date:</strong> {{ "now"|date:"jS M, Y H:i" }}</p>
+            </div>
+        </div>
+
+        <!-- Customer Info -->
+        <div class="customer-info">
+            <h3>Billed To:</h3>
+            <p><strong>Name:</strong> {{ customer.customer_name }}</p>
+            <p><strong>Address:</strong> {{ customer.address|default:"N/A" }}</p>
+            <p><strong>Contact:</strong> {{ customer.contact_number|default:"N/A" }}</p>
+        </div>
+
+        <!-- Form -->
+        <form method="POST" id="invoiceForm">
+            {% csrf_token %}
+            
+            <!-- Products Section -->
+            <h3>Products</h3>
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="item-formset">
+                    {{ item_formset.management_form }}
+                    {% for form in item_formset %}
+                        <tr class="item-row">
+                            <td>
+                                <input type="text" name="{{ form.product_name.name }}" class="product-autocomplete" value="{{ form.product_name.value|default_if_none:'' }}">
+                                {{ form.product.as_hidden }}
+                            </td>
+                            <td>{{ form.quantity }}</td>
+                            <td>{{ form.unit_price }}</td>
+                            <td>{{ form.total_price }}</td>
+                            <td><button type="button" class="remove-item">Remove</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="button" id="add-item" class="add-btn">Add Product</button>
+
+            <!-- Services Section -->
+            <h3>Services <button type="button" id="add-service" class="add-btn">Add Service</button></h3>
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="service-formset">
+                    {{ service_formset.management_form }}
+                    {% for form in service_formset %}
+                        <tr class="service-row">
+                            <td>{{ form.description }}</td>
+                            <td>{{ form.price }}</td>
+                            <td><button type="button" class="remove-service">Remove</button></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- Totals Section -->
+            <div class="invoice-totals">
+                <table class="totals-table">
+                    <tr>
+                        <td>Total</td>
+                        <td><input type="number" id="total-amount" readonly></td>
+                    </tr>
+                    <tr>
+                        <td>Discount (%)</td>
+                        <td>{{ invoice_form.discount_percent }}</td>
+                    </tr>
+                    <tr>
+                        <td>Discount Amount</td>
+                        <td>{{ invoice_form.discount_amount }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total Due</strong></td>
+                        <td><strong><input type="number" id="final-amount" readonly></strong></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Footer -->
+            <div class="invoice-footer">
+                <p class="thank-you">Thank You!</p>
+                <div class="payment-info">
+                    <h4>Payment Information:</h4>
+                    <p><strong>Bank:</strong> LenDen Bank</p>
+                    <p><strong>Account Name:</strong> LenDen Shop</p>
+                    <p><strong>Account Number:</strong> 0123 4567 8901</p>
+                    <p>Payment is required within 14 business days of invoice date.</p>
+                    <p>Please send remittance to support@lenden.com.</p>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Save Invoice</button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/invoice.css' %}">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        // Define the product autocomplete URL for use in customers.js
+        var productAutocompleteUrl = "{% url 'product_autocomplete' %}";
+    </script>
+    <script src="{% static 'js/customers.js' %}"></script>
+{% endblock %} {% endcomment %}
+
+
+{% block content %}
+    <div class="invoice-container">
+        <!-- Header -->
+        <div class="invoice-header">
+            <div class="shop-info">
+                <h1>LenDen Shop</h1>
+                <p>123 Business St., Any City, ST 12345</p>
+                <p>Email: <a href="mailto:support@lenden.com">support@lenden.com</a></p>
+            </div>
+            <div class="invoice-info">
+                <h2>INVOICE #{{ invoice_id|default:"INV-"|add:customer.id|add:"-"|add:"now"|date:"Ymd" }}</h2>
+                <p><strong>Date:</strong> {{ "now"|date:"jS M, Y H:i" }}</p>
+            </div>
+        </div>
+
+        <!-- Customer Info -->
+        <div class="customer-info">
+            <h3><i class="fas fa-user"></i> Billed To</h3>
+            <div class="customer-details">
+                <p><strong>Name:</strong> {{ customer.customer_name }}</p>
+                <p><strong>Address:</strong> {{ customer.address|default:"N/A" }}</p>
+                <p><strong>Contact:</strong> {{ customer.contact_number|default:"N/A" }}</p>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form method="POST" id="invoiceForm">
+            {% csrf_token %}
+            
+            <!-- Display Errors -->
+            {% if invoice_form.errors or item_formset.errors or service_formset.errors %}
+                <div class="alert alert-error">
+                    <p>Please correct the following errors:</p>
+                    {{ invoice_form.errors }}
+                    {{ item_formset.errors }}
+                    {{ service_formset.errors }}
+                </div>
+            {% endif %}
+
+            <!-- Products Section -->
+            <section class="invoice-section">
+                <h3><i class="fas fa-box"></i> Products</h3>
+                {% if not has_vendor %}
+                    <div class="alert alert-error">
+                        <p>You need to create a vendor profile and add products before you can create an invoice. <a href="{% url 'vendors_list' %}">Create a vendor now</a>.</p>
+                    </div>
+                {% else %}
+                    <div class="table-wrapper">
+                        <table class="invoice-table">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Price</th>
+                                    <th>Total</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="item-formset">
+                                {{ item_formset.management_form }}
+                                {% for form in item_formset %}
+                                    <tr class="item-row">
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" name="{{ form.product_name.name }}" class="product-autocomplete form-control" value="{{ form.product_name.value|default_if_none:'' }}" placeholder="Search for a product...">
+                                                {{ form.product.as_hidden }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                {{ form.quantity }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                {{ form.unit_price }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" class="total-price form-control" value="{% if form.instance.pk %}{{ form.instance.total_price|floatformat:2 }}{% else %}0.00{% endif %}" readonly>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="remove-item"><i class="fas fa-trash-alt"></i> Remove</button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="button" id="add-item" class="add-btn"><i class="fas fa-plus"></i> Add Product</button>
+                {% endif %}
+            </section>
+
+            <!-- Services Section -->
+            <section class="invoice-section">
+                <h3><i class="fas fa-tools"></i> Services</h3>
+                <div class="table-wrapper">
+                    <table class="invoice-table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="service-formset">
+                            {{ service_formset.management_form }}
+                            {% for form in service_formset %}
+                                <tr class="service-row">
+                                    <td>
+                                        <div class="form-group">
+                                            {{ form.description }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            {{ form.price }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="remove-service"><i class="fas fa-trash-alt"></i> Remove</button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" id="add-service" class="add-btn"><i class="fas fa-plus"></i> Add Service</button>
+            </section>
+
+            <!-- Totals Section -->
+            <section class="invoice-section invoice-totals">
+                <h3><i class="fas fa-calculator"></i> Totals</h3>
+                <div class="totals-wrapper">
+                    <table class="totals-table">
+                        <tr>
+                            <td>Subtotal</td>
+                            <td><input type="number" id="total-amount" class="form-control" readonly></td>
+                        </tr>
+                        <tr>
+                            <td>Discount (%)</td>
+                            <td>{{ invoice_form.discount_percent }}</td>
+                        </tr>
+                        <tr>
+                            <td>Discount Amount</td>
+                            <td>{{ invoice_form.discount_amount }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total Due</strong></td>
+                            <td><strong><input type="number" id="final-amount" class="form-control" readonly></strong></td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <div class="invoice-footer">
+                <p class="thank-you">Thank You for Your Business!</p>
+                <div class="payment-info">
+                    <h4>Payment Information</h4>
+                    <p><strong>Bank:</strong> LenDen Bank</p>
+                    <p><strong>Account Name:</strong> LenDen Shop</p>
+                    <p><strong>Account Number:</strong> 0123 4567 8901</p>
+                    <p>Payment is due within 14 business days of the invoice date.</p>
+                    <p>Please send remittance to <a href="mailto:support@lenden.com">support@lenden.com</a>.</p>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-actions">
+                <button type="button" class="print-btn" onclick="window.print()"><i class="fas fa-print"></i> Print Invoice</button>
+                <button type="submit" class="submit-btn"><i class="fas fa-save"></i> Save Invoice</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block extra_styles %}
+    <link rel="stylesheet" href="{% static 'css/customers.css' %}">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        var productAutocompleteUrl = "{% url 'product_autocomplete' %}";
+    </script>
+    <script src="{% static 'js/customers.js' %}"></script>
+{% endblock %}

@@ -3,7 +3,7 @@
 
 {% block title %}LenDen - {{ customer.customer_name }}{% endblock %}
 
-{% block content %}
+{% comment %} {% block content %}
     <a href="{% url 'customers_list' %}" class="back-link">Back</a>
     <h1>{{ customer.customer_name }}</h1>
     <div class="customer-details">
@@ -15,7 +15,8 @@
     <h2>Products Bought</h2>
     <div class="products-table">
         <div class="products-header">
-            <button class="add-product-btn" onclick="showAddProductModal()">Add Product</button>
+            
+            <a href="{% url 'create_invoice' customer.id %}" class="invoice-btn">Create Invoice</a> 
         </div>
 
         <!-- Add Product Modal -->
@@ -134,6 +135,52 @@
             {% endfor %}
         </div>
     </div>
+{% endblock %} {% endcomment %}
+
+{{% block content %}
+<div class="container">
+    <a href="{% url 'customers_list' %}" class="back-link">Back</a>
+    <h1>{{ customer.customer_name }}</h1>
+    <div class="customer-details">
+        <p><strong>Address:</strong> {{ customer.address }}</p>
+        <p><strong>Contact:</strong> {{ customer.contact_number }}</p>
+        <p><strong>Due Amount:</strong> {{ customer.due_amount|floatformat:2 }}</p>
+    </div>
+
+    <h2>Products Bought</h2>
+    <div class="products-table">
+        <div class="products-header">
+            <a href="{% url 'create_invoice' customer.id %}" class="invoice-btn"><i class="fas fa-plus"></i> Create Invoice</a>
+        </div>
+
+        <div class="table-header">
+            <div class="table-col">Date</div>
+            <div class="table-col">Product Name</div>
+            <div class="table-col">Quantity</div>
+            <div class="table-col">Unit Price</div>
+            <div class="table-col">Total</div>
+            <div class="table-col">Final Total (After Discount)</div>
+        </div>
+        <div class="table-body">
+            {% for invoice in invoices %}
+                {% for item in invoice.items.all %}
+                    <div class="table-row">
+                        <div class="table-col">{{ invoice.invoice_date|date:"Y-m-d" }}</div>
+                        <div class="table-col">{{ item.product.product_name }}</div>
+                        <div class="table-col">{{ item.quantity|floatformat:2 }}</div>
+                        <div class="table-col">{{ item.unit_price|floatformat:2 }}</div>
+                        <div class="table-col">{{ item.total_price|floatformat:2 }}</div>
+                        <div class="table-col">{{ invoice.final_amount|floatformat:2 }}</div>
+                    </div>
+                {% endfor %}
+            {% empty %}
+                <div class="table-row">
+                    <div class="table-col" style="flex: 1 1 100%; text-align: center;">No products found.</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_styles %}
@@ -141,44 +188,5 @@
 {% endblock %}
 
 {% block extra_scripts %}
-    <script>
-        // Show Add Product Modal
-        function showAddProductModal() {
-            document.getElementById("addProductModal").style.display = "block";
-        }
-
-        // Close Modal
-        document.querySelectorAll(".close-btn").forEach(button => {
-            button.addEventListener("click", () => {
-                document.getElementById("addProductModal").style.display = "none";
-            });
-        });
-
-        // Close modal when clicking outside
-        window.addEventListener("click", (event) => {
-            if (event.target === document.getElementById("addProductModal")) {
-                document.getElementById("addProductModal").style.display = "none";
-            }
-        });
-
-        // Calculate Total Price and Due Amount
-        document.getElementById("id_quantity_bought").addEventListener("input", updateTotalPrice);
-        document.getElementById("id_selling_price").addEventListener("input", updateTotalPrice);
-        document.getElementById("id_paid_amount").addEventListener("input", updateDueAmount);
-
-        function updateTotalPrice() {
-            let quantity = parseFloat(document.getElementById("id_quantity_bought").value) || 0;
-            let sellingPrice = parseFloat(document.getElementById("id_selling_price").value) || 0;
-            let totalPrice = quantity * sellingPrice;
-            document.getElementById("id_total_price").value = totalPrice.toFixed(2);
-            updateDueAmount();
-        }
-
-        function updateDueAmount() {
-            let totalPrice = parseFloat(document.getElementById("id_total_price").value) || 0;
-            let paidAmount = parseFloat(document.getElementById("id_paid_amount").value) || 0;
-            let dueAmount = totalPrice - paidAmount;
-            document.getElementById("id_due_amount").value = dueAmount.toFixed(2);
-        }
-    </script>
+    <script src="{% static 'js/customers.js' %}"></script>
 {% endblock %}
