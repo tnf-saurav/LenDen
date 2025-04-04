@@ -333,10 +333,49 @@ h1, h2, h3, h4 {
 }
 
 .table-col {
-    flex: 1 1 16.67%; /* Adjusted for 6 columns */
+    flex: 1 1 14.28%; /* Adjusted for 7 columns (100% / 7) */
     padding: 12px 15px;
     text-align: center;
     color: #555;
+}
+
+/* Specific column adjustments */
+.table-col:nth-child(1) { /* Date */
+    flex: 1 1 15%;
+}
+
+.table-col:nth-child(2) { /* Product Name */
+    flex: 1 1 20%;
+    text-align: left;
+}
+
+.table-col:nth-child(6) { /* Final Total */
+    font-weight: bold;
+    color: #333;
+}
+
+.table-col:nth-child(7) { /* Actions */
+    flex: 1 1 10%;
+}
+
+/* Edit Button */
+.edit-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.edit-btn i {
+    margin-right: 5px;
+}
+
+.edit-btn:hover {
+    background-color: #0056b3;
 }
 
 /* Specific column adjustments */
@@ -404,6 +443,94 @@ h1, h2, h3, h4 {
     font-size: 14px;
 }
 
+/* Invoice Form */
+.invoice-form {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+.form-error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+/* Formset Table */
+.formset-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.formset-table th,
+.formset-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.formset-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+.formset-row {
+    background-color: #fff;
+}
+
+.formset-row:hover {
+    background-color: #f9f9f9;
+}
+
+/* Buttons */
+.submit-btn {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #45a049;
+}
+
+.cancel-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-left: 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.cancel-btn:hover {
+    text-decoration: underline;
+}
 /* Customer Info */
 .customer-info {
     background: #f1f8ff;

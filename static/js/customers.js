@@ -5,12 +5,10 @@ const createInvoiceModal = document.getElementById("createInvoiceModal");
 const addCustomerBtn = document.querySelector(".add-customer-btn");
 const closeButtons = document.querySelectorAll(".close-btn");
 
-// Show Add Customer Modal
 function showAddCustomerModal() {
     addCustomerModal.style.display = "block";
 }
 
-// Show Edit Customer Modal
 function showEditCustomerForm(customerId, customerName, address, contactNumber, dueAmount) {
     document.getElementById("edit_customer_id").value = customerId;
     document.getElementById("edit_customer_name").value = customerName;
@@ -28,7 +26,6 @@ function closeCreateInvoiceModal() {
     document.getElementById('createInvoiceModal').style.display = 'none';
 }
 
-// Close Modals
 closeButtons.forEach(button => {
     button.addEventListener("click", () => {
         addCustomerModal.style.display = "none";
@@ -37,7 +34,6 @@ closeButtons.forEach(button => {
     });
 });
 
-// Close modal when clicking outside
 window.addEventListener("click", (event) => {
     if (event.target === addCustomerModal) {
         addCustomerModal.style.display = "none";
@@ -50,12 +46,10 @@ window.addEventListener("click", (event) => {
     }
 });
 
-// Confirm Delete
 function confirmDelete() {
     return confirm("Are you sure you want to delete this customer?");
 }
 
-// Search Functionality
 function searchCustomers() {
     let input = document.getElementById("customerSearch").value.toLowerCase();
     let rows = document.querySelectorAll(".table-body .table-row");
@@ -89,17 +83,18 @@ function searchCustomers() {
 
 // Invoice Functionality
 $(document).ready(function() {
-    // Autocomplete for products
+    let emptyItemRow = null;
+    let emptyServiceRow = null;
+
     function initializeAutocomplete() {
         $('.product-autocomplete').each(function() {
             $(this).autocomplete({
                 source: productAutocompleteUrl,
                 minLength: 1,
                 select: function(event, ui) {
-                    // Set the hidden product field with the selected product's ID
                     $(this).siblings('input[type="hidden"]').val(ui.item.id);
-                    console.log('Selected product ID:', ui.item.id);  // Debug log
-                    console.log('Hidden input value:', $(this).siblings('input[type="hidden"]').val());  // Debug log
+                    console.log('Selected product ID:', ui.item.id);
+                    console.log('Hidden input value:', $(this).siblings('input[type="hidden"]').val());
                     calculateTotal();
                 },
                 open: function() {
@@ -112,118 +107,124 @@ $(document).ready(function() {
         });
     }
 
-    // Initialize autocomplete on page load
+    if ($('#item-formset tr.item-row').length > 0) {
+        emptyItemRow = $('#item-formset tr.item-row:first').clone(true);
+    }
+    if ($('#service-formset tr.service-row').length > 0) {
+        emptyServiceRow = $('#service-formset tr.service-row:first').clone(true);
+    }
     initializeAutocomplete();
 
-    $('#add-item').click(function() {
+    $('#add-item').on('click', function(e) {
+        e.preventDefault();
         console.log('Add Product button clicked');
         let formIdx = parseInt($('#id_items-TOTAL_FORMS').val());
-        console.log('Current form index:', formIdx);
-        console.log('Item rows found:', $('.item-row').length);  // Debug log
-    
-        // Clone the first item row
-        let newRow = $('.item-row:first').clone(true);
-        if (!newRow.length) {
-            console.error("No item row found to clone");
-            return;
+        console.log('Current item form index:', formIdx);
+        console.log('Existing item rows:', $('#item-formset tr.item-row').length);
+
+        let newRow;
+        if (emptyItemRow && $('#item-formset tr.item-row').length > 0) {
+            console.log('Cloning existing item row');
+            newRow = emptyItemRow.clone(true);
+        } else {
+            console.log('Creating new item row from scratch');
+            newRow = $('<tr class="item-row">' +
+                '<td><div class="form-group">' +
+                    '<input type="text" name="items-' + formIdx + '-product_name" class="product-autocomplete form-control" placeholder="Search for a product...">' +
+                    '<input type="hidden" name="items-' + formIdx + '-product">' +
+                    '<input type="hidden" name="items-' + formIdx + '-id">' +
+                '</div></td>' +
+                '<td><div class="form-group"><input type="number" name="items-' + formIdx + '-quantity" min="1" class="form-control"></div></td>' +
+                '<td><div class="form-group"><input type="number" name="items-' + formIdx + '-unit_price" step="0.01" class="form-control"></div></td>' +
+                '<td><div class="form-group"><input type="text" class="total-price form-control" value="0.00" readonly></div></td>' +
+                '<td><button type="button" class="remove-item"><i class="fas fa-trash-alt"></i> Remove</button></td>' +
+                '</tr>');
         }
-    
-        // Update the names and IDs of the inputs in the new row
+
         newRow.find('input').each(function() {
             let name = $(this).attr('name');
             if (name) {
-                $(this).attr('name', name.replace('-0-', '-' + formIdx + '-'));
+                $(this).attr('name', name.replace(/-\d+-/, '-' + formIdx + '-'));
             }
             let id = $(this).attr('id');
             if (id) {
-                $(this).attr('id', id.replace('-0-', '-' + formIdx + '-'));
+                $(this).attr('id', id.replace(/-\d+-/, '-' + formIdx + '-'));
             }
-            // Clear input values
-            if ($(this).hasClass('product-autocomplete')) {
-                $(this).val('');  // Clear product_name
-            } else if ($(this).attr('name').includes('product')) {
-                $(this).val('');  // Clear hidden product field
-            } else {
+            let nameStr = $(this).attr('name') || '';
+            if ($(this).hasClass('product-autocomplete') || nameStr.includes('product') || nameStr.includes('id')) {
                 $(this).val('');
+            } else {
+                $(this).val($(this).hasClass('total-price') ? '0.00' : '');
             }
         });
-    
-        // Reset the total price display
-        newRow.find('.total-price').val('0.00');
-    
-        // Append the new row and update the formset total forms
+
         $('#item-formset').append(newRow);
         $('#id_items-TOTAL_FORMS').val(formIdx + 1);
-    
-        // Reinitialize autocomplete for the new row
         initializeAutocomplete();
         calculateTotal();
     });
-    
-    // Remove item row
-    $(document).on('click', '.remove-item', function() {
-        if ($('.item-row').length > 1) {
-            $(this).closest('.item-row').remove();
-            calculateTotal();
-        } else {
-            // Allow removing the last item row, but validate on form submission
-            $(this).closest('.item-row').remove();
-            calculateTotal();
-        }
-    });
 
-    // Add service row
-    $('#add-service').click(function() {
+    $('#add-service').on('click', function(e) {
+        e.preventDefault();
         console.log('Add Service button clicked');
         let formIdx = parseInt($('#id_services-TOTAL_FORMS').val());
         console.log('Current service form index:', formIdx);
 
-        // Clone the first service row
-        let newRow = $('.service-row:first').clone(true);
-        if (!newRow.length) {
-            console.error("No service row found to clone");
-            return;
+        let newRow;
+        if (emptyServiceRow && $('#service-formset tr.service-row').length > 0) {
+            console.log('Cloning existing service row');
+            newRow = emptyServiceRow.clone(true);
+        } else {
+            console.log('Creating new service row from scratch');
+            newRow = $('<tr class="service-row">' +
+                '<td><div class="form-group"><input type="text" name="services-' + formIdx + '-description" class="form-control"></div></td>' +
+                '<td><div class="form-group"><input type="number" name="services-' + formIdx + '-price" step="0.01" class="form-control"></div></td>' +
+                '<td><button type="button" class="remove-service"><i class="fas fa-trash-alt"></i> Remove</button></td>' +
+                '</tr>');
         }
 
-        // Update the names and IDs of the inputs in the new row
         newRow.find('input').each(function() {
             let name = $(this).attr('name');
             if (name) {
-                $(this).attr('name', name.replace('-0-', '-' + formIdx + '-'));
+                $(this).attr('name', name.replace(/-\d+-/, '-' + formIdx + '-'));
             }
             let id = $(this).attr('id');
             if (id) {
-                $(this).attr('id', id.replace('-0-', '-' + formIdx + '-'));
+                $(this).attr('id', id.replace(/-\d+-/, '-' + formIdx + '-'));
             }
-            $(this).val('');  // Clear input values
+            $(this).val('');
         });
 
-        // Append the new row and update the formset total forms
         $('#service-formset').append(newRow);
         $('#id_services-TOTAL_FORMS').val(formIdx + 1);
         calculateTotal();
     });
 
-    // Remove service row
+    $(document).on('click', '.remove-item', function() {
+        if ($('.item-row').length > 1) {
+            $(this).closest('.item-row').remove();
+            calculateTotal();
+        } else {
+            $(this).closest('.item-row').remove();
+            calculateTotal();
+        }
+    });
+
     $(document).on('click', '.remove-service', function() {
         if ($('.service-row').length > 1) {
             $(this).closest('.service-row').remove();
             calculateTotal();
         } else {
-            // Allow removing the last service row, but validate on form submission
             $(this).closest('.service-row').remove();
             calculateTotal();
         }
     });
 
-    // Calculate totals on input change
     $(document).on('input', 'input[name$="quantity"], input[name$="unit_price"], input[name$="price"], #id_discount_percent, #id_discount_amount', calculateTotal);
 
-    // Function to calculate totals
     function calculateTotal() {
         let total = 0;
 
-        // Calculate total for items
         $('.item-row').each(function() {
             let qty = parseFloat($(this).find('input[name$="quantity"]').val()) || 0;
             let price = parseFloat($(this).find('input[name$="unit_price"]').val()) || 0;
@@ -232,39 +233,25 @@ $(document).ready(function() {
             total += itemTotal;
         });
 
-        // Calculate total for services
         $('.service-row').each(function() {
             let price = parseFloat($(this).find('input[name$="price"]').val()) || 0;
             total += price;
         });
 
-        // Update subtotal
         $('#total-amount').val(total.toFixed(2));
-
-        // Calculate discount
         let discountPercent = parseFloat($('#id_discount_percent').val()) || 0;
-        let discountAmount = parseFloat($('#id_discount_amount').val()) || 0;
-        if (discountPercent > 0) {
-            discountAmount = total * (discountPercent / 100);
-            $('#id_discount_amount').val(discountAmount.toFixed(2));
-        } else if (discountAmount > 0) {
-            discountPercent = (discountAmount / total) * 100;
-            $('#id_discount_percent').val(discountPercent.toFixed(2));
-        }
-
-        // Update final amount
+        let discountAmount = total * (discountPercent / 100);
+        $('#id_discount_amount').val(discountAmount.toFixed(2));
         let finalAmount = total - discountAmount;
         $('#final-amount').val(finalAmount.toFixed(2));
     }
 
-    // Validate form on submission
     $('#invoiceForm').on('submit', function(event) {
         let itemRows = $('.item-row');
         let serviceRows = $('.service-row');
         let hasItems = false;
         let hasServices = false;
 
-        // Check if there are any items with a selected product
         itemRows.each(function() {
             let productId = $(this).find('input[name$="product"]').val();
             let quantity = parseFloat($(this).find('input[name$="quantity"]').val()) || 0;
@@ -273,7 +260,6 @@ $(document).ready(function() {
             }
         });
 
-        // Check if there are any services with a price
         serviceRows.each(function() {
             let price = parseFloat($(this).find('input[name$="price"]').val()) || 0;
             if (price > 0) {
@@ -281,11 +267,12 @@ $(document).ready(function() {
             }
         });
 
-        // Require at least one item or one service
         if (!hasItems && !hasServices) {
             event.preventDefault();
             alert("You must add at least one product or one service to the invoice.");
             return false;
         }
     });
+
+    calculateTotal();
 });

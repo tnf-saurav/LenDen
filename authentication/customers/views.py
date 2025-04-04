@@ -204,48 +204,160 @@ def create_invoice(request, customer_id):
         'service_formset': service_formset,
         'has_vendor': has_vendor,
     })
-# @login_required
-# def create_invoice(request, customer_id):
-#     customer = get_object_or_404(Customer, id=customer_id)
-#     InvoiceItemFormSet = modelformset_factory(InvoiceItem, form=InvoiceItemForm, extra=1)
-#     InvoiceServiceFormSet = modelformset_factory(InvoiceService, form=InvoiceServiceForm, extra=1)
 
-#     if request.method == 'POST':
-#         invoice_form = InvoiceForm(request.POST)
-#         item_formset = InvoiceItemFormSet(request.POST, prefix='items')
-#         service_formset = InvoiceServiceFormSet(request.POST, prefix='services')
+@login_required
+def edit_invoice(request, customer_id, invoice_id):
+    customer = get_object_or_404(Customer, id=customer_id, user=request.user)
+    invoice = get_object_or_404(Invoice, id=invoice_id, customer=customer, user=request.user)
+    InvoiceItemFormSet = modelformset_factory(InvoiceItem, form=InvoiceItemForm, extra=0, can_delete=True)
+    InvoiceServiceFormSet = modelformset_factory(InvoiceService, form=InvoiceServiceForm, extra=0, can_delete=True)
 
-#         if invoice_form.is_valid() and item_formset.is_valid() and service_formset.is_valid():
-#             invoice = invoice_form.save(commit=False)
-#             invoice.customer = customer
-#             invoice.save()
+    has_vendor = Vendor.objects.filter(user=request.user).exists()
 
-#             for form in item_formset:
-#                 if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
-#                     item = form.save(commit=False)
-#                     item.invoice = invoice
-#                     item.save()
+    if request.method == 'POST':
+        invoice_form = InvoiceForm(request.POST, instance=invoice)
+        item_formset = InvoiceItemFormSet(request.POST, prefix='items', queryset=InvoiceItem.objects.filter(invoice=invoice))
+        service_formset = InvoiceServiceFormSet(request.POST, prefix='services', queryset=InvoiceService.objects.filter(invoice=invoice))
 
-#             for form in service_formset:
-#                 if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
-#                     service = form.save(commit=False)
-#                     service.invoice = invoice
-#                     service.save()
+        if invoice_form.is_valid() and item_formset.is_valid() and service_formset.is_valid():
+            # Check if there are any items or services
+            has_items = False
+            has_services = False
+            for form in item_formset:
+                if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+                    has_items = True
+                    break
+            for form in service_formset:
+                if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+                    has_services = True
+                    break
+            if not has_items and not has_services:
+                messages.error(request, "You must have at least one product or one service in the invoice.")
+                return render(request, 'customers/edit_invoice.html', {
+                    'customer': customer,
+                    'invoice': invoice,
+                    'invoice_form': invoice_form,
+                    'item_formset': item_formset,
+                    'service_formset': service_formset,
+                    'has_vendor': has_vendor,
+                })
 
-#             messages.success(request, "Invoice created successfully!")
-#             return redirect('customers_detail', customer_id=customer.id)
-#     else:
-#         invoice_form = InvoiceForm()
-#         item_formset = InvoiceItemFormSet(queryset=InvoiceItem.objects.none(), prefix='items')
-#         service_formset = InvoiceServiceFormSet(queryset=InvoiceService.objects.none(), prefix='services')
+            # Get old items for comparison
+            old_items = {item.id: item for item in InvoiceItem.objects.filter(invoice=invoice)}
+            previous_final_amount = to_decimal(invoice.final_amount)
 
-#     return render(request, 'customers/invoice.html', {
-#         'customer': customer,
-#         'invoice_form': invoice_form,
-#         'item_formset': item_formset,
-#         'service_formset': service_formset,
-#     })
+            # Save the updated invoice
+            invoice = invoice_form.save(commit=False)
+            invoice.customer = customer
+            invoice.user = request.user
 
+            # Calculate the total from items and services
+            total = Decimal('0.0')
+            for form in item_formset:
+                if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+                    item = form.save(commit=False)
+                    item.invoice = invoice
+                    if item.quantity is None or item.unit_price is None:
+                        messages.error(request, "Quantity and Unit Price are required for all items.")
+                        invoice_form.save()
+                        return render(request, 'customers/edit_invoice.html', {
+                            'customer': customer,
+                            'invoice': invoice,
+                            'invoice_form': invoice_form,
+                            'item_formset': item_formset,
+                            'service_formset': service_formset,
+                            'has_vendor': has_vendor,
+                        })
+                    item.quantity = to_decimal(item.quantity)
+                    item.unit_price = to_decimal(item.unit_price)
+                    item.save()
+                    item_total = to_decimal(item.total_price)
+                    total += item_total
+
+                    # Adjust inventory based on difference
+                    product = item.product
+                    if item.id in old_items:  # Existing item
+                        old_quantity = to_decimal(old_items[item.id].quantity)
+                        quantity_diff = old_quantity - item.quantity  # Positive means return to inventory, negative means deduct
+                        product.quantity_supplied += int(quantity_diff)
+                        del old_items[item.id]  # Remove from old_items to track new/deleted items
+                    else:  # New item
+                        product.quantity_supplied -= int(item.quantity)  # Deduct new quantity
+
+                    if product.quantity_supplied < 0:
+                        invoice_form.save()
+                        messages.error(request, f"Not enough stock for {product.product_name}. Available: {product.quantity_supplied + int(item.quantity)}.")
+                        return render(request, 'customers/edit_invoice.html', {
+                            'customer': customer,
+                            'invoice': invoice,
+                            'invoice_form': invoice_form,
+                            'item_formset': item_formset,
+                            'service_formset': service_formset,
+                            'has_vendor': has_vendor,
+                        })
+                    product.save()
+
+                elif form.cleaned_data.get('DELETE', False) and form.instance.pk:
+                    # Restore stock for deleted items
+                    product = form.instance.product
+                    product.quantity_supplied += int(to_decimal(form.instance.quantity))
+                    form.instance.delete()
+                    if form.instance.id in old_items:
+                        del old_items[form.instance.id]
+                    product.save()
+
+            # Restore stock for any remaining old items (fully removed)
+            for old_item in old_items.values():
+                product = old_item.product
+                product.quantity_supplied += int(to_decimal(old_item.quantity))
+                product.save()
+
+            for form in service_formset:
+                if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+                    service = form.save(commit=False)
+                    service.invoice = invoice
+                    service.price = to_decimal(service.price)
+                    service.save()
+                    service_price = to_decimal(service.price)
+                    total += service_price
+                elif form.cleaned_data.get('DELETE', False) and form.instance.pk:
+                    form.instance.delete()
+
+            # Update invoice totals and discount
+            invoice.total_amount = Decimal(str(total))
+            discount_percent = to_decimal(invoice.discount_percent) if invoice.discount_percent is not None else Decimal('0.0')
+            if discount_percent > 0:
+                invoice.discount_amount = Decimal(str(total * (discount_percent / Decimal('100'))))
+            else:
+                invoice.discount_amount = Decimal('0.0')
+            invoice.save()
+
+            # Update customer due amount
+            customer_due = to_decimal(customer.due_amount) if customer.due_amount is not None else Decimal('0.0')
+            new_final_amount = to_decimal(invoice.final_amount)
+            customer.due_amount = Decimal(str(customer_due - previous_final_amount + new_final_amount))
+            customer.save()
+
+            messages.success(request, "Invoice updated successfully!")
+            return redirect('customers_detail', customer_id=customer.id)
+        else:
+            print("Invoice Form Errors:", invoice_form.errors)
+            print("Item Formset Errors:", item_formset.errors)
+            print("Service Formset Errors:", service_formset.errors)
+            messages.error(request, "Error updating invoice. Please check the form.")
+    else:
+        invoice_form = InvoiceForm(instance=invoice)
+        item_formset = InvoiceItemFormSet(queryset=InvoiceItem.objects.filter(invoice=invoice), prefix='items')
+        service_formset = InvoiceServiceFormSet(queryset=InvoiceService.objects.filter(invoice=invoice), prefix='services')
+
+    return render(request, 'customers/edit_invoice.html', {
+        'customer': customer,
+        'invoice': invoice,
+        'invoice_form': invoice_form,
+        'item_formset': item_formset,
+        'service_formset': service_formset,
+        'has_vendor': has_vendor,
+    })
 
 @login_required
 def product_autocomplete(request):

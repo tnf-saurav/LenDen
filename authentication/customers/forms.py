@@ -1,5 +1,10 @@
 from django import forms
 from .models import Customer, Invoice, InvoiceItem, InvoiceService
+from decimal import Decimal
+from bson.decimal128 import Decimal128
+
+def to_decimal(value):
+    return Decimal(str(value)) if isinstance(value, Decimal128) else value
 
 class CustomerForm(forms.ModelForm):
     class Meta:
@@ -18,16 +23,16 @@ class InvoiceForm(forms.ModelForm):
         cleaned_data = super().clean()
         discount_percent = cleaned_data.get('discount_percent')
         discount_amount = cleaned_data.get('discount_amount')
-        total_amount = self.instance.total_amount if self.instance else 0
+        total_amount = to_decimal(self.instance.total_amount) if self.instance else Decimal('0.0')
 
-        if discount_percent and total_amount:
-            expected_discount_amount = total_amount * (discount_percent / 100)
-            if discount_amount and abs(discount_amount - expected_discount_amount) > 0.01:
-                self.add_error('discount_amount', "Discount amount does not match the discount percentage.")
-        elif discount_amount and total_amount:
-            expected_discount_percent = (discount_amount / total_amount) * 100 if total_amount > 0 else 0
-            if discount_percent and abs(discount_percent - expected_discount_percent) > 0.01:
-                self.add_error('discount_percent', "Discount percentage does not match the discount amount.")
+        # if discount_percent and total_amount:
+        #     expected_discount_amount = total_amount * (discount_percent / 100)
+        #     if discount_amount and abs(discount_amount - expected_discount_amount) > 0.01:
+        #         self.add_error('discount_amount', "Discount amount does not match the discount percentage.")
+        # elif discount_amount and total_amount:
+        #     expected_discount_percent = (discount_amount / total_amount) * 100 if total_amount > 0 else 0
+        #     if discount_percent and abs(discount_percent - expected_discount_percent) > 0.01:
+        #         self.add_error('discount_percent', "Discount percentage does not match the discount amount.")
 
         return cleaned_data
 

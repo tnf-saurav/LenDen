@@ -3,141 +3,7 @@
 
 {% block title %}LenDen - {{ customer.customer_name }}{% endblock %}
 
-{% comment %} {% block content %}
-    <a href="{% url 'customers_list' %}" class="back-link">Back</a>
-    <h1>{{ customer.customer_name }}</h1>
-    <div class="customer-details">
-        <p><strong>Address:</strong> {{ customer.address }}</p>
-        <p><strong>Contact:</strong> {{ customer.contact_number }}</p>
-        <p><strong>Due Amount:</strong> {{ customer.due_amount|floatformat:2 }}</p>
-    </div>
-
-    <h2>Products Bought</h2>
-    <div class="products-table">
-        <div class="products-header">
-            
-            <a href="{% url 'create_invoice' customer.id %}" class="invoice-btn">Create Invoice</a> 
-        </div>
-
-        <!-- Add Product Modal -->
-        <div id="addProductModal" class="modal">
-            <div class="modal-content add-product-form">
-                <div class="form-header">
-                    <h2>Add Product</h2>
-                    <span class="close-btn">×</span>
-                </div>
-                <form method="POST" action="">
-                    {% csrf_token %}
-                    <input type="hidden" name="add_product" value="1">
-                    <!-- Product Name -->
-                    <div class="form-group">
-                        {{ add_product_form.product_name.label_tag }}
-                        <input type="text" name="product_name" id="id_product_name" value="{{ add_product_form.product_name.value|default_if_none:'' }}" required>
-                        {% if add_product_form.product_name.errors %}
-                            <div class="form-error">{{ add_product_form.product_name.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <!-- Description -->
-                    <div class="form-group">
-                        {{ add_product_form.description.label_tag }}
-                        <input type="text" name="description" id="id_description" value="{{ add_product_form.description.value|default_if_none:'' }}">
-                        {% if add_product_form.description.errors %}
-                            <div class="form-error">{{ add_product_form.description.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <!-- Quantity Bought -->
-                    <div class="form-group">
-                        {{ add_product_form.quantity_bought.label_tag }}
-                        <input type="number" name="quantity_bought" id="id_quantity_bought" value="{{ add_product_form.quantity_bought.value|default_if_none:'0' }}" step="0.01" required>
-                        {% if add_product_form.quantity_bought.errors %}
-                            <div class="form-error">{{ add_product_form.quantity_bought.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <!-- Unit Price -->
-                    <div class="form-group">
-                        {{ add_product_form.unit_price.label_tag }}
-                        <input type="number" name="unit_price" id="id_unit_price" value="{{ add_product_form.unit_price.value|default_if_none:'0.00' }}" step="0.01" required>
-                        {% if add_product_form.unit_price.errors %}
-                            <div class="form-error">{{ add_product_form.unit_price.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <!-- Selling Price -->
-                    <div class="form-group">
-                        {{ add_product_form.selling_price.label_tag }}
-                        <input type="number" name="selling_price" id="id_selling_price" value="{{ add_product_form.selling_price.value|default_if_none:'0.00' }}" step="0.01" required>
-                        {% if add_product_form.selling_price.errors %}
-                            <div class="form-error">{{ add_product_form.selling_price.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <!-- Total Price (Readonly) -->
-                    <div class="form-group">
-                        {{ add_product_form.total_price.label_tag }}
-                        <input type="number" name="total_price" id="id_total_price" value="{{ add_product_form.total_price.value|default:'0.00' }}" step="0.01" readonly>
-                        {% if add_product_form.total_price.errors %}
-                            <div class="form-error">{{ add_product_form.total_price.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <!-- Date of Purchase -->
-                    <div class="form-group">
-                        {{ add_product_form.date_of_purchase.label_tag }}
-                        <input type="date" name="date_of_purchase" id="id_date_of_purchase" value="{{ add_product_form.date_of_purchase.value|default_if_none:'' }}" required>
-                        {% if add_product_form.date_of_purchase.errors %}
-                            <div class="form-error">{{ add_product_form.date_of_purchase.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <!-- Paid Amount -->
-                    <div class="form-group">
-                        {{ add_product_form.paid_amount.label_tag }}
-                        <input type="number" name="paid_amount" id="id_paid_amount" value="{{ add_product_form.paid_amount.value|default:'0.00' }}" step="0.01">
-                        {% if add_product_form.paid_amount.errors %}
-                            <div class="form-error">{{ add_product_form.paid_amount.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <!-- Due Amount (Readonly) -->
-                    <div class="form-group">
-                        {{ add_product_form.due_amount.label_tag }}
-                        <input type="number" name="due_amount" id="id_due_amount" value="{{ add_product_form.due_amount.value|default:'0.00' }}" step="0.01" readonly>
-                        {% if add_product_form.due_amount.errors %}
-                            <div class="form-error">{{ add_product_form.due_amount.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <button type="submit" class="submit-btn">Add Product</button>
-                </form>
-            </div>
-        </div>
-
-        <div class="table-header">
-            <div class="table-col">Product Name</div>
-            <div class="table-col">Quantity Bought</div>
-            <div class="table-col">Selling Price</div>
-            <div class="table-col">Unit Price</div>
-            <div class="table-col">Total Price</div>
-            <div class="table-col">Date of Purchase</div>
-            <div class="table-col">Paid Amount</div>
-            <div class="table-col">Due Amount</div>
-        </div>
-        <div class="table-body">
-            {% for product in products %}
-                <div class="table-row">
-                    <div class="table-col">{{ product.product_name }}</div>
-                    <div class="table-col">{{ product.quantity_bought }}</div>
-                    <div class="table-col">{{ product.selling_price|floatformat:2 }}</div>
-                    <div class="table-col">{{ product.unit_price|floatformat:2 }}</div>
-                    <div class="table-col">{{ product.total_price|floatformat:2 }}</div>
-                    <div class="table-col">{{ product.date_of_purchase }}</div>
-                    <div class="table-col">{{ product.paid_amount|floatformat:2 }}</div>
-                    <div class="table-col">{{ product.due_amount|floatformat:2 }}</div>
-                </div>
-            {% empty %}
-                <div class="table-row">
-                    <div class="table-col" style="flex: 1 1 100%; text-align: center;">No products found.</div>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-{% endblock %} {% endcomment %}
-
-{{% block content %}
+{% block content %}
 <div class="container">
     <a href="{% url 'customers_list' %}" class="back-link">Back</a>
     <h1>{{ customer.customer_name }}</h1>
@@ -155,27 +21,23 @@
 
         <div class="table-header">
             <div class="table-col">Date</div>
-            <div class="table-col">Product Name</div>
-            <div class="table-col">Quantity</div>
-            <div class="table-col">Unit Price</div>
-            <div class="table-col">Total</div>
-            <div class="table-col">Final Total (After Discount)</div>
+            <div class="table-col">Invoice Number</div>
+            <div class="table-col">Bill Amount (Total)</div>
+            <div class="table-col">Action</div> <!-- New column for Edit button -->
         </div>
         <div class="table-body">
             {% for invoice in invoices %}
-                {% for item in invoice.items.all %}
-                    <div class="table-row">
-                        <div class="table-col">{{ invoice.invoice_date|date:"Y-m-d" }}</div>
-                        <div class="table-col">{{ item.product.product_name }}</div>
-                        <div class="table-col">{{ item.quantity|floatformat:2 }}</div>
-                        <div class="table-col">{{ item.unit_price|floatformat:2 }}</div>
-                        <div class="table-col">{{ item.total_price|floatformat:2 }}</div>
-                        <div class="table-col">{{ invoice.final_amount|floatformat:2 }}</div>
+                <div class="table-row">
+                    <div class="table-col">{{ invoice.invoice_date|date:"Y-m-d" }}</div>
+                    <div class="table-col">{{ request.user.username|slice:":3"|upper }}-{{ customer.id }}-{{ invoice.id }}-{{ invoice.invoice_date|date:"Ymd" }}</div>
+                    <div class="table-col">{{ invoice.final_amount|floatformat:2 }}</div>
+                    <div class="table-col">
+                        <a href="{% url 'edit_invoice' customer.id invoice.id %}" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
                     </div>
-                {% endfor %}
+                </div>
             {% empty %}
                 <div class="table-row">
-                    <div class="table-col" style="flex: 1 1 100%; text-align: center;">No products found.</div>
+                    <div class="table-col" style="flex: 1 1 100%; text-align: center;">No invoices found.</div>
                 </div>
             {% endfor %}
         </div>
