@@ -28,26 +28,17 @@
         </p>
     </div>
 
-    <!-- Payment Form -->
-    <section>
-        <h2>Make Payment</h2>
-        <form method="POST" action="{% url 'pay_customer' customer.id %}">
-            {% csrf_token %}
-            <div class="form-group">
-                {{ payment_form.amount.label_tag }}
-                {{ payment_form.amount }}
-                {% if payment_form.amount.errors %}
-                    <div class="form-error">{{ payment_form.amount.errors }}</div>
-                {% endif %}
-            </div>
-            <button type="submit" class="submit-btn">Pay Customer</button>
-        </form>
-    </section>
+    
 
     <h2>Products Bought</h2>
     <div class="products-table">
         <div class="products-header">
-            <a href="{% url 'create_invoice' customer.id %}" class="invoice-btn"><i class="fas fa-plus"></i> Create Invoice</a>
+            <a href="{% url 'create_invoice' customer.id %}" class="invoice-btn">Create Invoice</a>
+            <a href="{% url 'customer_statement' customer.id %}" class="view-statement-btn">View Statement</a>
+            <div class="search-container">
+                <input type="text" id="invoiceSearch" placeholder="Search">
+                <span class="search-icon"><i class="fas fa-search"></i></span>
+            </div>
         </div>
 
         <div class="table-header">
@@ -74,6 +65,23 @@
         </div>
     </div>
 </div>
+
+<!-- Payment Form -->
+<section>
+    <h2>Make Payment</h2>
+    <form method="POST" action="{% url 'pay_customer' customer.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ payment_form.amount.label_tag }}
+            {{ payment_form.amount }}
+            {% if payment_form.amount.errors %}
+                <div class="form-error">{{ payment_form.amount.errors }}</div>
+            {% endif %}
+        </div>
+        <button type="submit" class="submit-btn">Pay Customer</button>
+    </form>
+</section>
+
 {% endblock %}
 
 {% block extra_styles %}

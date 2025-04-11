@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% load static custom_filters %}
+{% load static %}
 
-{% block title %}Vendor Statement - {{ vendor.vendor_name }} - LenDen{% endblock %}
+{% block title %}Customer Statement - {{ customer.customer_name }} - LenDen{% endblock %}
 
 {% block content %}
     <!-- Display messages -->
@@ -16,25 +16,25 @@
         </div>
     {% endif %}
 
-    <!-- Vendor Details Section -->
-    <div class="vendor-details">
-        <div class="vendor-info">
-            <p>{{ vendor.vendor_name }}</p>
-            <p>{{ vendor.address }}</p>
-            <p>{{ vendor.contact_number }}</p>
+    <!-- Customer Details Section -->
+    <div class="customer-details">
+        <div class="customer-info">
+            <p>{{ customer.customer_name }}</p>
+            <p>{{ customer.address }}</p>
+            <p>{{ customer.contact_number }}</p>
             <p><strong>Due</strong> 
-                <span class="{% if vendor.due_amount > 0 %}due-amount{% elif vendor.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
-                    {{ vendor.due_amount|abs_value|floatformat:2 }}
+                <span class="{% if customer.due_amount > 0 %}due-amount{% elif customer.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
+                    {{ customer.due_amount|floatformat:2 }}
                 </span>
             </p>
         </div>
     </div>
 
-    <!-- Header Section with Back and Download Statement Buttons -->
-    <div class="vendors-header">
+    <!-- Header Section with Back Button -->
+    <div class="customers-header">
         <div class="header-left">
-            <a href="{% url 'vendors_detail' vendor.id %}" class="view-statement-btn">Back to Vendor Details</a>
-            <a href="{% url 'vendor_statement_pdf' vendor.id %}" class="download-statement-btn">Download Statement</a>
+            <a href="{% url 'customers_detail' customer.id %}" class="view-statement-btn">Back to Customer Details</a>
+            {% comment %} <a href="{% url 'customer_statement_pdf' customer.id %}" class="download-btn">Download Statement</a> {% endcomment %}
         </div>
     </div>
 
@@ -44,8 +44,8 @@
         <div class="table-header">
             <div class="table-col">Date</div>
             <div class="table-col">Description</div>
-            <div class="table-col">Withdrawal (Paid)</div>
             <div class="table-col">Deposit (Incoming)</div>
+            <div class="table-col">Withdrawal (Outgoing)</div>
             <div class="table-col">Debit</div>
             <div class="table-col">Credit</div>
         </div>
@@ -54,8 +54,8 @@
                 <div class="table-row">
                     <div class="table-col">{{ transaction.date }}</div>
                     <div class="table-col">{{ transaction.description }}</div>
-                    <div class="table-col">{{ transaction.paid|floatformat:2 }}</div>
                     <div class="table-col">{{ transaction.incoming|floatformat:2 }}</div>
+                    <div class="table-col">{{ transaction.outgoing|floatformat:2 }}</div>
                     <div class="table-col">{{ transaction.debit|floatformat:2 }}</div>
                     <div class="table-col">{{ transaction.credit|floatformat:2 }}</div>
                 </div>
@@ -70,12 +70,12 @@
     <!-- Summary Section -->
     <div class="statement-summary">
         <p><strong>Total Incoming:</strong> {{ statement.total_incoming|floatformat:2 }}</p>
-        <p><strong>Total Paid:</strong> {{ statement.total_paid|floatformat:2 }}</p>
+        <p><strong>Total Outgoing:</strong> {{ statement.total_outgoing|floatformat:2 }}</p>
         <p><strong>Total Debit:</strong> {{ statement.final_debit|floatformat:2 }}</p>
         <p><strong>Total Credit:</strong> {{ statement.final_credit|floatformat:2 }}</p>
     </div>
 {% endblock %}
 
 {% block extra_styles %}
-    <link rel="stylesheet" href="{% static 'css/vendors.css' %}">
+    <link rel="stylesheet" href="{% static 'css/customers.css' %}">
 {% endblock %}

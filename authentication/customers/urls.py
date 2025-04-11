@@ -9,4 +9,6 @@ urlpatterns = [
     path('customer/<int:customer_id>/invoice/<int:invoice_id>/edit/', views.edit_invoice, name='edit_invoice'),
     path('product-autocomplete/', views.product_autocomplete, name='product_autocomplete'),
     path('customer/<int:customer_id>/pay/', views.pay_customer, name='pay_customer'),
-]
+    path('customer/<int:customer_id>/statement/', views.customer_statement, name='customer_statement'),
+ 
+] 

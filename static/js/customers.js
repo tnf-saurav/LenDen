@@ -50,6 +50,7 @@ function confirmDelete() {
     return confirm("Are you sure you want to delete this customer?");
 }
 
+// Search Functionality for Customer List Page
 function searchCustomers() {
     let input = document.getElementById("customerSearch").value.toLowerCase();
     let rows = document.querySelectorAll(".table-body .table-row");
@@ -80,6 +81,54 @@ function searchCustomers() {
         }
     }
 }
+
+// Search Functionality for Customer Detail Page (Invoices)
+const searchInvoices = () => {
+    const input = getElement("#invoiceSearch")?.value.toLowerCase() || "";
+    const rows = getElements(".table-body .table-row");
+    let hasVisibleRows = false;
+
+    rows.forEach(row => {
+        const isEmptyRow = row.querySelector(".table-col")?.textContent.includes("No invoices found");
+        if (isEmptyRow) {
+            row.style.display = "none";
+            return;
+        }
+
+        const date = row.querySelector(".table-col:nth-child(1)")?.textContent.toLowerCase() || "";
+        const invoiceNumber = row.querySelector(".table-col:nth-child(2)")?.textContent.toLowerCase() || "";
+        const billAmount = row.querySelector(".table-col:nth-child(3)")?.textContent.toLowerCase() || "";
+
+        if (date.includes(input) || invoiceNumber.includes(input) || billAmount.includes(input)) {
+            row.style.display = "flex";
+            hasVisibleRows = true;
+        } else {
+            row.style.display = "none";
+        }
+    });
+
+    if (!hasVisibleRows) {
+        const emptyRow = Array.from(rows).find(row =>
+            row.querySelector(".table-col")?.textContent.includes("No invoices found")
+        );
+        if (emptyRow) {
+            emptyRow.style.display = "flex";
+        }
+    }
+};
+
+// Auto-submit search form on Enter key for Customer Detail Page
+document.addEventListener("DOMContentLoaded", function() {
+    const invoiceSearchInput = document.getElementById("invoiceSearch");
+    if (invoiceSearchInput) {
+        invoiceSearchInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                invoiceSearchInput.closest("form").submit();
+            }
+        });
+    }
+});
 
 // Invoice Functionality
 $(document).ready(function() {

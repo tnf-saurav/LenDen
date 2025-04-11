@@ -299,8 +299,9 @@ def generate_statement_data(vendor):
     # Step 6: Calculate the running balance and split into Debit and Credit
     if not ledger_df.empty:
         ledger_df['balance'] = ledger_df['incoming'].cumsum() - ledger_df['paid'].cumsum()
-        ledger_df['debit'] = ledger_df['balance'].apply(lambda x: x if x > 0 else 0.0)
-        ledger_df['credit'] = ledger_df['balance'].apply(lambda x: abs(x) if x < 0 else 0.0)
+        # Invert the logic: Positive balance → Credit, Negative balance → Debit
+        ledger_df['credit'] = ledger_df['balance'].apply(lambda x: x if x > 0 else 0.0)
+        ledger_df['debit'] = ledger_df['balance'].apply(lambda x: abs(x) if x < 0 else 0.0)
     else:
         ledger_df['balance'] = 0.0
         ledger_df['debit'] = 0.0
