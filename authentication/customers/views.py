@@ -4,11 +4,12 @@ from django.contrib import messages
 from django.forms import modelformset_factory
 from django.http import JsonResponse
 from .models import Customer, CustomerProduct, CustomerStatement, Invoice, InvoiceItem, InvoiceService
-from .forms import CustomerForm, InvoiceForm, InvoiceItemForm, InvoiceServiceForm
+from .forms import CustomerForm, InvoiceForm, InvoiceItemForm, InvoiceServiceForm, PaymentForm
 from authentication.vendors.models import Product, Vendor
 from authentication.inventory.models import InventoryItem
 from decimal import Decimal
 from bson.decimal128 import Decimal128
+from datetime import datetime
 
 def to_decimal(value):
     return Decimal(str(value)) if isinstance(value, Decimal128) else value
@@ -63,11 +64,33 @@ def customers_detail(request, customer_id):
     statements = CustomerStatement.objects.filter(customer=customer)
     invoices = Invoice.objects.filter(customer=customer).prefetch_related('items')
 
+    # Get invoices and statements
+    invoices = Invoice.objects.filter(customer=customer)
+    statements = CustomerStatement.objects.filter(customer=customer)
+
+    # Calculate due_amount: total unpaid invoices minus payments
+    unpaid_invoices_total = sum(
+        to_decimal(invoice.final_amount) 
+        for invoice in invoices 
+        if not hasattr(invoice, 'is_paid') or not invoice.is_paid
+    )
+    payments_total = sum(
+        to_decimal(statement.debit) 
+        for statement in statements 
+        if statement.debit  # Only count debit entries (payments)
+    )
+    customer.due_amount = unpaid_invoices_total - payments_total
+    customer.is_due = customer.due_amount > 0
+    customer.save()
+
+    payment_form = PaymentForm()
+
     return render(request, 'customers/customers_detail.html', {
         'customer': customer,
         'products': products,
         'statements': statements,
         'invoices': invoices,
+        'payment_form': payment_form,
     })
 
 
@@ -386,3 +409,42 @@ def product_autocomplete(request):
         ]
         return JsonResponse(results, safe=False)
     return JsonResponse([], safe=False)
+
+@login_required
+def pay_customer(request, customer_id):
+    customer = get_object_or_404(Customer, id=customer_id, user=request.user)
+    if request.method == 'POST':
+        form = PaymentForm(request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data['amount']  # float
+            # Convert both to Decimal for arithmetic
+            current_due = to_decimal(customer.due_amount)
+            payment_amount = Decimal(str(amount))  # Convert float to Decimal
+            customer.due_amount = current_due - payment_amount  # Decimal subtraction
+            customer.is_due = customer.due_amount > 0
+            customer.save()
+
+            # Create statement entry
+            CustomerStatement.objects.create(
+                customer=customer,
+                date=datetime.now().date(),
+                debit=amount,  # Store as float or Decimal as per your model
+                
+            )
+
+            messages.success(request, f"Payment of Rs. {amount:.2f} recorded successfully!")
+            return redirect('customers_detail', customer_id=customer.id)
+        else:
+            messages.error(request, 'Failed to process the payment. Please check the form.')
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+            invoices = Invoice.objects.filter(customer=customer)
+            statements = CustomerStatement.objects.filter(customer=customer)
+            return render(request, 'customers/customers_detail.html', {
+                'customer': customer,
+                'invoices': invoices,
+                'statements': statements,
+                'payment_form': form,
+            })
+    return redirect('customers_detail', customer_id=customer.id)

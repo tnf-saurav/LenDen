@@ -36,6 +36,51 @@ class InvoiceForm(forms.ModelForm):
 
         return cleaned_data
 
+# class InvoiceItemForm(forms.ModelForm):
+#     product_name = forms.CharField(max_length=100, required=False)
+
+#     class Meta:
+#         model = InvoiceItem
+#         fields = ['product', 'quantity', 'unit_price']
+#         widgets = {
+#             'product': forms.HiddenInput(),
+#             'quantity': forms.NumberInput(attrs={'min': 1, 'class': 'form-control', 'required': 'required'}),
+#             'unit_price': forms.NumberInput(attrs={'step': '0.01', 'class': 'form-control', 'required': 'required'}),
+#         }
+
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         # Safely set product_name initial value
+#         if self.instance and self.instance.pk:  # Existing InvoiceItem
+#             try:
+#                 if self.instance.product:
+#                     self.fields['product_name'].initial = self.instance.product.product_name
+#                 else:
+#                     self.fields['product_name'].initial = "Product Missing"  # Fallback
+#             except Product.DoesNotExist:
+#                 self.fields['product_name'].initial = "Product Deleted"  # Handle deleted product
+
+#     # def __init__(self, *args, **kwargs):
+#     #     super().__init__(*args, **kwargs)
+#     #     if self.instance and self.instance.product_id:
+#     #         self.fields['product_name'].initial = self.instance.product.product_name
+#     #         self.fields['unit_price'].initial = self.instance.product.selling_price
+
+#     def clean(self):
+#         cleaned_data = super().clean()
+#         product = cleaned_data.get('product')
+#         product_name = cleaned_data.get('product_name')
+#         quantity = cleaned_data.get('quantity')
+#         unit_price = cleaned_data.get('unit_price')
+
+#         if product_name and not product:
+#             raise forms.ValidationError("Please select a valid product from the suggestions.")
+#         return cleaned_data
+#         if quantity is None or quantity <= 0:
+#             raise forms.ValidationError("Quantity must be greater than 0.")
+#         if unit_price is None or unit_price <= 0:
+#             raise forms.ValidationError("Unit price must be greater than 0.")
+#         return cleaned_data
 class InvoiceItemForm(forms.ModelForm):
     product_name = forms.CharField(max_length=100, required=False)
 
@@ -50,9 +95,16 @@ class InvoiceItemForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance and self.instance.product_id:
-            self.fields['product_name'].initial = self.instance.product.product_name
-            self.fields['unit_price'].initial = self.instance.product.selling_price
+        if self.instance and self.instance.pk:  # Existing InvoiceItem
+            if self.instance.product_id:  # Check raw ID first
+                try:
+                    # Fetch product explicitly to avoid lazy loading issues
+                    product = self.instance.product
+                    self.fields['product_name'].initial = product.product_name
+                except Product.DoesNotExist:
+                    self.fields['product_name'].initial = "Product Deleted"
+            else:
+                self.fields['product_name'].initial = "Product Missing"  # No product linked
 
     def clean(self):
         cleaned_data = super().clean()
@@ -63,7 +115,6 @@ class InvoiceItemForm(forms.ModelForm):
 
         if product_name and not product:
             raise forms.ValidationError("Please select a valid product from the suggestions.")
-        return cleaned_data
         if quantity is None or quantity <= 0:
             raise forms.ValidationError("Quantity must be greater than 0.")
         if unit_price is None or unit_price <= 0:
@@ -80,3 +131,16 @@ class InvoiceServiceForm(forms.ModelForm):
         if price < 0:
             raise forms.ValidationError("Price cannot be negative.")
         return price
+
+class PaymentForm(forms.Form):
+    amount = forms.FloatField(
+        min_value=0.01,  # Ensures the amount is positive and not zero
+        label="Amount",
+        widget=forms.NumberInput(attrs={'step': '0.01', 'id': 'amount', 'required': True})
+    )
+
+    def clean_amount(self):
+        amount = self.cleaned_data.get('amount')
+        if amount <= 0:
+            raise forms.ValidationError("Payment amount must be greater than zero.")
+        return amount
