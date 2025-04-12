@@ -28,4 +28,5 @@ urlpatterns = [
     path('customers/', include('authentication.customers.urls')),
     # path('invoice/', include('authentication.invoice.urls')),
     # path('sales/', include('authentication.sales.urls')),
+    path('dashboard/', include('authentication.dashboard.urls')),
 ]

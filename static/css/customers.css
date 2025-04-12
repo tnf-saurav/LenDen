@@ -1,3 +1,5 @@
+/* static/css/customers.css */
+
 /* General Reset */
 * {
     margin: 0;
@@ -180,15 +182,15 @@ h3 i {
 }
 
 .due-amount {
-    color: #e74c3c; /* Red for due amount */
+    color: #e74c3c;
 }
 
 .advance-paid {
-    color: #2ecc71; /* Green for advance paid */
+    color: #2ecc71;
 }
 
 .neutral {
-    color: #7f8c8d; /* Gray for neutral */
+    color: #7f8c8d;
 }
 
 /* Products Table and Search Bar */
@@ -200,24 +202,24 @@ h3 i {
 }
 
 .invoice-btn, .view-statement-btn {
-    background-color: #17a2b8; /* Cyan background */
+    background-color: #17a2b8;
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    text-decoration: none; /* Remove underline */
+    text-decoration: none;
     font-size: 16px;
-    display: inline-block; /* Ensure it behaves like a button */
+    display: inline-block;
 }
 
 .invoice-btn:hover, .view-statement-btn:hover {
-    background-color: #138496; /* Darker cyan on hover */
+    background-color: #138496;
 }
 
 .search-form {
     display: flex;
     align-items: center;
-    margin-left: auto; /* Push the search bar to the right */
+    margin-left: auto;
 }
 
 .search-form input[type="text"] {
@@ -229,7 +231,7 @@ h3 i {
 }
 
 .search-form .search-btn {
-    background-color: #17a2b8; /* Cyan background */
+    background-color: #17a2b8;
     color: white;
     padding: 8px 12px;
     border: none;
@@ -238,7 +240,7 @@ h3 i {
 }
 
 .search-form .search-btn:hover {
-    background-color: #138496; /* Darker cyan on hover */
+    background-color: #138496;
 }
 
 .products-table {
@@ -308,7 +310,7 @@ h3 i {
 }
 
 .table-col {
-    flex: 1 1 14.28%; /* Adjusted for 7 columns (100% / 7) */
+    flex: 1 1 14.28%;
     padding: 12px 15px;
     text-align: center;
     color: #555;
@@ -807,124 +809,22 @@ h3 i {
     margin-bottom: 20px;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
-
-    .customers-header {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .customers-header h1 {
-        margin-bottom: 15px;
-    }
-
-    .customers-table th,
-    .customers-table td {
-        padding: 10px;
-        font-size: 12px;
-    }
-
-    .products-table th,
-    .products-table td {
-        padding: 10px;
-        font-size: 12px;
-    }
-
-    .invoice-header {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .invoice-header .shop-info,
-    .invoice-header .invoice-info {
-        margin-bottom: 20px;
-    }
-
-    .invoice-table th,
-    .invoice-table td {
-        padding: 10px;
-        font-size: 12px;
-    }
-
-    .table-wrapper {
-        overflow-x: auto;
-    }
-
-    .totals-table td {
-        font-size: 12px;
-    }
-
-    .totals-table input {
-        width: 80px;
-    }
-
-    .submit-btn,
-    .print-btn {
-        max-width: 100%;
-    }
-
-    .products-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .search-form {
-        margin-left: 0;
-        width: 100%;
-    }
-
-    .search-form input[type="text"] {
-        width: 100%;
-        border-radius: 5px;
-    }
-
-    .search-form .search-btn {
-        border-radius: 5px;
-    }
-}
-
-/* Print-Friendly Styles */
-@media print {
-    .invoice-container {
-        box-shadow: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    .add-btn,
-    .remove-item,
-    .remove-service,
-    .form-actions {
-        display: none;
-    }
-
-    .invoice-table input,
-    .totals-table input {
-        border: none;
-        background: none;
-    }
-}
-
 /* Search Bar */
 .search-form {
-    margin-left: auto; /* Push the search bar to the right */
+    margin-left: auto;
 }
 
 .search-container {
     position: relative;
     width: 100%;
-    max-width: 300px; /* Match the width of the customer list search bar */
+    max-width: 300px;
 }
 
 .search-container input[type="text"] {
     width: 100%;
-    padding: 8px 12px 8px 35px; /* Add padding on the left for the icon */
+    padding: 8px 12px 8px 35px;
     border: 1px solid #ccc;
-    border-radius: 20px; /* Rounded corners to match the customer list */
+    border-radius: 20px;
     font-size: 14px;
     outline: none;
     background: #fff;
@@ -944,9 +844,8 @@ h3 i {
     font-size: 14px;
 }
 
-/* Remove the previous search button styles */
 .search-form .search-btn {
-    display: none; /* Hide the separate button */
+    display: none;
 }
 
 /* Statement Actions (Buttons) */
@@ -957,7 +856,7 @@ h3 i {
 }
 
 .back-btn {
-    background-color: #17a2b8; /* Cyan background */
+    background-color: #17a2b8;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -970,12 +869,12 @@ h3 i {
 }
 
 .back-btn:hover {
-    background-color: #138496; /* Darker cyan on hover */
+    background-color: #138496;
     transform: translateY(-1px);
 }
 
 .download-btn {
-    background-color: #28a745; /* Green background */
+    background-color: #28a745;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -988,7 +887,7 @@ h3 i {
 }
 
 .download-btn:hover {
-    background-color: #218838; /* Darker green on hover */
+    background-color: #218838;
     transform: translateY(-1px);
 }
 
@@ -1022,4 +921,340 @@ h3 i {
     margin: 5px 0;
     font-size: 16px;
     color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .container {
+        max-width: 1000px;
+        padding: 15px;
+    }
+    h1 {
+        font-size: 26px;
+    }
+    h2 {
+        font-size: 22px;
+    }
+    h3 {
+        font-size: 16px;
+    }
+    .customers-table th,
+    .customers-table td,
+    .products-table th,
+    .products-table td,
+    .invoice-table th,
+    .invoice-table td {
+        padding: 12px;
+        font-size: 13px;
+    }
+    .invoice-header .shop-info h1,
+    .invoice-header .invoice-info h2 {
+        font-size: 24px;
+    }
+    .invoice-header .shop-info p,
+    .invoice-header .invoice-info p {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 992px) {
+    .container {
+        max-width: 800px;
+        padding: 12px;
+    }
+    h1 {
+        font-size: 24px;
+    }
+    h2 {
+        font-size: 20px;
+    }
+    h3 {
+        font-size: 15px;
+    }
+    .customers-table,
+    .products-table,
+    .invoice-table {
+        display: block;
+    }
+    .customers-table thead,
+    .products-table thead,
+    .invoice-table thead {
+        display: none;
+    }
+    .customers-table tbody,
+    .customers-table tr,
+    .products-table tbody,
+    .products-table tr,
+    .invoice-table tbody,
+    .invoice-table tr {
+        display: block;
+    }
+    .customers-table td,
+    .products-table td,
+    .invoice-table td {
+        display: block;
+        text-align: right;
+        padding: 8px;
+        position: relative;
+        border-bottom: none;
+    }
+    .customers-table td::before,
+    .products-table td::before,
+    .invoice-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 8px;
+        font-weight: bold;
+        text-align: left;
+    }
+    .formset-table th,
+    .formset-table td {
+        padding: 8px;
+        font-size: 13px;
+    }
+    .invoice-header .shop-info h1,
+    .invoice-header .invoice-info h2 {
+        font-size: 22px;
+    }
+    .invoice-header .shop-info p,
+    .invoice-header .invoice-info p {
+        font-size: 12px;
+    }
+    .customer-info,
+    .invoice-totals {
+        padding: 15px;
+    }
+    .totals-table td {
+        font-size: 13px;
+    }
+    .totals-table input {
+        width: 90px;
+    }
+    .modal-content {
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    h1 {
+        font-size: 22px;
+    }
+    h2 {
+        font-size: 18px;
+    }
+    h3 {
+        font-size: 14px;
+    }
+    .customers-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    .customers-header h1 {
+        margin-bottom: 15px;
+    }
+    .add-customer-btn,
+    .invoice-btn,
+    .view-statement-btn,
+    .back-btn,
+    .download-btn {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+    .customers-table th,
+    .customers-table td,
+    .products-table th,
+    .products-table td,
+    .invoice-table th,
+    .invoice-table td {
+        padding: 10px;
+        font-size: 12px;
+    }
+    .customer-details,
+    .customer-info,
+    .invoice-totals {
+        padding: 12px;
+    }
+    .customer-details p,
+    .customer-info .customer-details p,
+    .summary p,
+    .vendor-info p {
+        font-size: 13px;
+    }
+    .invoice-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+    .invoice-header .shop-info,
+    .invoice-header .invoice-info {
+        margin-bottom: 20px;
+    }
+    .invoice-header .shop-info h1,
+    .invoice-header .invoice-info h2 {
+        font-size: 20px;
+    }
+    .invoice-section {
+        margin-bottom: 30px;
+    }
+    .totals-table td {
+        font-size: 12px;
+    }
+    .totals-table input {
+        width: 80px;
+    }
+    .submit-btn,
+    .print-btn {
+        max-width: 100%;
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    .products-header,
+    .statement-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .search-form {
+        margin-left: 0;
+        width: 100%;
+    }
+    .search-container {
+        max-width: 100%;
+    }
+    .search-form input[type="text"],
+    .search-container input[type="text"] {
+        width: 100%;
+        border-radius: 5px;
+        padding: 8px 12px;
+    }
+    .search-form .search-btn {
+        border-radius: 5px;
+    }
+    .table-header,
+    .table-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .table-col {
+        flex: 1 1 100%;
+        text-align: left;
+        padding: 8px;
+    }
+    .modal-content {
+        padding: 15px;
+        margin: 80px auto;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        padding: 8px;
+        font-size: 13px;
+    }
+    .invoice-footer .thank-you {
+        font-size: 24px;
+    }
+    .invoice-footer .payment-info h4 {
+        font-size: 14px;
+    }
+    .invoice-footer .payment-info p {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        padding: 8px;
+    }
+    h1 {
+        font-size: 20px;
+    }
+    h2 {
+        font-size: 16px;
+    }
+    h3 {
+        font-size: 13px;
+    }
+    .customers-table td::before,
+    .products-table td::before,
+    .invoice-table td::before {
+        font-size: 12px;
+    }
+    .customer-details,
+    .customer-info,
+    .invoice-totals {
+        padding: 10px;
+    }
+    .customer-details p,
+    .customer-info .customer-details p,
+    .summary p,
+    .vendor-info p {
+        font-size: 12px;
+    }
+    .invoice-header .shop-info h1,
+    .invoice-header .invoice-info h2 {
+        font-size: 18px;
+    }
+    .invoice-header .shop-info p,
+    .invoice-header .invoice-info p {
+        font-size: 11px;
+    }
+    .formset-table th,
+    .formset-table td {
+        padding: 6px;
+        font-size: 12px;
+    }
+    .modal-content {
+        max-width: 95%;
+        padding: 12px;
+        margin: 60px auto;
+    }
+    .modal-content h2 {
+        font-size: 18px;
+    }
+    .form-group label {
+        font-size: 13px;
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        padding: 6px;
+        font-size: 12px;
+    }
+    .submit-btn,
+    .print-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+    .invoice-footer .thank-you {
+        font-size: 20px;
+    }
+    .invoice-footer .payment-info h4 {
+        font-size: 13px;
+    }
+    .invoice-footer .payment-info p {
+        font-size: 12px;
+    }
+}
+
+/* Print-Friendly Styles */
+@media print {
+    .invoice-container {
+        box-shadow: none;
+        margin: 0;
+        padding: 0;
+    }
+    .add-btn,
+    .remove-item,
+    .remove-service,
+    .form-actions {
+        display: none;
+    }
+    .invoice-table input,
+    .totals-table input {
+        border: none;
+        background: none;
+    }
 }

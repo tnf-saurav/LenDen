@@ -1,5 +1,5 @@
 from django import forms
-from .models import Vendor, Product
+from .models import Vendor, Product, Statement
 
 class VendorForm(forms.ModelForm):
     class Meta:
@@ -64,3 +64,11 @@ class PaymentForm(forms.Form):
         if amount <= 0:
             raise forms.ValidationError("Payment amount must be greater than zero.")
         return amount
+
+class StatementForm(forms.ModelForm):
+    class Meta:
+        model = Statement
+        fields = ['date', 'debit', 'credit']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+        }

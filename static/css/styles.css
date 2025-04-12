@@ -1,3 +1,5 @@
+/* static/css/styles.css */
+
 /* Reset default styles */
 * {
   margin: 0;
@@ -8,7 +10,7 @@
 
 /* General Body Styles */
 body {
-  background-color: #d3d3d3; /* Light gray from UI */
+  background-color: #d3d3d3;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -59,7 +61,7 @@ body {
   text-align: center;
   margin-top: -1rem;
   margin-bottom: 2.5rem;
-  color: #1e90ff; /* Blue from UI */
+  color: #1e90ff;
   font-size: 2.8rem;
   font-weight: bold;
 }
@@ -76,7 +78,7 @@ body {
 }
 
 .form-group.dual-input input {
-  width: 48%; /* Slightly less than half to account for spacing */
+  width: 48%;
 }
 
 .form-group input {
@@ -102,7 +104,7 @@ body {
 .signup-form button {
   width: 100%;
   padding: 0.9rem;
-  background-color: #0047ab; /* Blue from UI */
+  background-color: #0047ab;
   border: none;
   border-radius: 30px;
   color: white;
@@ -119,27 +121,27 @@ body {
 
 .form-links {
   text-align: center;
-  margin-top: -1rem; /* Reduced to prevent overflow */
+  margin-top: -1rem;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Align to bottom */
-  flex-grow: 0; /* Prevent stretching beyond content */
-  min-height: 4rem; /* Ensure space for text */
+  justify-content: flex-end;
+  flex-grow: 0;
+  min-height: 4rem;
 }
 
 .form-links .signin {
   text-align: center;
-  margin-top: 5rem; /* Reduced to prevent overflow */
+  margin-top: 5rem;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Align to bottom */
-  flex-grow: 0; /* Prevent stretching beyond content */
-  min-height: 4rem; /* Ensure space for text */
+  justify-content: flex-end;
+  flex-grow: 0;
+  min-height: 4rem;
 }
 
 .login-link {
   display: block;
-  margin-top: 1rem; /* Reduced to fit within container */
+  margin-top: 1rem;
   color: #666;
   font-size: 1.2rem;
 }
@@ -171,7 +173,7 @@ body {
   margin-bottom: 0;
 }
 
-/* Alerts (Reusing from Your Styles) */
+/* Alerts */
 .alert {
   padding: 1rem;
   margin-bottom: 1rem;
@@ -197,67 +199,6 @@ body {
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .signup-container {
-      flex-direction: column;
-      height: auto;
-      max-width: 450px;
-  }
-  .signup-form,
-  .signup-logo {
-      flex: none;
-      width: 100%;
-  }
-  .signup-form {
-      padding: 2rem;
-  }
-  .signup-logo {
-      padding: 2rem;
-  }
-  .signup-title {
-      font-size: 2.2rem;
-      margin-top: 0.2rem;
-      margin-bottom: 2rem;
-  }
-  .form-group {
-      margin-bottom: 1.5rem;
-  }
-  .form-group.dual-input {
-      flex-direction: column;
-  }
-  .form-group.dual-input input {
-      width: 100%;
-      margin-bottom: 1rem;
-  }
-  .form-group.dual-input input:last-child {
-      margin-bottom: 0;
-  }
-  .form-group input {
-      padding: 0.7rem 1rem;
-      font-size: 1rem;
-  }
-  .signup-form button {
-      padding: 0.7rem;
-      font-size: 1rem;
-      margin-top: 1rem;
-  }
-  .form-links {
-      margin-top: 0.5rem;
-  }
-  .login-link {
-      font-size: 1rem;
-      margin-top: 0.5rem;
-  }
-  .logo-circle {
-      width: 250px;
-      height: 250px;
-  }
-  .logo-circle .logo-image {
-      width: 200px;
-  }
 }
 
 /* Signin Page Styles */
@@ -324,7 +265,7 @@ body {
 
 .signup-link {
   display: block;
-  margin-top: 5rem; /* Reduced to fit within container */
+  margin-top: 5rem;
   color: #666;
   font-size: 1.2rem;
 }
@@ -348,54 +289,7 @@ body {
   align-items: center;
 }
 
-@media (max-width: 768px) {
-  .login-container {
-      flex-direction: column;
-      height: auto;
-      max-width: 450px;
-  }
-  .login-form,
-  .login-logo {
-      flex: none;
-      width: 100%;
-  }
-  .login-form {
-      padding: 2rem;
-  }
-  .login-logo {
-      padding: 2rem;
-  }
-  .login-title {
-      font-size: 2.2rem;
-      margin-top: 0.2rem;
-      margin-bottom: 2rem;
-  }
-  .form-group {
-      margin-bottom: 1.5rem;
-  }
-  .form-group input {
-      padding: 0.7rem 1rem;
-      font-size: 1rem;
-  }
-  .login-form button {
-      padding: 0.7rem;
-      font-size: 1rem;
-      margin-top: 1rem;
-  }
-  .form-links {
-      margin-top: 0.5rem;
-  }
-  .forget-password {
-      font-size: 1rem;
-      margin: 0.5rem 0;
-  }
-  .signup-link {
-      font-size: 1rem;
-      margin-top: 0.5rem;
-  }
-}
-
-/* Password Toggle (From Signup) */
+/* Password Toggle */
 .password-container {
   position: relative;
 }
@@ -416,11 +310,6 @@ body {
 
 .password-container .toggle-password:hover {
   color: #1e90ff;
-}
-
-.password-container .toggle-password {
-  right: 20px;
-  font-size: 0.9rem;
 }
 
 /* Error Popup */
@@ -450,11 +339,6 @@ body {
 .error-input::placeholder {
   color: #721c24;
   font-style: italic;
-}
-
-@keyframes slideDown {
-  0% { top: -100px; }
-  100% { top: 0; }
 }
 
 .error-popup ul {
@@ -489,4 +373,174 @@ body {
   color: darkred;
 }
 
-/* Version 2.0 Update Marker */
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .signup-container,
+  .login-container {
+      max-width: 800px;
+      height: 600px;
+  }
+  .signup-form,
+  .login-form {
+      padding: 3rem;
+  }
+  .signup-title,
+  .login-title {
+      font-size: 2.6rem;
+  }
+  .logo-circle {
+      width: 350px;
+      height: 350px;
+  }
+  .logo-circle .logo-image {
+      width: 650px;
+  }
+}
+
+@media (max-width: 992px) {
+  .signup-container,
+  .login-container {
+      max-width: 600px;
+      height: 550px;
+  }
+  .signup-form,
+  .login-form {
+      padding: 2.5rem;
+  }
+  .signup-title,
+  .login-title {
+      font-size: 2.4rem;
+  }
+  .form-group {
+      margin-bottom: 2rem;
+  }
+  .form-group input {
+      padding: 0.8rem 1rem;
+      font-size: 1rem;
+  }
+  .signup-form button,
+  .login-form button {
+      padding: 0.8rem;
+      font-size: 1.1rem;
+  }
+  .logo-circle {
+      width: 300px;
+      height: 300px;
+  }
+  .logo-circle .logo-image {
+      width: 600px;
+  }
+}
+
+@media (max-width: 768px) {
+  .signup-container,
+  .login-container {
+      flex-direction: column;
+      height: auto;
+      max-width: 450px;
+  }
+  .signup-form,
+  .signup-logo,
+  .login-form,
+  .login-logo {
+      flex: none;
+      width: 100%;
+  }
+  .signup-form,
+  .login-form {
+      padding: 2rem;
+  }
+  .signup-logo,
+  .login-logo {
+      padding: 2rem;
+  }
+  .signup-title,
+  .login-title {
+      font-size: 2.2rem;
+      margin-top: 0.2rem;
+      margin-bottom: 2rem;
+  }
+  .form-group {
+      margin-bottom: 1.5rem;
+  }
+  .form-group.dual-input {
+      flex-direction: column;
+  }
+  .form-group.dual-input input,
+  .input-with-error {
+      width: 100%;
+      margin-bottom: 1rem;
+  }
+  .form-group.dual-input input:last-child {
+      margin-bottom: 0;
+  }
+  .form-group input {
+      padding: 0.7rem 1rem;
+      font-size: 1rem;
+  }
+  .signup-form button,
+  .login-form button {
+      padding: 0.7rem;
+      font-size: 1rem;
+      margin-top: 1rem;
+  }
+  .form-links {
+      margin-top: 0.5rem;
+  }
+  .login-link,
+  .forget-password,
+  .signup-link {
+      font-size: 1rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+  }
+  .logo-circle {
+      width: 250px;
+      height: 250px;
+  }
+  .logo-circle .logo-image {
+      width: 200px;
+  }
+  .error-message {
+      font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .signup-container,
+  .login-container {
+      max-width: 90%;
+  }
+  .signup-form,
+  .login-form {
+      padding: 1.5rem;
+  }
+  .signup-title,
+  .login-title {
+      font-size: 2rem;
+  }
+  .form-group {
+      margin-bottom: 1.2rem;
+  }
+  .form-group input {
+      padding: 0.6rem 0.8rem;
+      font-size: 0.9rem;
+  }
+  .signup-form button,
+  .login-form button {
+      padding: 0.6rem;
+      font-size: 0.9rem;
+  }
+  .login-link,
+  .forget-password,
+  .signup-link {
+      font-size: 0.9rem;
+  }
+  .logo-circle {
+      width: 200px;
+      height: 200px;
+  }
+  .logo-circle .logo-image {
+      width: 150px;
+  }
+}

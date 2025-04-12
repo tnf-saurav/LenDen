@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'authentication.customers',
     'authentication.inventory',
     'authentication.invoice',
-    'authentication.sales',
+    'authentication.dashboard',
     'authentication.vendors',
 ]
 

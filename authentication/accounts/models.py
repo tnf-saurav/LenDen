@@ -39,7 +39,7 @@ class UserRegister(AbstractBaseUser):
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['email', 'businessname', 'phone']
+    # REQUIRED_FIELDS = ['email', 'businessname', 'phone']
 
     objects = UserRegisterManager()
 

@@ -1,7 +1,5 @@
 /* static/css/vendors.css */
 
-ic/css/vendors.css */
-
 /* Shared styles */
 .due-amount {
     color: red;
@@ -20,9 +18,9 @@ ic/css/vendors.css */
 
 .vendors-table {
     background: #fff;
-    padding: 40px 25px; /* Increase padding for better spacing */
-    width: 100%; /* Full width of the screen */
-    box-sizing: border-box; /* Ensure padding doesn't affect width */
+    padding: 40px 25px;
+    width: 100%;
+    box-sizing: border-box;
     box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     border-radius: 0.5rem;
     display: flex;
@@ -34,17 +32,16 @@ ic/css/vendors.css */
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
-    gap: 10px; /* Add gap for better spacing on smaller screens */
+    gap: 10px;
 }
 
 .add-vendor-btn {
-    /* Fix: Increase button size */
     background-color: #0047ab;
     color: white;
-    padding: 12px 24px; /* Larger padding for bigger button */
+    padding: 12px 24px;
     border-radius: 5px;
     text-decoration: none;
-    font-size: 16px; /* Larger font size */
+    font-size: 16px;
     font-weight: 500;
     display: inline-block;
     line-height: 1;
@@ -61,21 +58,20 @@ ic/css/vendors.css */
 }
 
 .search-container input {
-    /* Fix: Make search bar responsive */
-    padding: 10px 14px; /* Slightly larger padding */
+    padding: 10px 14px;
     width: 100%;
-    max-width: 250px; /* Increase max-width for larger screens */
+    max-width: 250px;
     border: 1px solid #e0e0e0;
     border-radius: 20px;
-    font-size: 16px; /* Larger font size */
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>') no-repeat 95% center;
+    font-size: 16px;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 0 1 1-11 0 5.5 0 0 1 11 0z"/></svg>') no-repeat 95% center;
     background-size: 16px;
 }
 
 .table-header, .table-row {
     display: flex;
     align-items: center;
-    padding: 15px 20px; /* Increase padding for better spacing */
+    padding: 15px 20px;
     border-bottom: 1px solid #f0f0f0;
     flex-wrap: nowrap;
 }
@@ -84,7 +80,7 @@ ic/css/vendors.css */
     background-color: #f8f9fa;
     font-weight: 600;
     color: #333;
-    font-size: 18px; /* Fix: Increase font size for header */
+    font-size: 18px;
     text-transform: uppercase;
 }
 
@@ -97,16 +93,13 @@ ic/css/vendors.css */
 }
 
 .table-col {
-    /* Fix: Adjust spacing and font size */
     flex: 1;
-    padding: 10px 20px; /* Increase padding for better spacing */
-    font-size: 18px; /* Fix: Increase font size for vendor name and address */
+    padding: 10px 20px;
+    font-size: 18px;
     color: #555;
     display: flex;
     align-items: center;
-    
 }
-
 
 .vendor-details {
     display: flex;
@@ -132,14 +125,14 @@ ic/css/vendors.css */
 }
 
 .actions-col {
-    flex: 0 0 200px; /* Fix: Increase width for larger buttons */
+    flex: 0 0 200px;
     display: flex;
     justify-content: flex-end;
 }
 
 .vendor-actions {
     display: flex;
-    gap: 10px; /* Increase gap for larger buttons */
+    gap: 10px;
     align-items: center;
 }
 
@@ -159,14 +152,13 @@ ic/css/vendors.css */
 }
 
 .edit-btn {
-    /* Fix: Increase button size */
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 8px 16px; /* Larger padding for bigger button */
+    padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px; /* Larger font size */
+    font-size: 14px;
 }
 
 .edit-btn:hover {
@@ -174,77 +166,17 @@ ic/css/vendors.css */
 }
 
 .delete-btn {
-    /* Fix: Increase button size */
     background-color: #dc3545;
     color: white;
     border: none;
-    padding: 8px 16px; /* Larger padding for bigger button */
+    padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 14px; /* Larger font size */
+    font-size: 14px;
 }
 
 .delete-btn:hover {
     background-color: #c82333;
-}
-
-/* Fix: Add responsive styles */
-@media (max-width: 768px) {
-    .vendors-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .search-container {
-        width: 100%;
-        justify-content: flex-start;
-    }
-
-    .search-container input {
-        max-width: 100%; /* Full width on smaller screens */
-    }
-
-    .table-header, .table-row {
-        flex-wrap: wrap; /* Allow wrapping on smaller screens */
-        padding: 10px 15px;
-    }
-
-    .table-col {
-        flex: 1 1 100%; /* Stack columns on smaller screens */
-        padding: 5px 10px;
-        font-size: 14px; /* Slightly smaller font on mobile */
-    }
-
-    .select-col {
-        flex: 0 0 30px;
-    }
-
-    .actions-col {
-        flex: 1 1 100%; /* Full width for actions on smaller screens */
-        justify-content: flex-start;
-        margin-top: 10px;
-    }
-
-    .edit-btn, .delete-btn {
-        padding: 6px 12px; /* Slightly smaller buttons on mobile */
-        font-size: 12px;
-    }
-}
-
-@media (max-width: 480px) {
-    .add-vendor-btn {
-        padding: 10px 20px;
-        font-size: 14px;
-    }
-
-    .search-container input {
-        font-size: 14px;
-        padding: 8px 12px;
-    }
-
-    .table-header {
-        font-size: 16px;
-    }
 }
 
 /* Add Vendor Form Styles (also used for Edit Vendor) */
@@ -278,7 +210,7 @@ ic/css/vendors.css */
 }
 
 .close-btn:hover {
-    color: #dc3545; /* Red on hover */
+    color: #dc3545;
 }
 
 .form-group {
@@ -346,65 +278,6 @@ ic/css/vendors.css */
     }
 }
 
-/* Responsive styles */
-@media (max-width: 768px) {
-    .vendors-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .search-container {
-        width: 100%;
-        justify-content: flex-start;
-    }
-
-    .search-container input {
-        max-width: 100%;
-    }
-
-    .table-header, .table-row {
-        flex-wrap: wrap;
-        padding: 10px 15px;
-    }
-
-    .table-col {
-        flex: 1 1 100%;
-        padding: 5px 10px;
-        font-size: 14px;
-    }
-
-    .actions-col {
-        flex: 1 1 100%;
-        justify-content: flex-start;
-        margin-top: 10px;
-    }
-
-    .edit-btn, .delete-btn {
-        padding: 6px 12px;
-        font-size: 12px;
-    }
-
-    .add-vendor-form {
-        padding: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .add-vendor-btn {
-        padding: 10px 20px;
-        font-size: 14px;
-    }
-
-    .search-container input {
-        font-size: 14px;
-        padding: 8px 12px;
-    }
-
-    .table-header {
-        font-size: 14px;
-    }
-}
-
 /* Vendor Details */
 .vendor-details {
     background: #fff;
@@ -431,40 +304,9 @@ ic/css/vendors.css */
 }
 
 /* Vendors Header */
-.vendors-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    gap: 10px;
-}
-
-
 .header-left {
     display: flex;
     gap: 10px;
-}
-
-.add-vendor-btn {
-    background-color: #0047ab;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 5px;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 500;
-    display: inline-block;
-    line-height: 1;
-    border: none;
-}
-
-.add-vendor-btn:hover {
-    background-color: #003366;
-}
-
-.search-container {
-    display: flex;
-    justify-content: flex-end;
 }
 
 /* Modal Styles */
@@ -490,61 +332,7 @@ ic/css/vendors.css */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.form-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.form-header h2 {
-    margin: 0;
-    font-size: 1.5em;
-}
-
-.close-btn {
-    font-size: 1.5em;
-    cursor: pointer;
-    color: #333;
-}
-
-.close-btn:hover {
-    color: #ff0000;
-}
-
-.add-vendor-form .form-group {
-    margin-bottom: 15px;
-}
-
-.add-vendor-form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.add-vendor-form input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-.add-vendor-form .submit-btn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 100%;
-}
-
-.add-vendor-form .submit-btn:hover {
-    background-color: #45a049;
-}
-
-/* Products Table (Styled like vendors_list.html) */
+/* Products Table */
 .products-table {
     background: #fff;
     border-radius: 8px;
@@ -557,30 +345,8 @@ ic/css/vendors.css */
     margin-bottom: 30px;
 }
 
-.form-group {
-    margin-bottom: 20px;
-}
-
 .form-group.compact {
     margin-bottom: 10px;
-}
-
-.form-group label {
-    display: block;
-    font-size: 16px;
-    color: #555;
-    margin-bottom: 8px;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 16px;
-    color: #333;
-    box-sizing: border-box;
-    transition: border-color 0.3s ease;
 }
 
 .form-group.compact input {
@@ -589,54 +355,26 @@ ic/css/vendors.css */
     font-size: 14px;
 }
 
-.form-group input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
-}
-
-/* Style for form rows with multiple items */
 .form-group-row {
     display: flex;
-    gap: 20px; /* Space between items in the row */
+    gap: 20px;
 }
 
-/* Style for individual items within a form row */
 .form-group-item {
-    flex: 1; /* Each item takes equal space */
-    min-width: 0; /* Prevent overflow */
+    flex: 1;
+    min-width: 0;
 }
 
-/* Ensure inputs and labels within form-group-item take full width */
 .form-group-item label,
 .form-group-item input {
     width: 100%;
     box-sizing: border-box;
 }
 
-.submit-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    border: none;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
-    transition: all 0.3s ease;
-}
-
 .submit-btn.compact {
     padding: 8px 16px;
     font-size: 14px;
     box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
-}
-
-.submit-btn:hover {
-    background-color: #0056b3;
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
-    transform: translateY(-1px);
 }
 
 /* Download Statement Button */
@@ -661,201 +399,29 @@ ic/css/vendors.css */
     transform: translateY(-1px);
 }
 
-/* Edit and Delete Buttons */
-.edit-btn {
-    background-color: #007bff;
+/* View Statement Button */
+.view-statement-btn {
+    background-color: #17a2b8;
     color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
+    padding: 12px 24px;
+    border-radius: 5px;
     text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.edit-btn:hover {
-    background-color: #0056b3;
-}
-
-.delete-btn {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.3s ease;
-}
-
-.delete-btn:hover {
-    background-color: #c82333;
-}
-
-/* Table Styles (Reused from vendors_list.html) */
-.table-header, .table-row {
-    display: flex;
-    align-items: center;
-    padding: 15px 20px;
-    border-bottom: 1px solid #f0f0f0;
-    flex-wrap: nowrap;
-}
-
-.table-header {
-    background-color: #f8f9fa;
-    font-weight: 600;
-    color: #333;
-    font-size: 18px;
-    text-transform: uppercase;
-}
-
-.table-row {
-    transition: background-color 0.2s;
-}
-
-.table-row:hover {
-    background-color: #f9f9f9;
-}
-
-.table-col {
-    flex: 1;
-    padding: 10px 20px;
-    font-size: 18px;
-    color: #555;
-    display: flex;
-    align-items: center;
-}
-
-.table-body {
-    display: flex;
-    flex-direction: column;
-}
-
-.actions-col {
-    flex: 0 0 200px;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.vendor-actions {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-/* Responsive styles */
-@media (max-width: 768px) {
-    .vendor-details {
-        padding: 15px;
-    }
-
-    .vendor-info p {
-        font-size: 14px;
-    }
-    
-
-    
-    .products-table .table-col {
-        flex: 1 1 100%;
-        padding: 5px 10px;
-        font-size: 14px;
-    }
-
-    .products-table .actions-col {
-        flex: 1 1 100%;
-        justify-content: flex-start;
-        margin-top: 10px;
-    }
-
-    .vendors-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .header-left {
-        flex-direction: column;
-        gap: 10px;
-        margin-bottom: 10px;
-    }
-
-    .search-container {
-        width: 100%;
-        justify-content: flex-start;
-    }
-
-    .search-container input {
-        max-width: 100%;
-    }
-
-    .edit-btn, .delete-btn {
-        padding: 6px 12px;
-        font-size: 12px;
-    }
-
-    .form-group.compact input {
-        width: 100%;
-    }
-}
-
-@media (max-width: 480px) {
-    .add-vendor-btn, .download-statement-btn {
-        padding: 10px 20px;
-        font-size: 14px;
-    }
-
-    .search-container input {
-        font-size: 14px;
-        padding: 8px 12px;
-    }
-
-    .table-header {
-        font-size: 16px;
-    }
-}
-
-
-/* statement.html */
-.statement-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
-
-.statement-table th, .statement-table td {
-    border: 1px solid black;
-    padding: 8px;
-    text-align: left;
-    word-wrap: break-word;
-}
-
-.statement-table th {
-    background-color: #f2f2f2;
-}
-
-.statement-table .date-col {
-    width: 20%;
-}
-
-.statement-table .credit-col, .statement-table .debit-col, .statement-table .due-col {
-    width: 20%;
-}
-
-/* Style for calculated values in the Add Product modal */
-
-.calculated-value {
+    font-size: 16px;
+    font-weight: 500;
     display: inline-block;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-    font-size: 1em;
-    color: #333;
-    width: 100%;
-    box-sizing: border-box;
+    line-height: 1;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-/* Statement Table (Reused from products-table) */
+.view-statement-btn:hover {
+    background-color: #138496;
+    box-shadow: 0 4px 10px rgba(23, 162, 184, 0.4);
+    transform: translateY(-1px);
+}
+
+/* Statement Table */
 .statement-table {
     background: #fff;
     border-radius: 8px;
@@ -863,6 +429,19 @@ ic/css/vendors.css */
     margin-bottom: 30px;
 }
 
+/* Statement Summary */
+.statement-summary {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.statement-summary p {
+    margin: 5px 0;
+    font-size: 16
+}
 /* Statement Summary */
 .statement-summary {
     background: #fff;

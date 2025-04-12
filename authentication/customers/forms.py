@@ -1,5 +1,5 @@
 from django import forms
-from .models import Customer, Invoice, InvoiceItem, InvoiceService
+from .models import Customer, Invoice, InvoiceItem, InvoiceService, CustomerStatement
 
 class CustomerForm(forms.ModelForm):
     class Meta:
