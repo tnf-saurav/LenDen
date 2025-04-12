@@ -23,117 +23,123 @@
     background-size: 16px;
 }
 
+/* Reset any conflicting styles on .main-content */
+body div.main-content {
+    box-shadow: none;
+    border-radius: 0;
+    overflow: visible;
+}
+
 /* Table Container */
-.main-content .inventory-table {
-    background: #fff !important;
-    padding: 40px 25px !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    box-shadow: 2px 2px 4px rgba(0,0,0,0.3) !important;
-    border-radius: 0.5rem !important;
-    display: flex !important;
-    flex-direction: column !important;
+body div.main-content #product-inventory-table.inventory-table {
+    background: #fff;
+    padding: 40px 25px;
+    width: 100%;
+    min-width: 800px;
+    box-sizing: border-box;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ensure .table-body doesn’t clip shadows */
+body div.main-content #product-inventory-table .table-body {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: visible; /* Ensure shadows aren’t clipped horizontally */
 }
 
 /* Table Header */
-.main-content .inventory-table .table-header {
-    display: flex !important;
-    background-color: #f8f9fa !important;
-    font-weight: 600 !important;
-    color: #333 !important;
-    font-size: 18px !important;
-    text-transform: uppercase !important;
-    border-bottom: 1px solid #f0f0f0 !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
-    padding: 15px 20px !important;
+body div.main-content #product-inventory-table .table-header {
+    display: flex;
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+    font-size: 18px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #f0f0f0;
+    flex-wrap: nowrap;
+    align-items: center;
+    padding: 15px 20px;
 }
 
 /* Table Row */
-.main-content .inventory-table .table-row {
+body div.main-content #product-inventory-table .table-row {
     display: flex !important;
     border-bottom: 1px solid #f0f0f0 !important;
     transition: background-color 0.2s !important;
     flex-wrap: nowrap !important;
     align-items: center !important;
     background: #fff !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
-    margin-bottom: 10px !important;
-    border-radius: 4px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important; /* Match vendor table */
+    margin-bottom: 15px !important; /* Match vendor table gap */
+    border-radius: 4px !important; /* Match vendor table */
     padding: 15px 20px !important;
+    cursor: pointer !important;
 }
 
-.main-content .inventory-table .table-row:hover {
+body div.main-content #product-inventory-table .table-row:hover {
     background-color: #f9f9f9 !important;
 }
 
-.main-content .inventory-table .table-row:last-child {
+body div.main-content #product-inventory-table .table-row:last-child {
     border-bottom: none !important;
     margin-bottom: 0 !important;
 }
 
 /* Table Columns */
-.main-content .inventory-table .table-col {
-    flex: 1 !important;
-    padding: 10px 20px !important;
-    text-align: left !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    white-space: nowrap !important;
-    font-size: 18px !important;
-    color: #555 !important;
-    display: flex !important;
-    align-items: center !important;
+body div.main-content #product-inventory-table .table-row {
+    display: flex;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
+    flex-wrap: nowrap;
+    align-items: center;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    border-radius: 4px;
+    padding: 15px 20px;
+    cursor: pointer;
 }
 
-/* Empty State Styling */
-.main-content .inventory-table .table-row .table-col[style*="text-align: center"] {
-    font-style: italic !important;
-    color: #7f8c8d !important;
-    font-size: 16px !important;
-    padding: 20px !important;
+body div.main-content #product-inventory-table .table-row:hover {
+    background-color: #f9f9f9;
 }
 
-/* Table Body */
-.main-content .inventory-table .table-body {
-    max-height: 400px !important;
-    overflow-y: auto !important;
-}
-
-/* Style for clickable product details */
-.main-content .inventory-table .product-details {
-    display: flex !important;
-    flex: 1 !important;
-    flex-direction: row !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
-    cursor: pointer !important;
+body div.main-content #product-inventory-table .table-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
 }
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-    .main-content .inventory-table {
-        padding: 30px 20px !important;
+    body div.main-content #product-inventory-table {
+        padding: 30px 20px;
+        min-width: 700px;
     }
     .search-container {
         max-width: 250px;
     }
-    .main-content .inventory-table .table-header {
-        font-size: 16px !important;
-        padding: 12px 15px !important;
+    body div.main-content #product-inventory-table .table-header {
+        font-size: 16px;
+        padding: 12px 15px;
     }
-    .main-content .inventory-table .table-row {
-        padding: 12px 15px !important;
+    body div.main-content #product-inventory-table .table-row {
+        padding: 12px 15px;
+        margin-bottom: 12px;
     }
-    .main-content .inventory-table .table-col {
-        font-size: 16px !important;
-        padding: 8px 15px !important;
+    body div.main-content #product-inventory-table .table-col {
+        font-size: 16px;
+        padding: 8px 15px;
+        min-width: 120px;
     }
 }
 
 @media (max-width: 992px) {
-    .main-content .inventory-table {
-        padding: 25px 15px !important;
+    body div.main-content #product-inventory-table {
+        padding: 25px 15px;
+        min-width: 0;
     }
     .inventory-header {
         flex-direction: column;
@@ -143,65 +149,67 @@
     .search-container {
         max-width: 100%;
     }
-    .main-content .inventory-table .table-header,
-    .main-content .inventory-table .table-row {
-        flex-wrap: wrap !important;
+    body div.main-content #product-inventory-table .table-header,
+    body div.main-content #product-inventory-table .table-row {
+        flex-wrap: wrap;
     }
-    .main-content .inventory-table .table-col {
-        flex: 1 1 50% !important;
-        font-size: 15px !important;
-        padding: 6px 10px !important;
+    body div.main-content #product-inventory-table .table-col {
+        flex: 1 1 50%;
+        font-size: 15px;
+        padding: 6px 10px;
+        min-width: 100px;
     }
 }
 
 @media (max-width: 768px) {
-    .main-content .inventory-table {
-        padding: 20px 10px !important;
+    body div.main-content #product-inventory-table {
+        padding: 20px 10px;
     }
-    .main-content .inventory-table .table-header,
-    .main-content .inventory-table .table-row {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        padding: 10px !important;
+    body div.main-content #product-inventory-table .table-header,
+    body div.main-content #product-inventory-table .table-row {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
     }
-    .main-content .inventory-table .table-col {
-        flex: 1 1 100% !important;
-        padding: 5px 8px !important;
-        font-size: 14px !important;
+    body div.main-content #product-inventory-table .table-col {
+        flex: 1 1 100%;
+        padding: 5px 8px;
+        font-size: 14px;
+        min-width: 0;
     }
-    .main-content .inventory-table .table-body {
-        max-height: 300px !important;
+    body div.main-content #product-inventory-table .table-body {
+        max-height: 300px;
     }
-    .main-content .inventory-table .table-row .table-col[style*="text-align: center"] {
-        font-size: 14px !important;
-        padding: 15px !important;
+    body div.main-content #product-inventory-table .table-row .table-col[style*="text-align: center"] {
+        font-size: 14px;
+        padding: 15px;
     }
 }
 
 @media (max-width: 576px) {
-    .main-content .inventory-table {
-        padding: 15px 8px !important;
+    body div.main-content #product-inventory-table {
+        padding: 15px 8px;
     }
     #inventorySearch {
         padding: 8px;
         font-size: 14px;
     }
-    .main-content .inventory-table .table-header {
-        font-size: 14px !important;
-        padding: 8px !important;
+    body div.main-content #product-inventory-table .table-header {
+        font-size: 14px;
+        padding: 8px;
     }
-    .main-content .inventory-table .table-row {
-        padding: 8px !important;
+    body div.main-content #product-inventory-table .table-row {
+        padding: 8px;
     }
-    .main-content .inventory-table .table-col {
-        font-size: 13px !important;
-        padding: 4px 6px !important;
+    body div.main-content #product-inventory-table .table-col {
+        font-size: 13px;
+        padding: 4px 6px;
     }
-    .main-content .inventory-table .table-body {
-        max-height: 250px !important;
+    body div.main-content #product-inventory-table .table-body {
+        max-height: 250px;
     }
-    .main-content .inventory-table .table-row .table-col[style*="text-align: center"] {
-        font-size: 13px !important;
-        padding: 10px !important;
+    body div.main-content #product-inventory-table .table-row .table-col[style*="text-align: center"] {
+        font-size: 13px;
+        padding: 10px;
     }
 }

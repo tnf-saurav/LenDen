@@ -3,316 +3,315 @@
 {% block title %}LenDen - Vendor Detail{% endblock %}
 
 {% block content %}
-
-    <!-- Display messages -->
-    {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-                <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
-                    {{ message }}
-                    <button class="close" onclick="this.parentElement.style.display='none';">×</button>
-                </div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <!-- Vendor Details Section (Styled like a table) -->
-    <div class="vendor-details">
-        <div class="vendor-info">
-            <p>{{ vendor.vendor_name }}</p>
-            <p>{{ vendor.address }}</p>
-            <p>{{ vendor.contact_number }}</p>
-            <p><strong>Due</strong> 
-                <span class="{% if vendor.due_amount > 0 %}due-amount{% elif vendor.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
-                     {{ vendor.due_amount|abs_value|floatformat:2 }}
-                </span>
-            </p>
-        </div>
-    </div>
-
-    <!-- Header Section with Add Product, Search, and View Statement -->
-    <div class="vendors-header">
-        <div class="header-left">
-            <button class="add-vendor-btn" onclick="showAddProductModal()">Add Product</button>
-            <a href="{% url 'vendor_statement' vendor.id %}" class="view-statement-btn">View Statement</a>
-            <!-- Removed the Download Statement button -->
-        </div>
-        <div class="search-container">
-            <input type="text" id="productSearch" onkeyup="searchProducts()" placeholder="Search">
-        </div>
-    </div>
-
-    <!-- Products Section (Styled as a table) -->
-    <h3>Products</h3>
-    <div class="products-table">
-        <div class="table-header">
-            <div class="table-col">Date</div>
-            <div class="table-col">Product</div>
-            <div class="table-col">Qty</div>
-            <div class="table-col">Unit Price</div>
-            <div class="table-col">Description</div>
-            <div class="table-col">Total</div>
-            <div class="table-col">Paid</div>
-            <div class="table-col">Due</div>
-            <div class="table-col actions-col">Actions</div>
-        </div>
-        <div class="table-body">
-            {% for product in products %}
-                <div id="product-{{ product.id }}" class="table-row">
-                    <div class="table-col">{{ product.date_of_order }}</div>
-                    <div class="table-col">{{ product.product_name }}</div>
-                    <div class="table-col">{{ product.quantity_supplied }}</div>
-                    <div class="table-col">{{ product.unit_price }}</div>
-                    <div class="table-col">{{ product.description }}</div>
-                    <div class="table-col">{{ product.total_price }}</div>
-                    <div class="table-col">{{ product.paid_amount }}</div>
-                    <div class="table-col">
-                        <span class="{% if product.due_amount > 0 %}due-amount{% elif product.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
-                            {{ product.due_amount|abs_value|floatformat:2 }}
-                        </span>
+    <div class="section-container">
+        <!-- Display messages -->
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+                        {{ message }}
+                        <button class="close" onclick="this.parentElement.style.display='none';">×</button>
                     </div>
-                    <div class="table-col actions-col">
-                        <div class="vendor-actions">
-                            <button onclick="showEditProductForm(
-                                '{{ product.id }}', 
-                                '{{ product.product_name|escapejs }}', 
-                                '{{ product.description|default_if_none:''|escapejs }}', 
-                                '{{ product.quantity_supplied }}', 
-                                '{{ product.unit_price }}', 
-                                '{{ product.selling_price }}', 
-                                '{{ product.total_price }}', 
-                                '{{ product.date_of_order }}', 
-                                '{{ product.paid_amount|default_if_none:'0.00' }}', 
-                                '{{ product.due_amount }}',
-                                '{{ vendor.id }}'
-                            )" class="edit-btn">Edit</button>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Vendor Details Section -->
+        <div class="vendor-details">
+            <div class="vendor-info">
+                <h2>{{ vendor.vendor_name }}</h2>
+                <p>{{ vendor.address }}</p>
+                <p>{{ vendor.contact_number }}</p>
+                <p>
+                    <strong>Due:</strong> 
+                    <span class="{% if vendor.due_amount > 0 %}due-amount{% elif vendor.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
+                        {{ vendor.due_amount|abs_value|floatformat:2 }}
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Header Section with Add Product, Search, and View Statement -->
+        <div class="vendors-header">
+            <div class="header-left">
+                <button class="add-vendor-btn" onclick="showAddProductModal()">Add Product</button>
+                <a href="{% url 'vendor_statement' vendor.id %}" class="view-statement-btn">View Statement</a>
+            </div>
+            <div class="search-container">
+                <input type="text" id="productSearch" onkeyup="searchProducts()" placeholder="Search products...">
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <h3>Products</h3>
+        <div class="products-table">
+            <div class="table-header">
+                <div class="table-col">Date</div>
+                <div class="table-col">Product</div>
+                <div class="table-col">Qty</div>
+                <div class="table-col">Unit Price</div>
+                <div class="table-col">Description</div>
+                <div class="table-col">Total</div>
+                <div class="table-col">Paid</div>
+                <div class="table-col">Due</div>
+                <div class="table-col actions-col">Actions</div>
+            </div>
+            <div class="table-body">
+                {% for product in products %}
+                    <div id="product-{{ product.id }}" class="table-row">
+                        <div class="table-col">{{ product.date_of_order|date:"M d, Y" }}</div>
+                        <div class="table-col">{{ product.product_name }}</div>
+                        <div class="table-col">{{ product.quantity_supplied }}</div>
+                        <div class="table-col">{{ product.unit_price|floatformat:2 }}</div>
+                        <div class="table-col">{{ product.description|default:"N/A" }}</div>
+                        <div class="table-col">{{ product.total_price|floatformat:2 }}</div>
+                        <div class="table-col">{{ product.paid_amount|floatformat:2 }}</div>
+                        <div class="table-col">
+                            <span class="{% if product.due_amount > 0 %}due-amount{% elif product.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
+                                {{ product.due_amount|abs_value|floatformat:2 }}
+                            </span>
+                        </div>
+                        <div class="table-col actions-col">
+                            <div class="vendor-actions">
+                                <button onclick="showEditProductForm(
+                                    '{{ product.id }}', 
+                                    '{{ product.product_name|escapejs }}', 
+                                    '{{ product.description|default_if_none:''|escapejs }}', 
+                                    '{{ product.quantity_supplied }}', 
+                                    '{{ product.unit_price }}', 
+                                    '{{ product.selling_price }}', 
+                                    '{{ product.total_price }}', 
+                                    '{{ product.date_of_order }}', 
+                                    '{{ product.paid_amount|default_if_none:'0.00' }}', 
+                                    '{{ product.due_amount }}',
+                                    '{{ vendor.id }}'
+                                )" class="edit-btn">Edit</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% empty %}
+                    <div class="table-row">
+                        <div class="table-col" style="text-align: center;">No products available.</div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
-    </div>
 
-    <!-- Pay Vendor Section (Smaller and more compact) -->
-    <h3>Pay Vendor</h3>
-    <div class="pay-vendor">
-        <form method="POST" action="{% url 'pay_vendor' vendor.id %}">
-            {% csrf_token %}
-            <div class="form-group compact">
-                {{ payment_form.amount.label_tag }}
-                {{ payment_form.amount }}
-                {% if payment_form.amount.errors %}
-                    <div class="form-error">{{ payment_form.amount.errors }}</div>
-                {% endif %}
-            </div>
-            <button type="submit" class="submit-btn compact">Pay</button>
-        </form>
-    </div>
-
-    
-    <!-- Add Product Modal -->
-    <div id="addProductModal" class="modal">
-        <div class="modal-content add-vendor-form">
-            <div class="form-header">
-                <h2>Add Product</h2>
-                <span class="close-btn">×</span>
-            </div>
-            <form method="POST" action="{% url 'add_product' vendor.id %}">
+        <!-- Pay Vendor Section -->
+        <h3>Pay Vendor</h3>
+        <div class="pay-vendor">
+            <form method="POST" action="{% url 'pay_vendor' vendor.id %}">
                 {% csrf_token %}
-                <!-- Product Name and Date of Order -->
-                <div class="form-group form-group-row">
-                    <div class="form-group-item">
-                        {{ add_product_form.date_of_order.label_tag }}
-                        <input type="date" name="date_of_order" id="id_date_of_order" value="{{ add_product_form.date_of_order.value|default_if_none:'' }}" required>
-                        {% if add_product_form.date_of_order.errors %}
-                            <div class="form-error">{{ add_product_form.date_of_order.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="form-group-item">
-                        {{ add_product_form.product_name.label_tag }}
-                        <input type="text" name="product_name" id="id_product_name" value="{{ add_product_form.product_name.value|default_if_none:'' }}" required>
-                        {% if add_product_form.product_name.errors %}
-                            <div class="form-error">{{ add_product_form.product_name.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                </div>
-                <!-- Description -->
-                <div class="form-group">
-                    {{ add_product_form.description.label_tag }}
-                    <input type="text" name="description" id="id_description" value="{{ add_product_form.description.value|default_if_none:'' }}">
-                    {% if add_product_form.description.errors %}
-                        <div class="form-error">{{ add_product_form.description.errors }}</div>
+                <div class="form-group compact">
+                    {{ payment_form.amount.label_tag }}
+                    {{ payment_form.amount }}
+                    {% if payment_form.amount.errors %}
+                        <div class="form-error">{{ payment_form.amount.errors }}</div>
                     {% endif %}
                 </div>
-                <!-- Quantity Supplied and Unit Price -->
-                <div class="form-group form-group-row">
-                    <div class="form-group-item">
-                        {{ add_product_form.quantity_supplied.label_tag }}
-                        <input type="number" name="quantity_supplied" id="id_quantity_supplied" value="{{ add_product_form.quantity_supplied.value|default:'0' }}" min="0" required onkeypress="return (event.charCode != 8 && event.charCode >= 48 && event.charCode <= 57)">
-                        {% if add_product_form.quantity_supplied.errors %}
-                            <div class="form-error">{{ add_product_form.quantity_supplied.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="form-group-item">
-                        {{ add_product_form.unit_price.label_tag }}
-                        <input type="number" name="unit_price" id="id_unit_price" value="{{ add_product_form.unit_price.value|default:'0.00' }}" step="0.01" min="0" required>
-                        {% if add_product_form.unit_price.errors %}
-                            <div class="form-error">{{ add_product_form.unit_price.errors }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-                <!-- Total Price (Calculated) -->
-                <div class="form-group">
-                    <label for="id_total_price">Total Price:</label>
-                    <input type="number" step="0.01" name="total_price" id="id_total_price" value="{{ add_product_form.total_price.value|default:'0.00' }}" style="display: none;">
-                    <span id="total_price_display" class="calculated-value">0.00</span>
-                </div>
-                <!-- Selling Price and Paid Amount -->
-                <div class="form-group form-group-row">
-                    <div class="form-group-item">
-                        {{ add_product_form.selling_price.label_tag }}
-                        <input type="number" name="selling_price" id="id_selling_price" value="{{ add_product_form.selling_price.value|default:'0.00' }}" step="0.01" min="0" required>
-                        {% if add_product_form.selling_price.errors %}
-                            <div class="form-error">{{ add_product_form.selling_price.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="form-group-item">
-                        {{ add_product_form.paid_amount.label_tag }}
-                        <input type="number" name="paid_amount" id="id_paid_amount" value="{{ add_product_form.paid_amount.value|default:'0.00' }}" step="0.01" min="0">
-                        {% if add_product_form.paid_amount.errors %}
-                            <div class="form-error">{{ add_product_form.paid_amount.errors }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-                <!-- Due Amount (Calculated) -->
-                <div class="form-group form-group-row">
-                    <div class="form-group-item">
-                        {{ add_product_form.due_amount.label_tag }}
-                        <input type="number" name="due_amount" id="id_due_amount" value="{{ add_product_form.due_amount.value|default:'0.00' }}" step="0.01" readonly style="display: none;">
-                        <span id="due_amount_display" class="{% if add_product_form.due_amount.value|default:'0.00'|is_positive %}due-amount{% elif add_product_form.due_amount.value|default:'0.00'|is_negative %}advance-paid{% else %}neutral{% endif %}">
-                            {{ add_product_form.due_amount.value|default:'0.00'|floatformat:2 }}
-                        </span>
-                        {% if add_product_form.due_amount.errors %}
-                            <div class="form-error">{{ add_product_form.due_amount.errors }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-                <button type="submit" class="submit-btn">Add Product</button>
+                <button type="submit" class="pay-btn">Pay</button>
             </form>
         </div>
-    </div>
 
-    <!-- Edit Product Modal (Single Modal, Populated Dynamically) -->
-    <div id="editProductModal" class="modal">
-        <div class="modal-content add-vendor-form">
-            <div class="form-header">
-                <h2>Edit Product</h2>
-                <span class="close-btn">×</span>
+        <!-- Add Product Modal -->
+        <div id="addProductModal" class="modal">
+            <div class="modal-content add-vendor-form">
+                <div class="form-header">
+                    <h2>Add Product</h2>
+                    <span class="close-btn">×</span>
+                </div>
+                <form method="POST" action="{% url 'add_product' vendor.id %}">
+                    {% csrf_token %}
+                    <!-- Product Name and Date of Order -->
+                    <div class="form-group form-group-row">
+                        <div class="form-group-item">
+                            {{ add_product_form.date_of_order.label_tag }}
+                            <input type="date" name="date_of_order" id="id_date_of_order" value="{{ add_product_form.date_of_order.value|default_if_none:'' }}" required>
+                            {% if add_product_form.date_of_order.errors %}
+                                <div class="form-error">{{ add_product_form.date_of_order.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group-item">
+                            {{ add_product_form.product_name.label_tag }}
+                            <input type="text" name="product_name" id="id_product_name" value="{{ add_product_form.product_name.value|default_if_none:'' }}" required>
+                            {% if add_product_form.product_name.errors %}
+                                <div class="form-error">{{ add_product_form.product_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Description -->
+                    <div class="form-group">
+                        {{ add_product_form.description.label_tag }}
+                        <input type="text" name="description" id="id_description" value="{{ add_product_form.description.value|default_if_none:'' }}">
+                        {% if add_product_form.description.errors %}
+                            <div class="form-error">{{ add_product_form.description.errors }}</div>
+                            {% endif %}
+                    </div>
+                    <!-- Quantity Supplied and Unit Price -->
+                    <div class="form-group form-group-row">
+                        <div class="form-group-item">
+                            {{ add_product_form.quantity_supplied.label_tag }}
+                            <input type="number" name="quantity_supplied" id="id_quantity_supplied" value="{{ add_product_form.quantity_supplied.value|default:'0' }}" min="0" required onkeypress="return (event.charCode != 8 && event.charCode >= 48 && event.charCode <= 57)">
+                            {% if add_product_form.quantity_supplied.errors %}
+                                <div class="form-error">{{ add_product_form.quantity_supplied.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group-item">
+                            {{ add_product_form.unit_price.label_tag }}
+                            <input type="number" name="unit_price" id="id_unit_price" value="{{ add_product_form.unit_price.value|default:'0.00' }}" step="0.01" min="0" required>
+                            {% if add_product_form.unit_price.errors %}
+                                <div class="form-error">{{ add_product_form.unit_price.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Total Price (Calculated) -->
+                    <div class="form-group">
+                        <label for="id_total_price">Total Price:</label>
+                        <input type="number" step="0.01" name="total_price" id="id_total_price" value="{{ add_product_form.total_price.value|default:'0.00' }}" style="display: none;">
+                        <span id="total_price_display" class="calculated-value">0.00</span>
+                    </div>
+                    <!-- Selling Price and Paid Amount -->
+                    <div class="form-group form-group-row">
+                        <div class="form-group-item">
+                            {{ add_product_form.selling_price.label_tag }}
+                            <input type="number" name="selling_price" id="id_selling_price" value="{{ add_product_form.selling_price.value|default:'0.00' }}" step="0.01" min="0" required>
+                            {% if add_product_form.selling_price.errors %}
+                                <div class="form-error">{{ add_product_form.selling_price.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group-item">
+                            {{ add_product_form.paid_amount.label_tag }}
+                            <input type="number" name="paid_amount" id="id_paid_amount" value="{{ add_product_form.paid_amount.value|default:'0.00' }}" step="0.01" min="0">
+                            {% if add_product_form.paid_amount.errors %}
+                                <div class="form-error">{{ add_product_form.paid_amount.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Due Amount (Calculated) -->
+                    <div class="form-group form-group-row">
+                        <div class="form-group-item">
+                            {{ add_product_form.due_amount.label_tag }}
+                            <input type="number" name="due_amount" id="id_due_amount" value="{{ add_product_form.due_amount.value|default:'0.00' }}" step="0.01" readonly style="display: none;">
+                            <span id="due_amount_display" class="{% if add_product_form.due_amount.value|default:'0.00'|is_positive %}due-amount{% elif add_product_form.due_amount.value|default:'0.00'|is_negative %}advance-paid{% else %}neutral{% endif %}">
+                                {{ add_product_form.due_amount.value|default:'0.00'|floatformat:2 }}
+                            </span>
+                            {% if add_product_form.due_amount.errors %}
+                                <div class="form-error">{{ add_product_form.due_amount.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">Add Product</button>
+                </form>
             </div>
-            <form id="editProductForm" method="POST" action="">
-                {% csrf_token %}
-                <input type="hidden" name="product_id" id="edit_product_id">
-                <!-- Product Name and Date of Order -->
-                <div class="form-group form-group-row">
-                    <div class="form-group-item">
-                        <label for="edit_date_of_order">Date of Order:</label>
-                        <input type="date" name="date_of_order" id="edit_date_of_order" required>
-                        {% if edit_product_form.date_of_order.errors %}
-                            <div class="form-error">{{ edit_product_form.date_of_order.errors }}</div>
-                        {% endif %}
-                    </div>
-
-                    <div class="form-group-item">
-                        <label for="edit_product_name">Product Name:</label>
-                        <input type="text" name="product_name" id="edit_product_name" required>
-                        {% if edit_product_form.product_name.errors %}
-                            <div class="form-error">{{ edit_product_form.product_name.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                </div>
-                <!-- Description -->
-                <div class="form-group">
-                    <label for="edit_description">Description:</label>
-                    <input type="text" name="description" id="edit_description">
-                    {% if edit_product_form.description.errors %}
-                        <div class="form-error">{{ edit_product_form.description.errors }}</div>
-                    {% endif %}
-                </div>
-                <!-- Quantity Supplied and Unit Price -->
-                <div class="form-group form-group-row">
-                    <div class="form-group-item">
-                        <label for="edit_quantity_supplied">Quantity Supplied:</label>
-                        <input type="number" name="quantity_supplied" id="edit_quantity_supplied" min="0" required onkeypress="return (event.charCode != 8 && event.charCode >= 48 && event.charCode <= 57)">
-                        {% if edit_product_form.quantity_supplied.errors %}
-                            <div class="form-error">{{ edit_product_form.quantity_supplied.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="form-group-item">
-                        <label for="edit_unit_price">Unit Price:</label>
-                        <input type="number" name="unit_price" id="edit_unit_price" step="0.01" min="0" required>
-                        {% if edit_product_form.unit_price.errors %}
-                            <div class="form-error">{{ edit_product_form.unit_price.errors }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-                <!-- Total Price (Calculated) -->
-                <div class="form-group">
-                    <label for="edit_total_price">Total Price:</label>
-                    <input type="number" step="0.01" name="total_price" id="edit_total_price" style="display: none;">
-                    <span id="edit_total_price_display" class="calculated-value">0.00</span>
-                </div>
-                <!-- Selling Price and Paid Amount -->
-                <div class="form-group form-group-row">
-                    <div class="form-group-item">
-                        <label for="edit_selling_price">Selling Price:</label>
-                        <input type="number" name="selling_price" id="edit_selling_price" step="0.01" min="0" required>
-                        {% if edit_product_form.selling_price.errors %}
-                            <div class="form-error">{{ edit_product_form.selling_price.errors }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="form-group-item">
-                        <label for="edit_paid_amount">Paid Amount:</label>
-                        <input type="number" name="paid_amount" id="edit_paid_amount" step="0.01" min="0">
-                        {% if edit_product_form.paid_amount.errors %}
-                            <div class="form-error">{{ edit_product_form.paid_amount.errors }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-                <!-- Due Amount (Calculated) -->
-                <div class="form-group">
-                    <label for="edit_due_amount">Due Amount:</label>
-                    <input type="number" step="0.01" name="due_amount" id="edit_due_amount" style="display: none;">
-                    <span id="edit_due_amount_display" class="calculated-value">0.00</span>
-                </div>
-                <button type="submit" class="submit-btn">Update Product</button>
-            </form>
         </div>
+
+        <!-- Edit Product Modal -->
+        <div id="editProductModal" class="modal">
+            <div class="modal-content add-vendor-form">
+                <div class="form-header">
+                    <h2>Edit Product</h2>
+                    <span class="close-btn">×</span>
+                </div>
+                <form id="editProductForm" method="POST" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" id="edit_product_id">
+                    <!-- Product Name and Date of Order -->
+                    <div class="form-group form-group-row">
+                        <div class="form-group-item">
+                            <label for="edit_date_of_order">Date of Order:</label>
+                            <input type="date" name="date_of_order" id="edit_date_of_order" required>
+                            {% if edit_product_form.date_of_order.errors %}
+                                <div class="form-error">{{ edit_product_form.date_of_order.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group-item">
+                            <label for="edit_product_name">Product Name:</label>
+                            <input type="text" name="product_name" id="edit_product_name" required>
+                            {% if edit_product_form.product_name.errors %}
+                                <div class="form-error">{{ edit_product_form.product_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label for="edit_description">Description:</label>
+                        <input type="text" name="description" id="edit_description">
+                        {% if edit_product_form.description.errors %}
+                            <div class="form-error">{{ edit_product_form.description.errors }}</div>
+                            {% endif %}
+                    </div>
+                    <!-- Quantity Supplied and Unit Price -->
+                    <div class="form-group form-group-row">
+                        <div class="form-group-item">
+                            <label for="edit_quantity_supplied">Quantity Supplied:</label>
+                            <input type="number" name="quantity_supplied" id="edit_quantity_supplied" min="0" required onkeypress="return (event.charCode != 8 && event.charCode >= 48 && event.charCode <= 57)">
+                            {% if edit_product_form.quantity_supplied.errors %}
+                                <div class="form-error">{{ edit_product_form.quantity_supplied.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group-item">
+                            <label for="edit_unit_price">Unit Price:</label>
+                            <input type="number" name="unit_price" id="edit_unit_price" step="0.01" min="0" required>
+                            {% if edit_product_form.unit_price.errors %}
+                                <div class="form-error">{{ edit_product_form.unit_price.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Total Price (Calculated) -->
+                    <div class="form-group">
+                        <label for="edit_total_price">Total Price:</label>
+                        <input type="number" step="0.01" name="total_price" id="edit_total_price" style="display: none;">
+                        <span id="edit_total_price_display" class="calculated-value">0.00</span>
+                    </div>
+                    <!-- Selling Price and Paid Amount -->
+                    <div class="form-group form-group-row">
+                        <div class="form-group-item">
+                            <label for="edit_selling_price">Selling Price:</label>
+                            <input type="number" name="selling_price" id="edit_selling_price" step="0.01" min="0" required>
+                            {% if edit_product_form.selling_price.errors %}
+                                <div class="form-error">{{ edit_product_form.selling_price.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group-item">
+                            <label for="edit_paid_amount">Paid Amount:</label>
+                            <input type="number" name="paid_amount" id="edit_paid_amount" step="0.01" min="0">
+                            {% if edit_product_form.paid_amount.errors %}
+                                <div class="form-error">{{ edit_product_form.paid_amount.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <!-- Due Amount (Calculated) -->
+                    <div class="form-group">
+                        <label for="edit_due_amount">Due Amount:</label>
+                        <input type="number" step="0.01" name="due_amount" id="edit_due_amount" style="display: none;">
+                        <span id="edit_due_amount_display" class="calculated-value">0.00</span>
+                    </div>
+                    <button type="submit" class="submit-btn">Update Product</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- JavaScript to re-open the Edit Product modal if there are form errors -->
+        {% if edit_product_form and edit_product_id %}
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    showEditProductForm(
+                        '{{ edit_product_id }}',
+                        '{{ edit_product_form.product_name.value|default_if_none:''|escapejs }}',
+                        '{{ edit_product_form.description.value|default_if_none:''|escapejs }}',
+                        '{{ edit_product_form.quantity_supplied.value|default:'0' }}',
+                        '{{ edit_product_form.unit_price.value|default:'0.00' }}',
+                        '{{ edit_product_form.selling_price.value|default:'0.00' }}',
+                        '{{ edit_product_form.total_price.value|default:'0.00' }}',
+                        '{{ edit_product_form.date_of_order.value|default_if_none:'' }}',
+                        '{{ edit_product_form.paid_amount.value|default:'0.00' }}',
+                        '{{ edit_product_form.due_amount.value|default:'0.00' }}',
+                        '{{ vendor.id }}'
+                    );
+                });
+            </script>
+        {% endif %}
     </div>
-
-    <!-- JavaScript to re-open the Edit Product modal if there are form errors -->
-    {% if edit_product_form and edit_product_id %}
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                showEditProductForm(
-                    '{{ edit_product_id }}',
-                    '{{ edit_product_form.product_name.value|default_if_none:''|escapejs }}',
-                    '{{ edit_product_form.description.value|default_if_none:''|escapejs }}',
-                    '{{ edit_product_form.quantity_supplied.value|default:'0' }}',
-                    '{{ edit_product_form.unit_price.value|default:'0.00' }}',
-                    '{{ edit_product_form.selling_price.value|default:'0.00' }}',
-                    '{{ edit_product_form.total_price.value|default:'0.00' }}',
-                    '{{ edit_product_form.date_of_order.value|default_if_none:'' }}',
-                    '{{ edit_product_form.paid_amount.value|default:'0.00' }}',
-                    '{{ edit_product_form.due_amount.value|default:'0.00' }}',
-                    '{{ vendor.id }}'
-                );
-            });
-        </script>
-    {% endif %}
-
 {% endblock %}
 
 {% block extra_styles %}

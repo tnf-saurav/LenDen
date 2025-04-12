@@ -16,72 +16,81 @@
         </div>
     {% endif %}
 
-    <a href="{% url 'customers_list' %}" class="back-link">Back</a>
-    <h1>{{ customer.customer_name }}</h1>
-    <div class="customer-details">
-        <p><strong>Address:</strong> {{ customer.address }}</p>
-        <p><strong>Contact:</strong> {{ customer.contact_number }}</p>
-        <p><strong>Due Amount:</strong> 
-            <span class="{% if customer.due_amount > 0 %}due-amount{% elif customer.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
-                {{ customer.due_amount|floatformat:2 }}
-            </span>
-        </p>
-    </div>
+    <!-- Single Container for All Sections -->
+    <div class="section-container">
+        <!-- Customer Details Section -->
+        <div class="customer-details-section">
+            <h1>{{ customer.customer_name }}</h1>
+            <div class="customer-details">
+                <p><strong>Address:</strong> {{ customer.address }}</p>
+                <p><strong>Contact:</strong> {{ customer.contact_number }}</p>
+                <p><strong>Due Amount:</strong> 
+                    <span class="{% if customer.due_amount > 0 %}due-amount{% elif customer.due_amount < 0 %}advance-paid{% else %}neutral{% endif %}">
+                        {{ customer.due_amount|floatformat:2 }}
+                    </span>
+                </p>
+            </div>
+        </div>
 
-    
-
-    <h2>Products Bought</h2>
-    <div class="products-table">
+        <!-- Header with Buttons and Search -->
         <div class="products-header">
-            <a href="{% url 'create_invoice' customer.id %}" class="invoice-btn">Create Invoice</a>
-            <a href="{% url 'customer_statement' customer.id %}" class="view-statement-btn">View Statement</a>
+            <div class="button-group">
+                <a href="{% url 'create_invoice' customer.id %}" class="invoice-btn">Create Invoice</a>
+                <a href="{% url 'customer_statement' customer.id %}" class="view-statement-btn">View Statement</a>
+            </div>
             <div class="search-container">
                 <input type="text" id="invoiceSearch" placeholder="Search">
                 <span class="search-icon"><i class="fas fa-search"></i></span>
             </div>
         </div>
 
-        <div class="table-header">
-            <div class="table-col">Date</div>
-            <div class="table-col">Invoice Number</div>
-            <div class="table-col">Bill Amount (Total)</div>
-            <div class="table-col">Action</div>
+        <!-- Products Bought Section -->
+        <div class="products-table-section">
+            <h2>Products Bought</h2>
+            <div class="products-table">
+                <div class="table-header">
+                    <div class="table-col">Date</div>
+                    <div class="table-col">Invoice Number</div>
+                    <div class="table-col">Bill Amount (Total)</div>
+                </div>
+                <div class="table-body">
+                    {% for invoice in invoices %}
+                        <div class="table-row">
+                            <div class="table-col">{{ invoice.invoice_date|date:"Y-m-d" }}</div>
+                            <div class="table-col">{{ request.user.username|slice:":3"|upper }}-{{ customer.id }}-{{ invoice.id }}-{{ invoice.invoice_date|date:"Ymd" }}</div>
+                            <div class="table-col">{{ invoice.final_amount|floatformat:2 }}</div>
+                            <div class="table-col actions-col">
+                                <div class="customer-actions">
+                                    <a href="{% url 'edit_invoice' customer.id invoice.id %}" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="table-row">
+                            <div class="table-col" style="flex: 1 1 100%; text-align: center;">No invoices found.</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-        <div class="table-body">
-            {% for invoice in invoices %}
-                <div class="table-row">
-                    <div class="table-col">{{ invoice.invoice_date|date:"Y-m-d" }}</div>
-                    <div class="table-col">{{ request.user.username|slice:":3"|upper }}-{{ customer.id }}-{{ invoice.id }}-{{ invoice.invoice_date|date:"Ymd" }}</div>
-                    <div class="table-col">{{ invoice.final_amount|floatformat:2 }}</div>
-                    <div class="table-col">
-                        <a href="{% url 'edit_invoice' customer.id invoice.id %}" class="edit-btn"><i class="fas fa-edit"></i> Edit</a>
-                    </div>
+
+        <!-- Make Payment Section -->
+        <div class="payment-section">
+            <h2>Make Payment</h2>
+            <form method="POST" action="{% url 'pay_customer' customer.id %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ payment_form.amount.label_tag }}
+                    {{ payment_form.amount }}
+                    {% if payment_form.amount.errors %}
+                        <div class="form-error">{{ payment_form.amount.errors }}</div>
+                    {% endif %}
                 </div>
-            {% empty %}
-                <div class="table-row">
-                    <div class="table-col" style="flex: 1 1 100%; text-align: center;">No invoices found.</div>
-                </div>
-            {% endfor %}
+                <button type="submit" class="submit-btn">Pay Customer</button>
+            </form>
         </div>
     </div>
 </div>
-
-<!-- Payment Form -->
-<section>
-    <h2>Make Payment</h2>
-    <form method="POST" action="{% url 'pay_customer' customer.id %}">
-        {% csrf_token %}
-        <div class="form-group">
-            {{ payment_form.amount.label_tag }}
-            {{ payment_form.amount }}
-            {% if payment_form.amount.errors %}
-                <div class="form-error">{{ payment_form.amount.errors }}</div>
-            {% endif %}
-        </div>
-        <button type="submit" class="submit-btn">Pay Customer</button>
-    </form>
-</section>
-
 {% endblock %}
 
 {% block extra_styles %}

@@ -4,13 +4,15 @@
 {% block title %}LenDen - Product List{% endblock %}
 
 {% block content %}
-    <div class="inventory-header">
-        <div class="search-container">
-            <input type="text" id="inventorySearch" onkeyup="searchProducts()" placeholder="Search">
-        </div>
-    </div>
 
-    <div class="inventory-table">
+    <div class="inventory-table" id="product-inventory-table">
+
+        <div class="inventory-header">
+            <div class="search-container">
+                <input type="text" id="inventorySearch" onkeyup="searchProducts()" placeholder="Search">
+            </div>
+        </div>
+        
         <div class="table-header">
             <div class="table-col">Product Name</div>
             <div class="table-col">Quantity</div>
@@ -18,12 +20,10 @@
         </div>
         <div class="table-body">
             {% for product in products %}
-                <div class="table-row">
-                    <div class="product-details" onclick="location.href='{% url 'vendors_detail' product.product.vendor.id %}?product_id={{ product.product.id }}'">
-                        <div class="table-col">{{ product.product.product_name }}</div>
-                        <div class="table-col">{{ product.remaining_quantity }}</div>
-                        <div class="table-col">{{ product.product.selling_price|floatformat:2 }}</div>
-                    </div>
+                <div class="table-row" onclick="location.href='{% url 'vendors_detail' product.product.vendor.id %}?product_id={{ product.product.id }}'">
+                    <div class="table-col">{{ product.product.product_name }}</div>
+                    <div class="table-col">{{ product.remaining_quantity }}</div>
+                    <div class="table-col">{{ product.product.selling_price|floatformat:2 }}</div>
                 </div>
             {% empty %}
                 <div class="table-row">

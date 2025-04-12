@@ -126,10 +126,10 @@ canvas {
         margin: 0.5rem 0.25rem;
         padding: 0.5rem;
     }
-    .main-content {
+    /* .main-content {
         margin-left: 150px;
         width: calc(100% - 150px);
-    }
+    } */
 }
 
 @media (max-width: 576px) {
@@ -153,9 +153,9 @@ canvas {
         padding: 0.25rem;
         border-radius: 8px;
     }
-    .main-content {
+    /* .main-content {
         margin-left: 0;
         margin-bottom: 60px;
         width: 100%;
-    }
+    } */
 }

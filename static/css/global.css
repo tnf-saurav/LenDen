@@ -34,9 +34,38 @@ body {
     object-position: center;
 }
 
+/* Greeting Styles */
+.sidebar .greeting {
+    text-align: center;
+    color: white;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+.sidebar .greeting h3 {
+    margin: 0;
+    font-size: 18px;
+    color: white !important;
+    font-weight: normal;
+    border-bottom: none !important; /* Remove any inherited border */
+    padding-bottom: 0 !important; /* Remove any inherited padding */
+    display: block !important; /* Override any flex display */
+}
+
+.sidebar .greeting h4 {
+    margin: 5px 0 0 0;
+    font-size: 22px;
+    color: white !important;
+    font-weight: normal;
+    border-bottom: none !important; /* Just in case */
+    display: block !important; /* Ensure block display for proper centering */
+}
+
+/* Navigation */
 .sidebar-nav ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
 .sidebar-nav li {
@@ -59,6 +88,7 @@ body {
     color: #b3d4fc;
 }
 
+/* Logout */
 .logout {
     margin-bottom: 3rem;
 }
@@ -84,23 +114,6 @@ body {
     margin-left: 200px;
     padding: 20px;
     flex-grow: 1;
-}
-
-.greeting {
-    text-align: center;
-    color: white;
-    margin-top: 10px;
-}
-
-.greeting h3 {
-    margin: 0;
-    font-size: 18px;
-}
-
-.greeting h4 {
-    margin: 5px 0 0 0;
-    font-size: 22px;
-    font-weight: normal;
 }
 
 /* Responsive adjustments */
@@ -153,13 +166,14 @@ body {
         width: 100px;
         height: 100px;
     }
-    .greeting {
+    .sidebar .greeting {
         display: block;
+        margin-bottom: 20px;
     }
-    .greeting h3 {
+    .sidebar .greeting h3 {
         font-size: 14px;
     }
-    .greeting h4 {
+    .sidebar .greeting h4 {
         font-size: 16px;
     }
     .sidebar-nav li {
